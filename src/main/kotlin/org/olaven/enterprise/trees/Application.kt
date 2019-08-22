@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-open class Application
+open class TreeApplication
 fun main(args: Array<String>) {
-    SpringApplication.run(Application::class.java, *args)
+    SpringApplication.run(TreeApplication::class.java, *args)
 }

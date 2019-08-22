@@ -1,4 +1,4 @@
-package org.olaven.enterprise.trees.entities
+package org.olaven.enterprise.trees.entity
 
 import org.jetbrains.annotations.NotNull
 import javax.persistence.Entity
@@ -8,8 +8,6 @@ import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Size
-import kotlin.math.max
-import kotlin.math.min
 
 @Entity
 data class TreeEntity (
@@ -18,12 +16,12 @@ data class TreeEntity (
     @Size(max = 100)
     val name: String,
 
-    @Min(0)
-    val height: Double,
-
     @NotEmpty
     @Size(max = 500)
     val description: String,
+
+    @Min(0)
+    val height: Double,
 
     @NotNull
     @Min(0)

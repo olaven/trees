@@ -1,6 +1,6 @@
-package org.olaven.enterprise.trees.repositories
+package org.olaven.enterprise.trees.repository
 
-import org.olaven.enterprise.trees.entities.TreeEntity
+import org.olaven.enterprise.trees.entity.TreeEntity
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
