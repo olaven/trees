@@ -10,7 +10,7 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Size
 
 @Entity
-data class TreeEntity (
+data class PlantEntity (
 
     @NotEmpty
     @Size(max = 100)

@@ -3,9 +3,9 @@ package org.olaven.enterprise.trees.controller
 import com.google.common.base.Throwables
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
-import org.olaven.enterprise.trees.dto.TreeDto
-import org.olaven.enterprise.trees.entity.TreeEntity
-import org.olaven.enterprise.trees.repository.TreeRepository
+import org.olaven.enterprise.trees.dto.PlantDto
+import org.olaven.enterprise.trees.entity.PlantEntity
+import org.olaven.enterprise.trees.repository.PlantRepostory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -15,32 +15,32 @@ import java.net.URI
 import javax.validation.ConstraintViolationException
 
 @RestController
-class TreeController {
+class PlantController {
 
     @Autowired
-    private lateinit var treeRepository: TreeRepository;
+    private lateinit var plantRepostory: PlantRepostory;
 
-    @GetMapping("/trees")
-    @ApiOperation("Get all trees")
-    @ApiResponse(code = 200, message = "all trees")
-    fun getTrees() = //TODO: returns weird data at: http://localhost:8080/trees/
-            treeRepository.findAll()
+    @GetMapping("/plants")
+    @ApiOperation("Get all plants")
+    @ApiResponse(code = 200, message = "all plants")
+    fun getTrees() = //TODO: returns weird data at: http://localhost:8080/plants/
+            plantRepostory.findAll()
                     .map { toDTO(it) }
                     .let { ResponseEntity.status(HttpStatus.OK).body(this) }
 
-    @GetMapping("/trees/{id}")
+    @GetMapping("/plants/{id}")
     fun getTree(@PathVariable id: Long) =
-            treeRepository.findById(id).get().run {
+            plantRepostory.findById(id).get().run {
 
                 toDTO(this)
             }
 
-    @PostMapping("trees", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    @ApiOperation("Create a treeDto")
-    @ApiResponse(code = 201, message = "The id of newly created tree")
-    fun postTree(@RequestBody treeDto: TreeDto): ResponseEntity<Long> {
+    @PostMapping("plants", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @ApiOperation("Create a plant")
+    @ApiResponse(code = 201, message = "The id of newly created plant")
+    fun postTree(@RequestBody plantDto: PlantDto): ResponseEntity<Long> {
 
-        if (treeDto.id != null) {
+        if (plantDto.id != null) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .build()
@@ -48,10 +48,10 @@ class TreeController {
 
         try {
 
-            val entity = treeRepository.save(toEntity(treeDto))
+            val entity = plantRepostory.save(toEntity(plantDto))
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .location(URI.create("/tress/${entity.id}"))
+                    .location(URI.create("/plants/${entity.id}"))
                     .build()
 
         } catch (exception: Exception) {
@@ -64,22 +64,22 @@ class TreeController {
         }
     }
 
-    private fun toEntity(dto: TreeDto): TreeEntity {
+    private fun toEntity(dto: PlantDto): PlantEntity {
 
         class ConversionException: Exception();
         return if (dto.name == null  || dto.description == null ||
                 dto.age == null || dto.height == null) throw ConversionException()
-        else TreeEntity(dto.name, dto.description, dto.height, dto.age);
+        else PlantEntity(dto.name, dto.description, dto.height, dto.age);
     }
 
 
-    private fun toDTO(entity: TreeEntity) =
-            TreeDto(
+    private fun toDTO(entity: PlantEntity) =
+            PlantDto(
                     entity.name, entity.description,
                     entity.height, entity.age,
                     entity.id
             );
 
-    private fun toDTOs(entities: List<TreeEntity>) =
+    private fun toDTOs(entities: List<PlantEntity>) =
             entities.map { toDTO(it) }
 }

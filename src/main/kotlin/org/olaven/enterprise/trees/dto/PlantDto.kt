@@ -1,6 +1,6 @@
 package org.olaven.enterprise.trees.dto
 
-class TreeDto (
+class PlantDto (
     val name: String?,
     val description: String?,
     val height: Double?,

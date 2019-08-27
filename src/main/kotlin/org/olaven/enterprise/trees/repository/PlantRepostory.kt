@@ -1,11 +1,11 @@
 package org.olaven.enterprise.trees.repository
 
-import org.olaven.enterprise.trees.entity.TreeEntity
+import org.olaven.enterprise.trees.entity.PlantEntity
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface TreeRepository: CrudRepository<TreeEntity, Long> {
+interface PlantRepostory: CrudRepository<PlantEntity, Long> {
 
 
 }
