@@ -1,18 +1,18 @@
 package org.olaven.enterprise.trees.controller
 
-import org.olaven.enterprise.trees.TreeApplication
+import io.restassured.RestAssured.given
+import io.restassured.http.ContentType
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.olaven.enterprise.trees.TreeApplication
+import org.olaven.enterprise.trees.dto.TreeDto
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import io.restassured.RestAssured.*
-import io.restassured.http.ContentType
-import org.olaven.enterprise.trees.dto.TreeDto
 import kotlin.test.assertNotNull
 
 @ExtendWith(SpringExtension::class)
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
-internal class TreeControllerTest {
+@SpringBootTest(classes = [ TreeApplication::class ], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+internal class TreeControllerTest: ControllerTestBase() {
 
     @Test
     fun someTest() {

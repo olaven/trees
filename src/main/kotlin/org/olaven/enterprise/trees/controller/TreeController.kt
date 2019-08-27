@@ -30,12 +30,10 @@ class TreeController {
 
     @GetMapping("/trees/{id}")
     fun getTree(@PathVariable id: Long) =
-            treeRepository.findById(id)
-                .run {
-                    this.get()
-                }.run {
-                    toDTO(this)
-                }
+            treeRepository.findById(id).get().run {
+
+                toDTO(this)
+            }
 
     @PostMapping("trees", consumes = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Create a treeDto")

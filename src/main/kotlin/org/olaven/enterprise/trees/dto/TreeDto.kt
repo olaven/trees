@@ -5,5 +5,5 @@ class TreeDto (
     val description: String?,
     val height: Double?,
     val age: Int?,
-    val id: Long? = 0
+    val id: Long? = null
 )
