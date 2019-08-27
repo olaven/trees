@@ -1,9 +1,9 @@
 package org.olaven.enterprise.trees.dto
 
-class PlantDto (
-    val name: String?,
+data class PlantDto (
+    var name: String?,
     val description: String?,
     val height: Double?,
     val age: Int?,
-    val id: Long? = null
+    var id: Long? = null
 )

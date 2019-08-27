@@ -10,23 +10,23 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Size
 
 @Entity
-data class PlantEntity (
+class PlantEntity (
 
     @NotEmpty
     @Size(max = 100)
-    val name: String,
+    val name: String = "",
 
     @NotEmpty
     @Size(max = 500)
-    val description: String,
+    val description: String = "",
 
     @Min(0)
-    val height: Double,
+    val height: Double = -1.0,
 
     @NotNull
     @Min(0)
     @Max(15_000)
-    val age: Int,
+    val age: Int = -1,
 
     @Id
     @GeneratedValue

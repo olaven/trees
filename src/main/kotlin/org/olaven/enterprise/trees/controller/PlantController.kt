@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 import javax.validation.ConstraintViolationException
+import javax.xml.ws.Response
 
 @RestController
 class PlantController {
@@ -29,13 +30,15 @@ class PlantController {
                     .let { ResponseEntity.status(HttpStatus.OK).body(this) }
 
     @GetMapping("/plants/{id}")
-    fun getTree(@PathVariable id: Long) =
-            plantRepostory.findById(id).get().run {
+    fun getTree(@PathVariable id: Long): ResponseEntity<PlantDto> {
 
-                toDTO(this)
-            }
+        val result = plantRepostory.findById(id)
+        return if (!result.isPresent)
+            ResponseEntity.notFound().build()
+        else ResponseEntity.ok().body(toDTO(result.get()))
+    }
 
-    @PostMapping("plants", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("/plants", consumes = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Create a plant")
     @ApiResponse(code = 201, message = "The id of newly created plant")
     fun postTree(@RequestBody plantDto: PlantDto): ResponseEntity<Long> {
@@ -69,7 +72,7 @@ class PlantController {
         class ConversionException: Exception();
         return if (dto.name == null  || dto.description == null ||
                 dto.age == null || dto.height == null) throw ConversionException()
-        else PlantEntity(dto.name, dto.description, dto.height, dto.age);
+        else PlantEntity(dto.name!!, dto.description, dto.height, dto.age);
     }
 
 
