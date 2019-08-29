@@ -2,6 +2,7 @@ package org.olaven.enterprise.trees.controller
 
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import jdk.nashorn.internal.ir.annotations.Ignore
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -10,6 +11,7 @@ import org.olaven.enterprise.trees.dto.PlantDto
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
 @ExtendWith(SpringExtension::class)
@@ -77,9 +79,46 @@ internal class PlantControllerTest: ControllerTestBase() {
     fun `get 400 BAD REQUEST on breaking constraint`() {
 
         val dto = getDTO()
-        dto.name = "a" //NOTE: only one character //TODO: This fails, as constraintvioloation is not occurring, it seems like p '´
+        dto.name = "a"
         post(dto)
                 .statusCode(400)
+    }
+
+    @Test
+    fun `can update a plant`() {
+
+        val location = post(getDTO())
+                .statusCode(201)
+                .extract()
+                .header("Location")
+
+        val original = given()
+                .get(location)
+                .then()
+                .statusCode(200)
+                .extract()
+                .`as`(PlantDto::class.java)
+
+        val originalName = original.name
+        val newName = "Updated name"
+        original.name = newName
+
+        given()
+                .body(original)
+                .pathParam("id", original.id)
+                .put("/{id}")
+                .then()
+                .statusCode(204)
+
+        val retrieved = given()
+                .get(location)
+                .then()
+                .statusCode(200)
+                .extract()
+                .`as`(PlantDto::class.java)
+
+        assertNotEquals(retrieved.name, originalName)
+        assertEquals(retrieved.name, newName)
     }
 
 
