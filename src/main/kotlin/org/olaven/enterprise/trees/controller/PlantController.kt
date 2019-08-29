@@ -24,7 +24,7 @@ class PlantController {
     @Autowired
     private lateinit var plantRepostory: PlantRepostory;
 
-    @GetMapping("/plants")
+    @GetMapping()
     @ApiOperation("Get all plants")
     @ApiResponse(code = 200, message = "all plants")
     fun getTrees() = //TODO: returns weird data at: http://localhost:8080/plants/
@@ -32,7 +32,7 @@ class PlantController {
                     .map { toDTO(it) }
                     .let { ResponseEntity.status(HttpStatus.OK).body(this) }
 
-    @GetMapping("/plants/{id}")
+    @GetMapping("/{id}")
     @ApiResponse(code = 200, message = "the body of plant")
     fun getTree(@PathVariable id: Long): ResponseEntity<PlantDto> {
 
@@ -42,7 +42,7 @@ class PlantController {
         else ResponseEntity.ok().body(toDTO(result.get()))
     }
 
-    @PostMapping("/plants", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Create a plant")
     @ApiResponse(code = 201, message = "The id of newly created plant")
     fun postTree(@RequestBody plantDto: PlantDto): ResponseEntity<Long> {
