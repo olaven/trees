@@ -77,7 +77,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     fun `get 400 BAD REQUEST on breaking constraint`() {
 
         val dto = getDTO()
-        dto.name = "";
+        dto.name = "a" //NOTE: only one character //TODO: This fails, as constraintvioloation is not occurring, it seems like p '´
         post(dto)
                 .statusCode(400)
     }

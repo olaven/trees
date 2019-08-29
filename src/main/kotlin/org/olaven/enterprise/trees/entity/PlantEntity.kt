@@ -4,31 +4,33 @@ import org.jetbrains.annotations.NotNull
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.Size
+import javax.validation.constraints.*
 
 @Entity
 class PlantEntity (
 
-    @NotEmpty
-    @Size(max = 100)
+
+    /*
+    * NOTE: '@field' is specifying that the
+    * annotation should be applied to
+    * the class field, not the constructor
+    * (`val name: String`is part of a Kotlin constructor to begin with)
+    * */
+    @field:Size(min = 2, max = 100)
     val name: String = "",
 
-    @NotEmpty
-    @Size(max = 500)
+    @field:Size(min = 2, max = 500)
     val description: String = "",
 
-    @Min(0)
+    @field:Min(0)
     val height: Double = -1.0,
 
-    @NotNull
-    @Min(0)
-    @Max(15_000)
+    @field:NotNull
+    @field:Min(0)
+    @field:Max(15_000)
     val age: Int = -1,
 
-    @Id
-    @GeneratedValue
+    @field:Id
+    @field:GeneratedValue
     val id: Long = 0
 )
