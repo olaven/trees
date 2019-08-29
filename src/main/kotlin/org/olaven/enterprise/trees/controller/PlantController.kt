@@ -1,6 +1,7 @@
 package org.olaven.enterprise.trees.controller
 
 import com.google.common.base.Throwables
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import org.olaven.enterprise.trees.dto.PlantDto
@@ -16,6 +17,8 @@ import javax.validation.ConstraintViolationException
 import javax.xml.ws.Response
 
 @RestController
+@Api(value = "/plants", description = "doing operations on plants")
+@RequestMapping(value = ["/plants"])
 class PlantController {
 
     @Autowired
@@ -30,6 +33,7 @@ class PlantController {
                     .let { ResponseEntity.status(HttpStatus.OK).body(this) }
 
     @GetMapping("/plants/{id}")
+    @ApiResponse(code = 200, message = "the body of plant")
     fun getTree(@PathVariable id: Long): ResponseEntity<PlantDto> {
 
         val result = plantRepostory.findById(id)

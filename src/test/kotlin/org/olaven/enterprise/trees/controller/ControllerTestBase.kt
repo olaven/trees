@@ -16,6 +16,7 @@ open class ControllerTestBase {
     fun init() {
         // RestAssured configs shared by all the tests
         RestAssured.baseURI = "http://localhost"
+        RestAssured.basePath = "trees/api"
         RestAssured.port = port
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
     }
