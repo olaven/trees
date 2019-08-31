@@ -30,7 +30,7 @@ open class TreeApplication {
         return ApiInfoBuilder()
                 .title("API for Trees.")
                 .description("Description coming")
-                .version("1.0")
+                .version("0.0.1")
                 .build()
     }
 }
