@@ -4,6 +4,8 @@ import com.github.javafaker.Faker
 import io.restassured.RestAssured
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.boot.web.server.LocalServerPort
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 open class ControllerTestBase {
 
