@@ -2,6 +2,7 @@ package org.olaven.enterprise.trees.controller
 
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.olaven.enterprise.trees.TreeApplication
@@ -37,6 +38,15 @@ internal class PlantControllerTest: ControllerTestBase() {
     }
 
     @Test
+    fun `the database is clean before tests`() {
+
+        getAll()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("list.size()", CoreMatchers.`is`(0))
+    }
+
+    @Test
     fun `can create and retrieve a plant`() {
 
         val name = "My plant";
@@ -62,6 +72,20 @@ internal class PlantControllerTest: ControllerTestBase() {
         assertEquals(dto.name, retrieved.name);
         assertEquals(dto.description, retrieved.description);
         assertEquals(dto.age, retrieved.age);
+    }
+
+    @Test
+    fun `can retrieve all plants`() {
+
+        val n = 5;
+        (0 until n).forEach { _ ->
+            post(getDTO())
+        }
+
+        getAll()
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            .body("list.size()", CoreMatchers.`is`(n))
     }
 
     @Test
@@ -135,11 +159,17 @@ internal class PlantControllerTest: ControllerTestBase() {
                 .statusCode(404)
     }
 
+
+    private fun getAll() = given()
+        .contentType(ContentType.JSON)
+        .get("/plants")
+        .then()
+
     private fun put(updated: PlantDto) = given()
-                .contentType(ContentType.JSON)
-                .body(updated)
-                .pathParam("id", updated.id)
-                .put("plants/{id}")
+        .contentType(ContentType.JSON)
+        .body(updated)
+        .pathParam("id", updated.id)
+        .put("plants/{id}")
 
 
     private fun postAndGet(): PlantDto {

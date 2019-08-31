@@ -24,7 +24,7 @@ class PlantController {
 
     private val transformer = PlantTransformer()
 
-    @GetMapping("/", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Get all plants")
     @ApiResponse(code = 200, message = "all plants")
     fun getTrees() =
