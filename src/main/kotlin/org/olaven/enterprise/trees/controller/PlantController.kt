@@ -3,7 +3,6 @@ package org.olaven.enterprise.trees.controller
 import com.google.common.base.Throwables
 import io.swagger.annotations.*
 import org.olaven.enterprise.trees.dto.PlantDto
-import org.olaven.enterprise.trees.entity.PlantEntity
 import org.olaven.enterprise.trees.repository.PlantRepository
 import org.olaven.enterprise.trees.transformer.PlantTransformer
 import org.springframework.beans.factory.annotation.Autowired
