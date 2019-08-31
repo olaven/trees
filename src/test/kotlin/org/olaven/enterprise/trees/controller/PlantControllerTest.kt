@@ -104,9 +104,10 @@ internal class PlantControllerTest: ControllerTestBase() {
         original.name = newName
 
         given()
+                .contentType(ContentType.JSON)
                 .body(original)
                 .pathParam("id", original.id)
-                .put("/{id}")
+                .put("plants/{id}")
                 .then()
                 .statusCode(204)
 
