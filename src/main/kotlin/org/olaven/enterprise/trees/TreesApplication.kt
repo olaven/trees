@@ -10,6 +10,11 @@ import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spring.web.plugins.Docket
 import springfox.documentation.swagger2.annotations.EnableSwagger2
 
+
+fun main(args: Array<String>) {
+    SpringApplication.run(TreeApplication::class.java, *args)
+}
+
 @SpringBootApplication
 @EnableSwagger2
 open class TreeApplication {
@@ -33,7 +38,4 @@ open class TreeApplication {
                 .version("0.0.1")
                 .build()
     }
-}
-fun main(args: Array<String>) {
-    SpringApplication.run(TreeApplication::class.java, *args)
 }

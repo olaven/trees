@@ -1,12 +1,12 @@
 import * as React from "react";
 import { render } from "react-dom"
+import {MyMap} from "./map";
 
 
 const App = () => {
 
     return <div>
-
-        This is the Trees app fronted!
+        <MyMap/>
     </div>
 };
 
