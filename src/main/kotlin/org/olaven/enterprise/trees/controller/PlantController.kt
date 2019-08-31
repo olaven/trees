@@ -1,5 +1,6 @@
 package org.olaven.enterprise.trees.controller
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.google.common.base.Throwables
 import io.swagger.annotations.*
 import org.olaven.enterprise.trees.dto.PlantDto
@@ -23,13 +24,13 @@ class PlantController {
 
     private val transformer = PlantTransformer()
 
-    @GetMapping("/")
+    @GetMapping("/", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Get all plants")
     @ApiResponse(code = 200, message = "all plants")
-    fun getTrees() = //TODO: returns weird data at: http://localhost:8080/plants/
+    fun getTrees() =
             plantRepository.findAll()
                     .map { transformer.toDTO(it) }
-                    .let { ResponseEntity.status(HttpStatus.OK).body(this) }
+                    .let { ResponseEntity.status(HttpStatus.OK).body(it) }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get a specific plant")
