@@ -99,7 +99,7 @@ class PlantController {
                 ResponseEntity.noContent().build()
             } else {
 
-                ResponseEntity.badRequest().build()
+                ResponseEntity.notFound().build()
             }
         }
     }

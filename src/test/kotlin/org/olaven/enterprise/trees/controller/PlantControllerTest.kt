@@ -2,8 +2,6 @@ package org.olaven.enterprise.trees.controller
 
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
-import jdk.nashorn.internal.ir.annotations.Ignore
-import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.olaven.enterprise.trees.TreeApplication
@@ -87,32 +85,18 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `can update a plant`() {
 
-        val location = post(getDTO())
-                .statusCode(201)
-                .extract()
-                .header("Location")
+        val dto = postAndGet()
 
-        val original = given()
-                .get(location)
-                .then()
-                .statusCode(200)
-                .extract()
-                .`as`(PlantDto::class.java)
-
-        val originalName = original.name
+        val originalName = dto.name
         val newName = "Updated name"
-        original.name = newName
+        dto.name = newName
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(original)
-                .pathParam("id", original.id)
-                .put("plants/{id}")
+        put(dto)
                 .then()
                 .statusCode(204)
 
         val retrieved = given()
-                .get(location)
+                .get("plants/${dto.id}")
                 .then()
                 .statusCode(200)
                 .extract()
@@ -122,6 +106,56 @@ internal class PlantControllerTest: ControllerTestBase() {
         assertEquals(retrieved.name, newName)
     }
 
+    @Test
+    fun `returns bad request if any part of DTO is missing`() {
+
+        val dto = postAndGet()
+
+        dto.name = null;
+        put(dto)
+                .then()
+                .statusCode(400)
+    }
+
+    @Test
+    fun `PUT on non-existing resource retuns 404`() {
+
+        val dto = getDTO()
+        dto.id = 999
+
+        given()
+                .contentType(ContentType.JSON)
+                .pathParam("id", dto.id)
+                .get("plants/{id}")
+                .then()
+                .statusCode(404) //verifying that it actually does not exist
+
+        put(dto)
+                .then()
+                .statusCode(404)
+    }
+
+    private fun put(updated: PlantDto) = given()
+                .contentType(ContentType.JSON)
+                .body(updated)
+                .pathParam("id", updated.id)
+                .put("plants/{id}")
+
+
+    private fun postAndGet(): PlantDto {
+
+        val location = post(getDTO())
+                .statusCode(201)
+                .extract()
+                .header("Location")
+
+        return given()
+                .get(location)
+                .then()
+                .statusCode(200)
+                .extract()
+                .`as`(PlantDto::class.java)
+    }
 
     private fun post(dto: PlantDto) = given()
             .contentType(ContentType.JSON)
