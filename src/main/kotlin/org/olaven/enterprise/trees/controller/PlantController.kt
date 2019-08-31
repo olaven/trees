@@ -5,6 +5,7 @@ import io.swagger.annotations.*
 import org.olaven.enterprise.trees.dto.PlantDto
 import org.olaven.enterprise.trees.entity.PlantEntity
 import org.olaven.enterprise.trees.repository.PlantRepository
+import org.olaven.enterprise.trees.transformer.PlantTransformer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -19,14 +20,16 @@ import javax.validation.ConstraintViolationException
 class PlantController {
 
     @Autowired
-    private lateinit var plantRepository: PlantRepository;
+    private lateinit var plantRepository: PlantRepository
+
+    private val transformer = PlantTransformer()
 
     @GetMapping("/")
     @ApiOperation("Get all plants")
     @ApiResponse(code = 200, message = "all plants")
     fun getTrees() = //TODO: returns weird data at: http://localhost:8080/plants/
             plantRepository.findAll()
-                    .map { toDTO(it) }
+                    .map { transformer.toDTO(it) }
                     .let { ResponseEntity.status(HttpStatus.OK).body(this) }
 
     @GetMapping("/{id}")
@@ -37,7 +40,7 @@ class PlantController {
         val result = plantRepository.findById(id)
         return if (!result.isPresent)
             ResponseEntity.notFound().build()
-        else ResponseEntity.ok().body(toDTO(result.get()))
+        else ResponseEntity.ok().body(transformer.toDTO(result.get()))
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
@@ -53,7 +56,7 @@ class PlantController {
 
         try {
 
-            val entity = plantRepository.save(toEntity(plantDto))
+            val entity = plantRepository.save(transformer.toEntity(plantDto))
             val location = URI.create("plants/${entity.id}")
 
             return ResponseEntity
@@ -103,23 +106,4 @@ class PlantController {
             }
         }
     }
-
-    private fun toEntity(dto: PlantDto): PlantEntity {
-
-        class ConversionException: Exception();
-        return if (dto.name == null  || dto.description == null ||
-                dto.age == null || dto.height == null) throw ConversionException()
-        else PlantEntity(dto.name!!, dto.description, dto.height, dto.age);
-    }
-
-
-    private fun toDTO(entity: PlantEntity) =
-            PlantDto(
-                    entity.name, entity.description,
-                    entity.height, entity.age,
-                    entity.id
-            );
-
-    private fun toDTOs(entities: List<PlantEntity>) =
-            entities.map { toDTO(it) }
 }
