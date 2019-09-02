@@ -212,6 +212,7 @@
                         Make sure to call following:
                         yarn install
                         yarn build
+                        docker build
                     -->
                     <execution>
                         <id>yarn install</id>
@@ -236,6 +237,22 @@
                             <executable>yarn</executable>
                             <arguments>
                                 <argument>build</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>docker build</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <executable>docker</executable>
+                            <arguments>
+                                <argument>build</argument>
+                                <argument>.</argument>
+                                <argument>-t</argument>
+                                <argument>trees-image</argument>
                             </arguments>
                         </configuration>
                     </execution>
