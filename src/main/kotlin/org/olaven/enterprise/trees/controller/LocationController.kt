@@ -3,13 +3,13 @@ package org.olaven.enterprise.trees.controller
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
+import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.repository.LocationRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.net.URI
 
 @RestController
 @Api(value ="trees/api/locations", description = "doing operations on locations")
@@ -28,4 +28,13 @@ class LocationController {
             locationRepository.findAll()
                     .map { locationTransformer.toDTO(it) }
                     .let { ResponseEntity.ok(it) }
+
+    //TODO: remove this potability:
+    @PostMapping("")
+    fun createLocation(@RequestBody dto: LocationDTO): ResponseEntity<Long> {
+
+        val entity = locationRepository.save(locationTransformer.toEntity(dto));
+        val location = URI.create("locations/${entity.id}")
+        return ResponseEntity.created(location).build()
+    }
 }
