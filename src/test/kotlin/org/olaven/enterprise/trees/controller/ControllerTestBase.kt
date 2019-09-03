@@ -20,7 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [ TreeApplication::class ], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-open class ControllerTestBase {
+abstract class ControllerTestBase {
 
     @LocalServerPort
     protected var port = 0
@@ -29,6 +29,7 @@ open class ControllerTestBase {
     private lateinit var databaseReset: DatabaseReset
     @Autowired
     private lateinit var locationRepository: LocationRepository
+
     @Autowired
     private lateinit var plantRepository: PlantRepository
     @Autowired
@@ -47,6 +48,9 @@ open class ControllerTestBase {
         databaseReset.reset();
     }
 
+    @Test
+    abstract fun `database has none of this entity before tests run`()
+
     protected fun persistLocation(dto: LocationDTO): LocationEntity {
 
 
@@ -62,14 +66,15 @@ open class ControllerTestBase {
         return LocationDTO(x, y, null)
     }
 
-    protected fun getPlantDTO(): PlantDto {
+    protected fun getPlantDTO(location: LocationDTO? = null): PlantDto {
 
         val name = faker.funnyName().name()
         val description = faker.lorem().paragraph()
         val height = faker.number().randomDouble(2, 1, 100)
         val age = faker.number().numberBetween(4, 20)
 
-        val location = locationTransformer.toDTO(persistLocation(getLocationDTO()))
+        val actualLocation = location ?: getLocationDTO()
+        val location = locationTransformer.toDTO(persistLocation(actualLocation))
         return PlantDto(name, description, height, age, location)
     }
 }

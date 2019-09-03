@@ -4,16 +4,21 @@ import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.olaven.enterprise.trees.TreeApplication
 import org.olaven.enterprise.trees.dto.PlantDto
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
 internal class PlantControllerTest: ControllerTestBase() {
+
+    @Test 
+    override fun `database has none of this entity before tests run`() {
+
+        getAll()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("list.size()", CoreMatchers.`is`(0))
+    }
 
     @Test
     fun `can create a plant`() {
@@ -28,15 +33,6 @@ internal class PlantControllerTest: ControllerTestBase() {
                 .extract().asString();
 
         assertNotNull(id);
-    }
-
-    @Test
-    fun `the database is clean before tests`() {
-
-        getAll()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("list.size()", CoreMatchers.`is`(0))
     }
 
     @Test
@@ -65,7 +61,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     }
 
     @Test
-    fun `can retrieve all plants`() {
+    fun `can retrieve all locations`() {
 
         val n = 5;
         (0 until n).forEach { _ ->
@@ -149,6 +145,25 @@ internal class PlantControllerTest: ControllerTestBase() {
                 .statusCode(404)
     }
 
+    @Test
+    fun `a plant requires location`() {
+
+        // Kotlin typing prevents me from giving bad location
+        val dto = """
+            {
+                "name": "Darryl Likt",
+                "description": "Voluptates porro earum.",
+                "height": 28.17,
+                "age": 13,
+                "location": null,
+                "id": null
+            }
+        """.trimIndent()
+
+        postRaw(dto)
+                .statusCode(400)
+    }
+
 
     private fun getAll() = given()
         .contentType(ContentType.JSON)
@@ -180,6 +195,12 @@ internal class PlantControllerTest: ControllerTestBase() {
     private fun post(dto: PlantDto) = given()
             .contentType(ContentType.JSON)
             .body(dto)
+            .post("/plants")
+            .then()
+
+    private fun postRaw(body: String) = given()
+            .contentType(ContentType.JSON)
+            .body(body)
             .post("/plants")
             .then()
 }
