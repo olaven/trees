@@ -1,13 +1,16 @@
 import * as React from "react";
 import { render } from "react-dom"
-import {MyMap} from "./map";
+import {Map} from "./map";
 
 
 const App = () => {
 
+    const locations = [];
+
     return <div>
-        <MyMap/>
+        <Map/>
     </div>
 };
+
 
 render(<App/>, document.getElementById("root"));

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@Api(value ="trees/api/locations", description = "getting relevant locations")
+@Api(value ="trees/api/locations", description = "doing operations on locations")
 @RequestMapping(value = ["trees/api/locations"])
 class LocationController {
 

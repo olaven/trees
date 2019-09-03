@@ -1,8 +1,28 @@
 import * as React from "react";
 import * as Mapbox from "mapbox-gl";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 
-export const MyMap = () => {
+const useGetLocations = () => {
+
+    const [ locations, setLocations ] = useState([]);
+
+    useEffect(() => {
+
+        const loadLocations = async () => {
+
+            const response = await fetch("/trees/api/locations");
+            const locations = await response.json();
+            setLocations(locations);
+        };
+
+        loadLocations();
+    }, []);
+
+    return locations;
+};
+
+export const Map = () => {
+
 
     useEffect(() => {
 
@@ -16,5 +36,9 @@ export const MyMap = () => {
         });
     }, []);
 
+    const locations = useGetLocations();
+    console.log("locations from hook: ", locations);
+
     return <div id={"map"} style={{height: "100vh", width: "100vw"}}/>
 };
+
