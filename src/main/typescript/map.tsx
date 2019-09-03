@@ -6,6 +6,7 @@ export const MyMap = () => {
 
     useEffect(() => {
 
+        console.log(process.env.MAPBOX_KEY);
         (Mapbox.accessToken as any) = process.env.MAPBOX_KEY;
         new Mapbox.Map({
             container: 'map', // container id

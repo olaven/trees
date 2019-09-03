@@ -20,7 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [ TreeApplication::class ], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-open class ControllerTestBase {
+abstract class ControllerTestBase {
 
     @LocalServerPort
     protected var port = 0
@@ -47,6 +47,9 @@ open class ControllerTestBase {
 
         databaseReset.reset();
     }
+
+    @Test
+    abstract fun `database has none of this entity before tests run`()
 
     protected fun persistLocation(dto: LocationDTO): LocationEntity {
 

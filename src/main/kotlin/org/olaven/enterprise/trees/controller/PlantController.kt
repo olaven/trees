@@ -25,7 +25,7 @@ class PlantController {
 
     @GetMapping("", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Get all plants")
-    @ApiResponse(code = 200, message = "all plants")
+    @ApiResponse(code = 200, message = "All plants")
     fun getTrees() =
             plantRepository.findAll()
                     .map { transformer.toDTO(it) }

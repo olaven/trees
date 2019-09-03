@@ -4,16 +4,21 @@ import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.olaven.enterprise.trees.TreeApplication
 import org.olaven.enterprise.trees.dto.PlantDto
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
 internal class PlantControllerTest: ControllerTestBase() {
+
+    @Test 
+    override fun `database has none of this entity before tests run`() {
+
+        getAll()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("list.size()", CoreMatchers.`is`(0))
+    }
 
     @Test
     fun `can create a plant`() {
@@ -28,15 +33,6 @@ internal class PlantControllerTest: ControllerTestBase() {
                 .extract().asString();
 
         assertNotNull(id);
-    }
-
-    @Test
-    fun `the database is clean before tests`() {
-
-        getAll()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("list.size()", CoreMatchers.`is`(0))
     }
 
     @Test
