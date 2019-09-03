@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
+import javax.persistence.ManyToOne
 import javax.validation.constraints.*
 
 @Entity
@@ -29,6 +30,10 @@ class PlantEntity (
     @field:Min(0)
     @field:Max(15_000)
     var age: Int = -1,
+
+    @field:NotNull
+    @field:ManyToOne
+    val location: LocationEntity? = null,
 
     @field:Id
     @field:GeneratedValue

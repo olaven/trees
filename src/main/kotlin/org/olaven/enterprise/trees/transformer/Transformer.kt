@@ -1,6 +1,9 @@
 package org.olaven.enterprise.trees.transformer
 
-abstract class Transformer<DTO, Entity> {
+import org.springframework.stereotype.Service
+
+@Service
+internal abstract class Transformer<DTO, Entity> {
 
     abstract fun toDTO(entity: Entity): DTO
 

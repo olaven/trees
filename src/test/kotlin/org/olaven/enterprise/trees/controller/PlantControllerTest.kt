@@ -13,19 +13,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
-@ExtendWith(SpringExtension::class)
-@SpringBootTest(classes = [ TreeApplication::class ], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class PlantControllerTest: ControllerTestBase() {
 
     @Test
     fun `can create a plant`() {
 
-        val name = "My plant";
-        val description = "Green and refreshin";
-        val height = 20.0;
-        val age = 40;
-
-        val dto = PlantDto(name, description, height, age)
+        val dto = getPlantDTO()
         val id = given()
                 .contentType(ContentType.JSON)
                 .body(dto)
@@ -49,10 +42,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `can create and retrieve a plant`() {
 
-        val name = "My plant";
-        val description = "Green and refreshin";
-
-        val dto = PlantDto(name, description, 29.0, 2)
+        val dto = getPlantDTO()
         val location = given()
                 .contentType(ContentType.JSON)
                 .body(dto)
@@ -79,7 +69,7 @@ internal class PlantControllerTest: ControllerTestBase() {
 
         val n = 5;
         (0 until n).forEach { _ ->
-            post(getDTO())
+            post(getPlantDTO())
         }
 
         getAll()
@@ -91,7 +81,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `get 409 CONFLICT if client tries to decide ID`() {
 
-        val dto = getDTO()
+        val dto = getPlantDTO()
         dto.id = 42
         post(dto)
                 .statusCode(409)
@@ -100,7 +90,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `get 400 BAD REQUEST on breaking constraint`() {
 
-        val dto = getDTO()
+        val dto = getPlantDTO()
         dto.name = "a"
         post(dto)
                 .statusCode(400)
@@ -144,7 +134,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `PUT on non-existing resource retuns 404`() {
 
-        val dto = getDTO()
+        val dto = getPlantDTO()
         dto.id = 999
 
         given()
@@ -174,7 +164,7 @@ internal class PlantControllerTest: ControllerTestBase() {
 
     private fun postAndGet(): PlantDto {
 
-        val location = post(getDTO())
+        val location = post(getPlantDTO())
                 .statusCode(201)
                 .extract()
                 .header("Location")
@@ -192,14 +182,4 @@ internal class PlantControllerTest: ControllerTestBase() {
             .body(dto)
             .post("/plants")
             .then()
-
-    private fun getDTO(): PlantDto {
-
-        val name = faker.funnyName().name()
-        val description = faker.lorem().paragraph()
-        val height = faker.number().randomDouble(2, 1, 100)
-        val age = faker.number().numberBetween(4, 20)
-
-        return PlantDto(name, description, height, age)
-    }
 }

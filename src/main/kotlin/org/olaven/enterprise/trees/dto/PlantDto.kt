@@ -5,5 +5,6 @@ data class PlantDto (
     val description: String?,
     val height: Double?,
     val age: Int?,
+    val location: LocationDTO?,
     var id: Long? = null
 )

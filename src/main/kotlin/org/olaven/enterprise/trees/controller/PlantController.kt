@@ -21,7 +21,7 @@ class PlantController {
 
     @Autowired
     private lateinit var plantRepository: PlantRepository
-
+    @Autowired
     private val transformer = PlantTransformer()
 
     @GetMapping("", produces = [MediaType.APPLICATION_JSON_VALUE])
