@@ -1,5 +1,8 @@
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
+const webpack = require("webpack");
+
+const isProduction = process.env.npm_lifecycle_event === "build";
 
 module.exports = {
     entry: './src/main/typescript/index.tsx',
@@ -21,11 +24,12 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js', '.tsx', 'jsx']
     },
-    plugins: [
-        new Dotenv({
-            path: ".env",
-            safe: true
-        })
-    ]
+    plugins: isProduction? []:
+        [ // not applied in production, as it overrides Heroku
+            new Dotenv({
+                path: ".env",
+                safe: true
+            })
+        ]
 };
 
