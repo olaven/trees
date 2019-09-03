@@ -29,6 +29,7 @@ open class ControllerTestBase {
     private lateinit var databaseReset: DatabaseReset
     @Autowired
     private lateinit var locationRepository: LocationRepository
+
     @Autowired
     private lateinit var plantRepository: PlantRepository
     @Autowired
@@ -62,14 +63,15 @@ open class ControllerTestBase {
         return LocationDTO(x, y, null)
     }
 
-    protected fun getPlantDTO(): PlantDto {
+    protected fun getPlantDTO(location: LocationDTO? = null): PlantDto {
 
         val name = faker.funnyName().name()
         val description = faker.lorem().paragraph()
         val height = faker.number().randomDouble(2, 1, 100)
         val age = faker.number().numberBetween(4, 20)
 
-        val location = locationTransformer.toDTO(persistLocation(getLocationDTO()))
+        val actualLocation = location ?: getLocationDTO()
+        val location = locationTransformer.toDTO(persistLocation(actualLocation))
         return PlantDto(name, description, height, age, location)
     }
 }

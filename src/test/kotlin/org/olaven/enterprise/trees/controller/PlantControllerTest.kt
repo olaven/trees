@@ -65,7 +65,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     }
 
     @Test
-    fun `can retrieve all plants`() {
+    fun `can retrieve all locations`() {
 
         val n = 5;
         (0 until n).forEach { _ ->
@@ -149,6 +149,25 @@ internal class PlantControllerTest: ControllerTestBase() {
                 .statusCode(404)
     }
 
+    @Test
+    fun `a plant requires location`() {
+
+        // Kotlin typing prevents me from giving bad location
+        val dto = """
+            {
+                "name": "Darryl Likt",
+                "description": "Voluptates porro earum.",
+                "height": 28.17,
+                "age": 13,
+                "location": null,
+                "id": null
+            }
+        """.trimIndent()
+
+        postRaw(dto)
+                .statusCode(400)
+    }
+
 
     private fun getAll() = given()
         .contentType(ContentType.JSON)
@@ -180,6 +199,12 @@ internal class PlantControllerTest: ControllerTestBase() {
     private fun post(dto: PlantDto) = given()
             .contentType(ContentType.JSON)
             .body(dto)
+            .post("/plants")
+            .then()
+
+    private fun postRaw(body: String) = given()
+            .contentType(ContentType.JSON)
+            .body(body)
             .post("/plants")
             .then()
 }

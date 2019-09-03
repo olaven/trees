@@ -1,6 +1,5 @@
 package org.olaven.enterprise.trees.controller
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.google.common.base.Throwables
 import io.swagger.annotations.*
 import org.olaven.enterprise.trees.dto.PlantDto
@@ -46,7 +45,7 @@ class PlantController {
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Create a plant")
     @ApiResponse(code = 201, message = "The id of newly created plant")
-    fun postTree(@RequestBody plantDto: PlantDto): ResponseEntity<Long> {
+    fun postPlant(@RequestBody plantDto: PlantDto): ResponseEntity<Long> {
 
         if (plantDto.id != null) {
             return ResponseEntity
@@ -66,7 +65,7 @@ class PlantController {
 
         } catch (exception: Exception) {
 
-            if (Throwables.getRootCause(exception) is ConstraintViolationException)
+            if (Throwables.getRootCause(exception) is ConstraintViolationException || Throwables.getRootCause(exception) is IllegalArgumentException)
                 return ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
                         .build()
