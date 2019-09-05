@@ -12,7 +12,7 @@ import kotlin.test.assertNotNull
 internal class PlantControllerTest: ControllerTestBase() {
 
     @Test 
-    override fun `database has none of this entity before tests run`() {
+    fun `database has none of this entity before tests run`() {
 
         getAll()
                 .statusCode(200)
