@@ -165,10 +165,82 @@ internal class PlantControllerTest: ControllerTestBase() {
     }
 
 
+    @Test
+    private fun `can update plant`() {
+
+        val original = postAndGet()
+        val newName = "SOME UPDATED NAME"
+
+        val json = """
+            {
+                name: ${newName}, 
+                description: ${original.description},
+                height: ${original.description},  
+                age: ${original.age}, 
+                location: {
+                    x: ${original.location?.x},
+                    y: ${original.location?.y},
+                    id: ${original.location?.id}
+                }
+            }
+        """.trimIndent()
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(json)
+                .put("plants/${original.id}")
+                .then()
+                .statusCode(204)
+
+        val updated = get(original.id!!)
+                .extract()
+                .`as`(PlantDto::class.java)
+
+        assertNotEquals(original.name, newName)
+        assertEquals(newName, updated.name)
+    }
+
+
+
+    @Test
+    fun `return appropriate code on bad PATCH request`() {
+
+        val original = postAndGet()
+        val wrongValue = "NOT AN INTEGER"
+
+        val json = """
+            {
+                name: ${original.name}, 
+                description: ${original.description},
+                height: ${original.description},  
+                age: ${wrongValue}, 
+                location: {
+                    x: ${original.location?.x},
+                    y: ${original.location?.y},
+                    id: ${original.location?.id}
+                }
+            }
+        """.trimIndent()
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(json)
+                .put("plants/${original.id}")
+                .then()
+                .statusCode(400)
+    }
+
+
+
     private fun getAll() = given()
         .contentType(ContentType.JSON)
         .get("/plants")
         .then()
+
+    private fun get(id: Long) = given()
+            .contentType(ContentType.JSON)
+            .get("/plants/$id")
+            .then()
 
     private fun put(updated: PlantDto) = given()
         .contentType(ContentType.JSON)

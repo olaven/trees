@@ -17,18 +17,18 @@ internal class PlantTransformer: Transformer<PlantDto, PlantEntity>() {
         PlantDto(
             entity.name, entity.description,
             entity.height, entity.age,
-            LocationDTO(entity.location!!.x, entity.location.y, entity.location.id), entity.id
+            LocationDTO(entity.location!!.x, entity.location!!.y, entity.location!!.id), entity.id
         )
 
 
     override fun toEntity(dto: PlantDto): PlantEntity {
 
         require(dto.name != null && dto.description != null &&
-                dto.age != null && dto.height != null && dto.location != null && dto.location.id != null) {"Plant DTO was invalid"}
+                dto.age != null && dto.height != null && dto.location != null && dto.location!!.id != null) {"Plant DTO was invalid"}
 
-        val location = locationRepository.findById(dto.location.id)
-        require(location.isPresent) { "Could not find location with id ${dto.location.id}" }
+        val location = locationRepository.findById(dto.location!!.id)
+        require(location.isPresent) { "Could not find location with id ${dto.location!!.id}" }
 
-        return PlantEntity(dto.name!!, dto.description, dto.height, dto.age, location.get());
+        return PlantEntity(dto.name!!, dto.description!!, dto.height!!, dto.age!!, location.get());
     }
 }
