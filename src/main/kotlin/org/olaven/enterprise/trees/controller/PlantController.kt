@@ -148,10 +148,10 @@ class PlantController {
 
         try {
 
-            newName = getProperty(jsonNode, "name")?: dto.name
-            newDescription = getProperty(jsonNode, "description")?: dto.description
-            newHeight = getDoubleProperty(jsonNode, "height")?: dto.height
-            newAge = getIntProperty(jsonNode, "age")?: dto.age
+            newName = getProperty(jsonNode, "name", {it.isTextual}, {it.asText()})?: dto.name
+            newDescription = getProperty(jsonNode, "description", {it.isTextual}, {it.asText()})?: dto.description
+            newHeight = getProperty(jsonNode, "height", {it.isDouble}, {it.asDouble()})?: dto.height
+            newAge = getProperty(jsonNode, "age", {it.isInt}, {it.asInt()})?: dto.age
             newLocation = getLocationProperty(jsonNode)?: dto.location
 
         } catch (exception: InvalidArgumentException) {
@@ -170,51 +170,25 @@ class PlantController {
         val node = baseNode.get("location")
         if (node.isNull) return null
 
-        val x = getDoubleProperty(node, "x")
-        val y = getDoubleProperty(node ,"y")
-        val id = getLongProperty(node, "id")
+        val x = getProperty(node, "x", {it.isDouble}, {it.asDouble() })
+        val y = getProperty(node ,"y", {it.isDouble}, {it.asDouble()})
+        val id = getProperty(node, "id", {it.isLong}, {it.asLong()})
 
         return LocationDTO(x, y, id);
     }
 
-    //TODO: these functions are too similar. Refactor
-
-    private fun getLongProperty(baseNode: JsonNode, identifier: String): Long? {
+    private fun<T> getProperty(
+            baseNode: JsonNode,
+            identifier: String,
+            isValid: (node: JsonNode) -> Boolean,
+            convert: (node: JsonNode) -> T
+    ): T? {
 
         val node = baseNode.get(identifier)
         return when {
             node.isNull -> null
-            node.isLong -> node.asLong()
+            isValid(node) -> convert(node)
             else -> throw InvalidArgumentException(arrayOf("$identifier was invalid."))
-        }
-    }
-    private fun getIntProperty(baseNode: JsonNode, identifier: String): Int? {
-
-        val node = baseNode.get(identifier)
-        return when {
-            node.isNull -> null
-            node.isInt -> node.asInt()
-            else -> throw InvalidArgumentException(arrayOf("$identifier is invalid"))
-        }
-    }
-
-    private fun getDoubleProperty(baseNode: JsonNode, identifier: String): Double? {
-
-        val node = baseNode.get(identifier)
-        return when {
-            node.isNull -> null
-            node.isDouble -> node.asDouble()
-            else -> throw InvalidArgumentException(arrayOf("$identifier was invalid"))
-        }
-    }
-
-    private fun getProperty(baseNode: JsonNode, identifier: String): String? {
-
-        val node = baseNode.get(identifier)
-        return when {
-            node.isNull -> null
-            node.isTextual -> node.asText()
-            else -> throw InvalidArgumentException(arrayOf("$identifier was invalid"))
         }
     }
 }
