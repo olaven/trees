@@ -48,9 +48,6 @@ abstract class ControllerTestBase {
         databaseReset.reset();
     }
 
-    @Test
-    abstract fun `database has none of this entity before tests run`()
-
     protected fun persistLocation(dto: LocationDTO): LocationEntity {
 
 

@@ -16,7 +16,7 @@ class WelcomeController {
     @GetMapping(value = ["/"], produces = ["text/plain;charset=UTF-8", "text/plain;charset=ISO-8859-1"])
     @ApiOperation("Get the instructions")
     fun getWelcomeMessage(      //headers are _not_ case-sensitive
-            @RequestHeader(value = "Accept-Lanuage", required = false) language: String?
+            @RequestHeader(value = "Accept-Language", required = false) language: String?
     ): String {
 
         return if (language != null && language.trim() == "no") {
