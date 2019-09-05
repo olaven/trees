@@ -3,7 +3,6 @@ package org.olaven.enterprise.trees.controller
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.base.Throwables
-import com.sun.javaws.exceptions.InvalidArgumentException
 import io.swagger.annotations.*
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
@@ -154,7 +153,7 @@ class PlantController {
             newAge = getProperty(jsonNode, "age", {it.isInt}, {it.asInt()})?: dto.age
             newLocation = getLocationProperty(jsonNode)?: dto.location
 
-        } catch (exception: InvalidArgumentException) {
+        } catch (exception: IllegalArgumentException) {
 
             return ResponseEntity.badRequest().build()
         }
@@ -188,7 +187,7 @@ class PlantController {
         return when {
             node.isNull -> null
             isValid(node) -> convert(node)
-            else -> throw InvalidArgumentException(arrayOf("$identifier was invalid."))
+            else -> throw IllegalArgumentException("$identifier was invalid.")
         }
     }
 }
