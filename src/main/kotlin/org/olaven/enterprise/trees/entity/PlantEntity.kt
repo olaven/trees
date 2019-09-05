@@ -33,7 +33,7 @@ class PlantEntity (
 
     @field:NotNull
     @field:ManyToOne
-    val location: LocationEntity? = null,
+    var location: LocationEntity? = null,
 
     @field:Id
     @field:GeneratedValue

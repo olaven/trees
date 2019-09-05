@@ -1,9 +1,14 @@
 package org.olaven.enterprise.trees.controller
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.base.Throwables
+import com.sun.javaws.exceptions.InvalidArgumentException
 import io.swagger.annotations.*
+import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
 import org.olaven.enterprise.trees.repository.PlantRepository
+import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.olaven.enterprise.trees.transformer.PlantTransformer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -21,14 +26,16 @@ class PlantController {
     @Autowired
     private lateinit var plantRepository: PlantRepository
     @Autowired
-    private val transformer = PlantTransformer()
+    private val plantTransformer = PlantTransformer()
+    @Autowired
+    private val locationTransformer = LocationTransformer()
 
     @GetMapping("", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Get all plants")
     @ApiResponse(code = 200, message = "All plants")
     fun getTrees() =
             plantRepository.findAll()
-                    .map { transformer.toDTO(it) }
+                    .map { plantTransformer.toDTO(it) }
                     .let { ResponseEntity.status(HttpStatus.OK).body(it) }
 
     @GetMapping("/{id}")
@@ -39,7 +46,7 @@ class PlantController {
         val result = plantRepository.findById(id)
         return if (!result.isPresent)
             ResponseEntity.notFound().build()
-        else ResponseEntity.ok().body(transformer.toDTO(result.get()))
+        else ResponseEntity.ok().body(plantTransformer.toDTO(result.get()))
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
@@ -55,7 +62,7 @@ class PlantController {
 
         try {
 
-            val entity = plantRepository.save(transformer.toEntity(plantDto))
+            val entity = plantRepository.save(plantTransformer.toEntity(plantDto))
             val location = URI.create("plants/${entity.id}")
 
             return ResponseEntity
@@ -90,14 +97,16 @@ class PlantController {
             dto.name == null ||
             dto.description == null ||
             dto.age == null ||
-            dto.height == null
+            dto.height == null ||
+            dto.location == null
         ) ResponseEntity.badRequest().build()
 
         else {
 
             return if (plantRepository.existsById(id)) {
 
-                plantRepository.update(id, dto.name!!, dto.description, dto.age, dto.height)
+                val locationEntity = locationTransformer.toEntity(dto.location!!)
+                plantRepository.update(id, dto.name!!, dto.description!!, dto.age!!, dto.height!!, locationEntity)
                 ResponseEntity.noContent().build()
             } else {
 
@@ -105,4 +114,108 @@ class PlantController {
             }
         }
     }
+
+    @ApiOperation("Update the plant using JSON merge-patch")
+    @PatchMapping(path = ["/{id}"], consumes = ["application/merge-patch+json"])
+    fun updatePlant(
+            @ApiParam("The unique ID of the plant")
+            @PathVariable("id", required = true)
+            id: Long,
+            @ApiParam("The partial JSON patch")
+            @RequestBody(required = true)
+            jsonPatch: String
+    ): ResponseEntity<Void> {
+
+        val entity = plantRepository.findById(id).orElse(null) ?:
+            return ResponseEntity.notFound().build()
+        val dto = plantTransformer.toDTO(entity)
+        val jackson = ObjectMapper()
+        val jsonNode: JsonNode
+
+        try {
+            jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
+
+        } catch (exception: Exception) {
+
+            return ResponseEntity.badRequest().build()
+        }
+
+        val newName: String?
+        val newDescription: String?
+        val newHeight: Double?
+        val newAge: Int?
+        val newLocation: LocationDTO?
+
+        try {
+
+            newName = getProperty(jsonNode, "name")?: dto.name
+            newDescription = getProperty(jsonNode, "description")?: dto.description
+            newHeight = getDoubleProperty(jsonNode, "height")?: dto.height
+            newAge = getIntProperty(jsonNode, "age")?: dto.age
+            newLocation = getLocationProperty(jsonNode)?: dto.location
+
+        } catch (exception: InvalidArgumentException) {
+
+            return ResponseEntity.badRequest().build()
+        }
+
+        val locationEntity = locationTransformer.toEntity(newLocation!!)
+        plantRepository.update(entity.id!!, newName!!, newDescription!!, newAge!!, newHeight!!, locationEntity)
+
+        return ResponseEntity.noContent().build()
+    }
+
+    private fun getLocationProperty(baseNode: JsonNode): LocationDTO? {
+
+        val node = baseNode.get("location")
+        if (node.isNull) return null
+
+        val x = getDoubleProperty(node, "x")
+        val y = getDoubleProperty(node ,"y")
+        val id = getLongProperty(node, "id")
+
+        return LocationDTO(x, y, id);
+    }
+
+    //TODO: these functions are too similar. Refactor
+
+    private fun getLongProperty(baseNode: JsonNode, identifier: String): Long? {
+
+        val node = baseNode.get(identifier)
+        return when {
+            node.isNull -> null
+            node.isLong -> node.asLong()
+            else -> throw InvalidArgumentException(arrayOf("$identifier was invalid."))
+        }
+    }
+    private fun getIntProperty(baseNode: JsonNode, identifier: String): Int? {
+
+        val node = baseNode.get(identifier)
+        return when {
+            node.isNull -> null
+            node.isInt -> node.asInt()
+            else -> throw InvalidArgumentException(arrayOf("$identifier is invalid"))
+        }
+    }
+
+    private fun getDoubleProperty(baseNode: JsonNode, identifier: String): Double? {
+
+        val node = baseNode.get(identifier)
+        return when {
+            node.isNull -> null
+            node.isDouble -> node.asDouble()
+            else -> throw InvalidArgumentException(arrayOf("$identifier was invalid"))
+        }
+    }
+
+    private fun getProperty(baseNode: JsonNode, identifier: String): String? {
+
+        val node = baseNode.get(identifier)
+        return when {
+            node.isNull -> null
+            node.isTextual -> node.asText()
+            else -> throw InvalidArgumentException(arrayOf("$identifier was invalid"))
+        }
+    }
 }
+
