@@ -21,10 +21,10 @@ class WelcomeController {
 
         return if (language != null && language.trim() == "no") {
 
-            "Velkommen! Du finner dokumentasjon her: /api/swagger-ui.html"
+            "Velkommen! Du finner dokumentasjon her: /api/swagger-ui.html. Ha det gøy."
         } else {
 
-            "Welcome! You wil find documentation here: /api/swagger-ui.html"
+            "Welcome! You wil find documentation here: /api/swagger-ui.html. Have fun."
         }
     }
 }
