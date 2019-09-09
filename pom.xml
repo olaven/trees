@@ -17,6 +17,7 @@
         <version.restassured>4.0.0</version.restassured>
         <version.springfox>2.9.2</version.springfox>
         <version.faker>1.0.1</version.faker>
+        <version.togglz>2.6.1.Final</version.togglz>
     </properties>
 
     <parent>
@@ -102,6 +103,19 @@
             <version>${version.postgres}</version>
         </dependency>
 
+        <!-- Feature toggles -->
+        <dependency>
+            <groupId>org.togglz</groupId>
+            <artifactId>togglz-servlet</artifactId>
+            <version>${version.togglz}</version>
+        </dependency>
+
+        <!-- Spring integration (optional) -->
+        <dependency>
+            <groupId>org.togglz</groupId>
+            <artifactId>togglz-spring-web</artifactId>
+            <version>${version.togglz}</version>
+        </dependency>
 
         <!-- testing -->
         <dependency>
