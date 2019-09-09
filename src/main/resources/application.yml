@@ -1,2 +1,7 @@
 #server.servlet.context-path=/trees/api - removed as is only applicable to API, not entire application
-server.port=${PORT:5000}
+server:
+  port: ${PORT:8080}
+togglz:
+  features:
+    INFO_PAGE:
+      enabled: true
