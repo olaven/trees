@@ -1,7 +1,7 @@
 # Added by @olaven:
 .idea/jsLibraryMappings.xml
-
-
+.scaffolding_list.tmp
+.evosuite
 
 # Created by https://www.gitignore.io/api/node,maven,kotlin,intellij
 # Edit at https://www.gitignore.io/?templates=node,maven,kotlin,intellij

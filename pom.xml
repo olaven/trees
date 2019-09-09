@@ -17,6 +17,7 @@
         <version.restassured>4.0.0</version.restassured>
         <version.springfox>2.9.2</version.springfox>
         <version.faker>1.0.1</version.faker>
+        <version.evosuite>1.0.6</version.evosuite>
     </properties>
 
     <parent>
@@ -114,6 +115,12 @@
                     <artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.evosuite</groupId>
+            <artifactId>evosuite-standalone-runtime</artifactId>
+            <version>${version.evosuite}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -247,6 +254,30 @@
                         </configuration>
                     </execution>-->
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.evosuite.plugins</groupId>
+                <artifactId>evosuite-maven-plugin</artifactId>
+                <version>${version.evosuite}</version>
+                <executions><execution>
+                    <goals> <goal> prepare </goal> </goals>
+                    <phase> process-test-classes </phase>
+                </execution></executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
+                <configuration>
+                    <properties>
+                        <property>
+                            <name>listener</name>
+                            <value>org.evosuite.runtime.InitializingListener</value>
+                        </property>
+                    </properties>
+                </configuration>
             </plugin>
         </plugins>
     </build>
