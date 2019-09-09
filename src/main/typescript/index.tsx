@@ -1,15 +1,11 @@
 import * as React from "react";
 import { render } from "react-dom"
-import {Map} from "./map";
-import {TestModule} from "./testModule";
+import {Map} from "./map/component";
 
 
 const App = () => {
 
-    const locations = [];
-
     return <div>
-        <TestModule/>
         <Map/>
     </div>
 };
