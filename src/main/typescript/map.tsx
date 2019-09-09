@@ -10,7 +10,8 @@ const useGetLocations = () => {
 
         const loadLocations = async () => {
 
-            const response = await fetch("/trees/api/locations");
+            const response = await fetch("trees/api/locations");
+            console.log(response);
             const locations = await response.json();
             setLocations(locations);
         };
@@ -71,23 +72,28 @@ export const Map = () => {
 
     useEffect(() => {
 
+        console.log("map", map);
         const markers = toMarkers(locations);
         if (map) {
 
             console.log("added layer with markers: ", markers);
-            map.on('load', event => {
-                // Add the data to your map as a layer
-                map.addLayer({
-                    id: 'locations',
-                    type: 'symbol',
-                    // Add a GeoJSON source containing place coordinates and information.
-                    source: {
-                        type: 'geojson',
-                        data: markers
-                    }
-                });
+            map.on("load", () => {
 
-                console.log("added layer with markers: ", markers)
+                map.loadImage("https://i.imgur.com/MK4NUzI.png", (error, image) => {
+                    if (error) throw error;
+                    map.addImage("custom-marker", image);
+                    map.addLayer({
+                        id: "markers",
+                        type: "symbol",
+                        source: {
+                            type: "geojson",
+                            data: markers
+                        },
+                        layout: {
+                            "icon-image": "custom-marker",
+                        }
+                    });
+                });
             });
         }
     }, [locations]);
