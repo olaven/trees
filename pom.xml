@@ -106,14 +106,7 @@
         <!-- Feature toggles -->
         <dependency>
             <groupId>org.togglz</groupId>
-            <artifactId>togglz-servlet</artifactId>
-            <version>${version.togglz}</version>
-        </dependency>
-
-        <!-- Spring integration (optional) -->
-        <dependency>
-            <groupId>org.togglz</groupId>
-            <artifactId>togglz-spring-web</artifactId>
+            <artifactId>togglz-spring-boot-starter</artifactId>
             <version>${version.togglz}</version>
         </dependency>
 
