@@ -198,16 +198,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <finalName>trees</finalName>
-                </configuration>
-            </plugin>
-
-
             <!--
                Call Yarn from Maven to build the bundle.js
              -->

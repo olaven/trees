@@ -4,28 +4,26 @@ import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.olaven.enterprise.trees.TreeApplication
 import org.olaven.enterprise.trees.dto.PlantDto
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
-@ExtendWith(SpringExtension::class)
-@SpringBootTest(classes = [ TreeApplication::class ], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class PlantControllerTest: ControllerTestBase() {
+
+    @Test 
+    fun `database has none of this entity before tests run`() {
+
+        getAll()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("list.size()", CoreMatchers.`is`(0))
+    }
 
     @Test
     fun `can create a plant`() {
 
-        val name = "My plant";
-        val description = "Green and refreshin";
-        val height = 20.0;
-        val age = 40;
-
-        val dto = PlantDto(name, description, height, age)
+        val dto = getPlantDTO()
         val id = given()
                 .contentType(ContentType.JSON)
                 .body(dto)
@@ -38,21 +36,9 @@ internal class PlantControllerTest: ControllerTestBase() {
     }
 
     @Test
-    fun `the database is clean before tests`() {
-
-        getAll()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("list.size()", CoreMatchers.`is`(0))
-    }
-
-    @Test
     fun `can create and retrieve a plant`() {
 
-        val name = "My plant";
-        val description = "Green and refreshin";
-
-        val dto = PlantDto(name, description, 29.0, 2)
+        val dto = getPlantDTO()
         val location = given()
                 .contentType(ContentType.JSON)
                 .body(dto)
@@ -75,11 +61,11 @@ internal class PlantControllerTest: ControllerTestBase() {
     }
 
     @Test
-    fun `can retrieve all plants`() {
+    fun `can retrieve all locations`() {
 
         val n = 5;
         (0 until n).forEach { _ ->
-            post(getDTO())
+            post(getPlantDTO())
         }
 
         getAll()
@@ -91,7 +77,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `get 409 CONFLICT if client tries to decide ID`() {
 
-        val dto = getDTO()
+        val dto = getPlantDTO()
         dto.id = 42
         post(dto)
                 .statusCode(409)
@@ -100,7 +86,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `get 400 BAD REQUEST on breaking constraint`() {
 
-        val dto = getDTO()
+        val dto = getPlantDTO()
         dto.name = "a"
         post(dto)
                 .statusCode(400)
@@ -144,7 +130,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `PUT on non-existing resource retuns 404`() {
 
-        val dto = getDTO()
+        val dto = getPlantDTO()
         dto.id = 999
 
         given()
@@ -159,11 +145,102 @@ internal class PlantControllerTest: ControllerTestBase() {
                 .statusCode(404)
     }
 
+    @Test
+    fun `a plant requires location`() {
+
+        // Kotlin typing prevents me from giving bad location
+        val dto = """
+            {
+                "name": "Darryl Likt",
+                "description": "Voluptates porro earum.",
+                "height": 28.17,
+                "age": 13,
+                "location": null,
+                "id": null
+            }
+        """.trimIndent()
+
+        postRaw(dto)
+                .statusCode(400)
+    }
+
+
+    @Test
+    private fun `can update plant`() {
+
+        val original = postAndGet()
+        val newName = "SOME UPDATED NAME"
+
+        val json = """
+            {
+                name: ${newName}, 
+                description: ${original.description},
+                height: ${original.description},  
+                age: ${original.age}, 
+                location: {
+                    x: ${original.location?.x},
+                    y: ${original.location?.y},
+                    id: ${original.location?.id}
+                }
+            }
+        """.trimIndent()
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(json)
+                .put("plants/${original.id}")
+                .then()
+                .statusCode(204)
+
+        val updated = get(original.id!!)
+                .extract()
+                .`as`(PlantDto::class.java)
+
+        assertNotEquals(original.name, newName)
+        assertEquals(newName, updated.name)
+    }
+
+
+
+    @Test
+    fun `return appropriate code on bad PATCH request`() {
+
+        val original = postAndGet()
+        val wrongValue = "NOT AN INTEGER"
+
+        val json = """
+            {
+                name: ${original.name}, 
+                description: ${original.description},
+                height: ${original.description},  
+                age: ${wrongValue}, 
+                location: {
+                    x: ${original.location?.x},
+                    y: ${original.location?.y},
+                    id: ${original.location?.id}
+                }
+            }
+        """.trimIndent()
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(json)
+                .put("plants/${original.id}")
+                .then()
+                .statusCode(400)
+    }
+
+
 
     private fun getAll() = given()
         .contentType(ContentType.JSON)
         .get("/plants")
         .then()
+
+    private fun get(id: Long) = given()
+            .contentType(ContentType.JSON)
+            .get("/plants/$id")
+            .then()
 
     private fun put(updated: PlantDto) = given()
         .contentType(ContentType.JSON)
@@ -174,7 +251,7 @@ internal class PlantControllerTest: ControllerTestBase() {
 
     private fun postAndGet(): PlantDto {
 
-        val location = post(getDTO())
+        val location = post(getPlantDTO())
                 .statusCode(201)
                 .extract()
                 .header("Location")
@@ -193,13 +270,9 @@ internal class PlantControllerTest: ControllerTestBase() {
             .post("/plants")
             .then()
 
-    private fun getDTO(): PlantDto {
-
-        val name = faker.funnyName().name()
-        val description = faker.lorem().paragraph()
-        val height = faker.number().randomDouble(2, 1, 100)
-        val age = faker.number().numberBetween(4, 20)
-
-        return PlantDto(name, description, height, age)
-    }
+    private fun postRaw(body: String) = given()
+            .contentType(ContentType.JSON)
+            .body(body)
+            .post("/plants")
+            .then()
 }
