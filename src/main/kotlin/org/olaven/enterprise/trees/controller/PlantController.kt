@@ -1,10 +1,13 @@
 package org.olaven.enterprise.trees.controller
 
-import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.base.Throwables
 import io.swagger.annotations.*
+import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
 import org.olaven.enterprise.trees.repository.PlantRepository
+import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.olaven.enterprise.trees.transformer.PlantTransformer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -21,15 +24,17 @@ class PlantController {
 
     @Autowired
     private lateinit var plantRepository: PlantRepository
-
-    private val transformer = PlantTransformer()
+    @Autowired
+    private val plantTransformer = PlantTransformer()
+    @Autowired
+    private val locationTransformer = LocationTransformer()
 
     @GetMapping("", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Get all plants")
-    @ApiResponse(code = 200, message = "all plants")
+    @ApiResponse(code = 200, message = "All plants")
     fun getTrees() =
             plantRepository.findAll()
-                    .map { transformer.toDTO(it) }
+                    .map { plantTransformer.toDTO(it) }
                     .let { ResponseEntity.status(HttpStatus.OK).body(it) }
 
     @GetMapping("/{id}")
@@ -40,13 +45,13 @@ class PlantController {
         val result = plantRepository.findById(id)
         return if (!result.isPresent)
             ResponseEntity.notFound().build()
-        else ResponseEntity.ok().body(transformer.toDTO(result.get()))
+        else ResponseEntity.ok().body(plantTransformer.toDTO(result.get()))
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Create a plant")
     @ApiResponse(code = 201, message = "The id of newly created plant")
-    fun postTree(@RequestBody plantDto: PlantDto): ResponseEntity<Long> {
+    fun postPlant(@RequestBody plantDto: PlantDto): ResponseEntity<Long> {
 
         if (plantDto.id != null) {
             return ResponseEntity
@@ -56,7 +61,7 @@ class PlantController {
 
         try {
 
-            val entity = plantRepository.save(transformer.toEntity(plantDto))
+            val entity = plantRepository.save(plantTransformer.toEntity(plantDto))
             val location = URI.create("plants/${entity.id}")
 
             return ResponseEntity
@@ -66,7 +71,7 @@ class PlantController {
 
         } catch (exception: Exception) {
 
-            if (Throwables.getRootCause(exception) is ConstraintViolationException)
+            if (Throwables.getRootCause(exception) is ConstraintViolationException || Throwables.getRootCause(exception) is IllegalArgumentException)
                 return ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
                         .build()
@@ -91,14 +96,16 @@ class PlantController {
             dto.name == null ||
             dto.description == null ||
             dto.age == null ||
-            dto.height == null
+            dto.height == null ||
+            dto.location == null
         ) ResponseEntity.badRequest().build()
 
         else {
 
             return if (plantRepository.existsById(id)) {
 
-                plantRepository.update(id, dto.name!!, dto.description, dto.age, dto.height)
+                val locationEntity = locationTransformer.toEntity(dto.location!!)
+                plantRepository.update(id, dto.name!!, dto.description!!, dto.age!!, dto.height!!, locationEntity)
                 ResponseEntity.noContent().build()
             } else {
 
@@ -106,4 +113,82 @@ class PlantController {
             }
         }
     }
+
+    @ApiOperation("Update the plant using JSON merge-patch")
+    @PatchMapping(path = ["/{id}"], consumes = ["application/merge-patch+json"])
+    fun updatePlant(
+            @ApiParam("The unique ID of the plant")
+            @PathVariable("id", required = true)
+            id: Long,
+            @ApiParam("The partial JSON patch")
+            @RequestBody(required = true)
+            jsonPatch: String
+    ): ResponseEntity<Void> {
+
+        val entity = plantRepository.findById(id).orElse(null) ?:
+            return ResponseEntity.notFound().build()
+        val dto = plantTransformer.toDTO(entity)
+        val jackson = ObjectMapper()
+        val jsonNode: JsonNode
+
+        try {
+            jsonNode = jackson.readValue(jsonPatch, JsonNode::class.java)
+
+        } catch (exception: Exception) {
+
+            return ResponseEntity.badRequest().build()
+        }
+
+        val newName: String?
+        val newDescription: String?
+        val newHeight: Double?
+        val newAge: Int?
+        val newLocation: LocationDTO?
+
+        try {
+
+            newName = getProperty(jsonNode, "name", {it.isTextual}, {it.asText()})?: dto.name
+            newDescription = getProperty(jsonNode, "description", {it.isTextual}, {it.asText()})?: dto.description
+            newHeight = getProperty(jsonNode, "height", {it.isDouble}, {it.asDouble()})?: dto.height
+            newAge = getProperty(jsonNode, "age", {it.isInt}, {it.asInt()})?: dto.age
+            newLocation = getLocationProperty(jsonNode)?: dto.location
+
+        } catch (exception: IllegalArgumentException) {
+
+            return ResponseEntity.badRequest().build()
+        }
+
+        val locationEntity = locationTransformer.toEntity(newLocation!!)
+        plantRepository.update(entity.id!!, newName!!, newDescription!!, newAge!!, newHeight!!, locationEntity)
+
+        return ResponseEntity.noContent().build()
+    }
+
+    private fun getLocationProperty(baseNode: JsonNode): LocationDTO? {
+
+        val node = baseNode.get("location")
+        if (node.isNull) return null
+
+        val x = getProperty(node, "x", {it.isDouble}, {it.asDouble() })
+        val y = getProperty(node ,"y", {it.isDouble}, {it.asDouble()})
+        val id = getProperty(node, "id", {it.isLong}, {it.asLong()})
+
+        return LocationDTO(x, y, id);
+    }
+
+    private fun<T> getProperty(
+            baseNode: JsonNode,
+            identifier: String,
+            isValid: (node: JsonNode) -> Boolean,
+            convert: (node: JsonNode) -> T
+    ): T? {
+
+        val node = baseNode.get(identifier)
+        return when {
+            node.isNull -> null
+            isValid(node) -> convert(node)
+            else -> throw IllegalArgumentException("$identifier was invalid.")
+        }
+    }
 }
+

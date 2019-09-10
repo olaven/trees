@@ -1,5 +1,6 @@
 package org.olaven.enterprise.trees.repository
 
+import org.olaven.enterprise.trees.entity.LocationEntity
 import org.olaven.enterprise.trees.entity.PlantEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.CrudRepository
@@ -15,7 +16,7 @@ interface PlantRepository: CrudRepository<PlantEntity, Long>, CustomPlantReposit
 
 interface CustomPlantRepository {
 
-    fun update(id: Long, name: String, description: String, age: Int, height: Double): Boolean
+    fun update(id: Long, name: String, description: String, age: Int, height: Double, location: LocationEntity): Boolean
 }
 
 @Transactional
@@ -25,7 +26,7 @@ open class PlantRepositoryImpl: CustomPlantRepository {
     @Autowired
     private lateinit var entityManager: EntityManager
 
-    override fun update(id: Long, name: String, description: String, age: Int, height: Double): Boolean {
+    override fun update(id: Long, name: String, description: String, age: Int, height: Double, location: LocationEntity): Boolean {
 
         val entity = entityManager.find(PlantEntity::class.java, id) ?: return false
 
@@ -33,6 +34,7 @@ open class PlantRepositoryImpl: CustomPlantRepository {
         entity.description = description
         entity.age = age
         entity.height = height
+        entity.location = location
 
         entityManager.persist(entity)
         return true
