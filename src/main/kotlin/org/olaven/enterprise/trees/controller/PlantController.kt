@@ -6,6 +6,7 @@ import com.google.common.base.Throwables
 import io.swagger.annotations.*
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
+import org.olaven.enterprise.trees.dto.WrappedResponse
 import org.olaven.enterprise.trees.repository.PlantRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.olaven.enterprise.trees.transformer.PlantTransformer
@@ -29,12 +30,14 @@ class PlantController {
     @Autowired
     private val locationTransformer = LocationTransformer()
 
+    //TODO: use pagination
     @GetMapping("", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Get all plants")
     @ApiResponse(code = 200, message = "All plants")
-    fun getTrees() =
+    fun getTrees(): ResponseEntity<List<WrappedResponse<PlantDto>>> =
             plantRepository.findAll()
                     .map { plantTransformer.toDTO(it) }
+                    .map { WrappedResponse(200, it) }
                     .let { ResponseEntity.status(HttpStatus.OK).body(it) }
 
     @GetMapping("/{id}")

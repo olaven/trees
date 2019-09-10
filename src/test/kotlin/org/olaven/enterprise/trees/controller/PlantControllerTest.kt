@@ -3,8 +3,10 @@ package org.olaven.enterprise.trees.controller
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.hamcrest.CoreMatchers
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.olaven.enterprise.trees.dto.PlantDto
+import org.olaven.enterprise.trees.dto.Status
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
@@ -58,6 +60,36 @@ internal class PlantControllerTest: ControllerTestBase() {
         assertEquals(dto.name, retrieved.name);
         assertEquals(dto.description, retrieved.description);
         assertEquals(dto.age, retrieved.age);
+    }
+
+
+    @Test
+    fun `can retrieve all plants`() {
+
+        val n = 5;
+        repeat((0 until n).count()) {
+            post(getPlantDTO())
+        }
+
+        given()
+                .contentType(ContentType.JSON)
+                .get("/plants")
+                .then()
+                .body("list.size()", CoreMatchers.`is`(n))
+    }
+
+    @Test
+    fun `getting all returns wrapped responses`() {
+
+        val posted = postAndGet()
+        given()
+                .contentType(ContentType.JSON)
+                .get("/plants")
+                .then()
+                .statusCode(200)
+                .body("code", Matchers.hasItem(200))
+                .body("data.name", Matchers.hasItem(posted.name))
+                .body("status", Matchers.hasItem(Status.SUCCESS.toString()))
     }
 
     @Test
