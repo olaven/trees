@@ -4,12 +4,13 @@ import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
+import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
 import org.olaven.enterprise.trees.dto.Status
-import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
 
 internal class PlantControllerTest: ControllerTestBase() {
 
@@ -50,16 +51,13 @@ internal class PlantControllerTest: ControllerTestBase() {
                 .extract().header("Location")
 
 
-        val retrieved = given()
+        given()
                 .get(location)
                 .then()
                 .statusCode(200)
-                .extract()
-                .`as`(PlantDto::class.java)
-
-        assertEquals(dto.name, retrieved.name);
-        assertEquals(dto.description, retrieved.description);
-        assertEquals(dto.age, retrieved.age);
+                .body("data.name", Matchers.equalTo(dto.name))
+                .body("data.age", Matchers.equalTo(dto.age))
+                .body("data.description", Matchers.equalTo(dto.description))
     }
 
 
@@ -88,7 +86,7 @@ internal class PlantControllerTest: ControllerTestBase() {
                 .then()
                 .statusCode(200)
                 .body("code", Matchers.hasItem(200))
-                .body("data.name", Matchers.hasItem(posted.name))
+                .body("data.name", Matchers.hasItem(posted?.name))
                 .body("status", Matchers.hasItem(Status.SUCCESS.toString()))
     }
 
@@ -129,31 +127,28 @@ internal class PlantControllerTest: ControllerTestBase() {
 
         val dto = postAndGet()
 
-        val originalName = dto.name
+        val originalName = dto?.name
         val newName = "Updated name"
-        dto.name = newName
+        dto?.name = newName
 
-        put(dto)
+        put(dto!!)
                 .then()
                 .statusCode(204)
 
-        val retrieved = given()
+        given()
                 .get("plants/${dto.id}")
                 .then()
                 .statusCode(200)
-                .extract()
-                .`as`(PlantDto::class.java)
-
-        assertNotEquals(retrieved.name, originalName)
-        assertEquals(retrieved.name, newName)
+                .body("data.name", Matchers.not(Matchers.equalTo(originalName)))
+                .body("data.name", Matchers.equalTo(newName))
     }
 
     @Test
     fun `returns bad request if any part of DTO is missing`() {
 
-        val dto = postAndGet()
+        val dto = postAndGet()!!
 
-        dto.name = null;
+        dto.name = null
         put(dto)
                 .then()
                 .statusCode(400)
@@ -200,7 +195,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     private fun `can update plant`() {
 
-        val original = postAndGet()
+        val original = postAndGet()!!
         val newName = "SOME UPDATED NAME"
 
         val json = """
@@ -237,7 +232,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `return appropriate code on bad PATCH request`() {
 
-        val original = postAndGet()
+        val original = postAndGet()!!
         val wrongValue = "NOT AN INTEGER"
 
         val json = """
@@ -281,19 +276,40 @@ internal class PlantControllerTest: ControllerTestBase() {
         .put("plants/{id}")
 
 
-    private fun postAndGet(): PlantDto {
+    private fun postAndGet(): PlantDto? {
 
         val location = post(getPlantDTO())
                 .statusCode(201)
                 .extract()
                 .header("Location")
 
-        return given()
+        println(location)
+        val json = given()
                 .get(location)
                 .then()
                 .statusCode(200)
                 .extract()
-                .`as`(PlantDto::class.java)
+                .body()
+                .jsonPath()
+
+        return if (json.get<PlantDto?>("data") != null) {
+
+            PlantDto(
+                    name = json.get("data.name"),
+                    description = json.get("data.description"),
+                    height = (json.get("data.height") as Float).toDouble(),
+                    age = json.get("data.age"),
+                    location = LocationDTO(
+                            (json.get("data.location.x") as Float).toDouble(),
+                            (json.get("data.location.y") as Float).toDouble(),
+                            json.get<Int>("data.location.id").toString().toLong()
+                    ),
+                    id = json.get<Int>("data.id").toString().toLong()
+            )
+        } else {
+
+            null;
+        }
     }
 
     private fun post(dto: PlantDto) = given()

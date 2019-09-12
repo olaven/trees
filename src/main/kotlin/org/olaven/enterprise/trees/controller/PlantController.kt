@@ -43,23 +43,34 @@ class PlantController {
     @GetMapping("/{id}")
     @ApiOperation(value = "Get a specific plant")
     @ApiResponse(code = 200, message = "the body of plant")
-    fun getTree(@PathVariable id: Long): ResponseEntity<PlantDto> {
+    fun getTree(@PathVariable id: Long): ResponseEntity<WrappedResponse<PlantDto?>> {
 
         val result = plantRepository.findById(id)
         return if (!result.isPresent)
-            ResponseEntity.notFound().build()
-        else ResponseEntity.ok().body(plantTransformer.toDTO(result.get()))
+            ResponseEntity.status(404).body(WrappedResponse<PlantDto?>(
+                    404, null
+            ))
+        else {
+
+            val dto = plantTransformer.toDTO(result.get())
+            ResponseEntity.status(200).body(WrappedResponse<PlantDto?>(
+                    200, dto
+            ))
+        }
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Create a plant")
     @ApiResponse(code = 201, message = "The id of newly created plant")
-    fun postPlant(@RequestBody plantDto: PlantDto): ResponseEntity<Long> {
+    fun postPlant(@RequestBody plantDto: PlantDto): ResponseEntity<WrappedResponse<PlantDto?>> {
 
         if (plantDto.id != null) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .build()
+                    .body(WrappedResponse<PlantDto?>(
+                            409, null
+                    ))
+
         }
 
         try {
@@ -70,14 +81,18 @@ class PlantController {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .location(location)
-                    .build()
+                    .body(WrappedResponse<PlantDto?>(
+                            201, plantTransformer.toDTO(entity)
+                    ))
 
         } catch (exception: Exception) {
 
             if (Throwables.getRootCause(exception) is ConstraintViolationException || Throwables.getRootCause(exception) is IllegalArgumentException)
                 return ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
-                        .build()
+                        .body(WrappedResponse<PlantDto?>(
+                                400, null, "plant was invalid"
+                        ))
             else throw exception;
         }
     }
@@ -91,7 +106,7 @@ class PlantController {
     fun updatePlant(
             @ApiParam(value = "plants's id") @PathVariable id: Long,
             @ApiParam(value = "the new plant") @RequestBody dto: PlantDto
-    ): ResponseEntity<PlantDto> {
+    ): ResponseEntity<WrappedResponse<Nothing>> {
 
         if (id != dto.id) return ResponseEntity.status(HttpStatus.CONFLICT).build()
 
@@ -101,7 +116,9 @@ class PlantController {
             dto.age == null ||
             dto.height == null ||
             dto.location == null
-        ) ResponseEntity.badRequest().build()
+        ) ResponseEntity.status(400).body(WrappedResponse(
+                404, null, "The plant has null values." //TODO: more detailed
+        ))
 
         else {
 
@@ -109,10 +126,14 @@ class PlantController {
 
                 val locationEntity = locationTransformer.toEntity(dto.location!!)
                 plantRepository.update(id, dto.name!!, dto.description!!, dto.age!!, dto.height!!, locationEntity)
-                ResponseEntity.noContent().build()
+                ResponseEntity.status(204).body(WrappedResponse(
+                        204, null
+                ))
             } else {
 
-                ResponseEntity.notFound().build()
+                ResponseEntity.status(404).body(WrappedResponse(
+                        404, null, "The plant is not found"
+                ))
             }
         }
     }
@@ -126,7 +147,7 @@ class PlantController {
             @ApiParam("The partial JSON patch")
             @RequestBody(required = true)
             jsonPatch: String
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<WrappedResponse<Nothing>> {
 
         val entity = plantRepository.findById(id).orElse(null) ?:
             return ResponseEntity.notFound().build()
@@ -139,7 +160,9 @@ class PlantController {
 
         } catch (exception: Exception) {
 
-            return ResponseEntity.badRequest().build()
+            return ResponseEntity.status(400).body(WrappedResponse(
+                    400, null
+            ))
         }
 
         val newName: String?
@@ -158,13 +181,17 @@ class PlantController {
 
         } catch (exception: IllegalArgumentException) {
 
-            return ResponseEntity.badRequest().build()
+            return ResponseEntity.status(400).body(WrappedResponse(
+                    400, null
+            ))
         }
 
         val locationEntity = locationTransformer.toEntity(newLocation!!)
         plantRepository.update(entity.id!!, newName!!, newDescription!!, newAge!!, newHeight!!, locationEntity)
 
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.status(201).body(WrappedResponse(
+                201, null
+        ))
     }
 
     private fun getLocationProperty(baseNode: JsonNode): LocationDTO? {

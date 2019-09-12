@@ -13,7 +13,7 @@ internal class PlantTransformer: Transformer<PlantDto, PlantEntity>() {
     @Autowired
     private lateinit var locationRepository: LocationRepository
 
-    override fun toDTO(entity: PlantEntity) =
+    override fun toDTO(entity: PlantEntity): PlantDto =
         PlantDto(
             entity.name, entity.description,
             entity.height, entity.age,
