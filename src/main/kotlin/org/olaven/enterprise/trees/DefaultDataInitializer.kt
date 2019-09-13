@@ -22,7 +22,7 @@ class DefaultDataInitializer {
         locationRepository.saveAll(locations)
     }
 
-    //TOOD: add plants on locations (passed in constructor, but empty by defualt)
+    //TOOD: add plants on locations (passed in constructor, but empty by default)
     private fun getLocations(): List<LocationEntity> = listOf(
             LocationEntity(59.9838, 10.7256),
             LocationEntity(61.1488, 10.3743),

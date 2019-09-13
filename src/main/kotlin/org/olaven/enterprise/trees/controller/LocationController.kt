@@ -4,6 +4,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import org.olaven.enterprise.trees.dto.LocationDTO
+import org.olaven.enterprise.trees.dto.WrappedResponse
 import org.olaven.enterprise.trees.repository.LocationRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,14 +28,17 @@ class LocationController {
     fun getLocations() =
             locationRepository.findAll()
                     .map { locationTransformer.toDTO(it) }
-                    .let { ResponseEntity.ok(it) }
+                    .map { WrappedResponse(200, it) }
 
-    //TODO: remove this potability:
+    //TODO: remove this possibility:
     @PostMapping("")
-    fun createLocation(@RequestBody dto: LocationDTO): ResponseEntity<Long> {
+    fun createLocation(@RequestBody dto: LocationDTO): ResponseEntity<WrappedResponse<Nothing>> {
 
         val entity = locationRepository.save(locationTransformer.toEntity(dto));
         val location = URI.create("locations/${entity.id}")
-        return ResponseEntity.created(location).build()
+
+        return ResponseEntity.created(location).body(WrappedResponse(
+                code = 201, data = null
+        ))
     }
 }
