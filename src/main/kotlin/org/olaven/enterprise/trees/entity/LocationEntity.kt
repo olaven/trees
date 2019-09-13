@@ -9,11 +9,11 @@ class LocationEntity (
 
         @field:NotNull
         @field:Min(0)
-        val x: Double? = -1.0,
+        val x: Double?,
 
         @field:NotNull
         @field:Min(0)
-        val y: Double? = -1.0,
+        val y: Double?,
 
         @field:NotNull
         @field:OneToMany(

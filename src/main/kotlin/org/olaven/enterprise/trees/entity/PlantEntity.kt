@@ -5,7 +5,9 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.ManyToOne
-import javax.validation.constraints.*
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
+import javax.validation.constraints.Size
 
 @Entity
 class PlantEntity (
@@ -18,24 +20,24 @@ class PlantEntity (
     * (`val name: String`is part of a Kotlin constructor to begin with)
     * */
     @field:Size(min = 2, max = 100)
-    var name: String = "",
+    var name: String,
 
     @field:Size(min = 2, max = 500)
-    var description: String = "",
+    var description: String,
 
     @field:Min(0)
-    var height: Double = -1.0,
+    var height: Double,
 
     @field:NotNull
     @field:Min(0)
     @field:Max(15_000)
-    var age: Int = -1,
+    var age: Int,
 
     @field:NotNull
     @field:ManyToOne
-    var location: LocationEntity? = null,
+    var location: LocationEntity,
 
     @field:Id
     @field:GeneratedValue
-    var id: Long? = null
+    var id: Long = -1
 )
