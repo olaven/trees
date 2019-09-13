@@ -12,7 +12,7 @@ interface LocationRepository: CrudRepository<LocationEntity, Long>, CustomLocati
 
 interface CustomLocationRepository {
 
-    fun getNextPage(n: Int, keysetId: String?): List<LocationEntity>
+    fun getNextPage(n: Int, keysetId: Long?): List<LocationEntity>
 }
 
 
@@ -22,17 +22,18 @@ open class LocationRepositoryImpl(
         private val entityManager: EntityManager
 ): CustomLocationRepository {
 
-    override fun getNextPage(size: Int, keysetId: String?): List<LocationEntity> {
+    override fun getNextPage(size: Int, keysetId: Long?): List<LocationEntity> {
 
         require(!(size < 0 || size > 1000)) { "Invalid size: $size" }
 
         val query: TypedQuery<LocationEntity> = if (keysetId == null)
             entityManager
-                    .createQuery("select location from LocationEntity location", LocationEntity::class.java)
+                    .createQuery("select location from LocationEntity location order by location.id desc", LocationEntity::class.java)
         else
             entityManager
                     .createQuery("select location from LocationEntity location where location.id < :keysetId order by location.id desc", LocationEntity::class.java)
                     .setParameter("keysetId", keysetId)
+
 
 
         query.maxResults = size

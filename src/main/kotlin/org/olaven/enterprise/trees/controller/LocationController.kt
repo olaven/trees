@@ -23,13 +23,16 @@ class LocationController {
     @Autowired
     private lateinit var locationTransformer: LocationTransformer
 
-    @GetMapping("") //TODO: should use pagination
+    @GetMapping("")
     @ApiResponse(code = 200, message = "All locations")
     @ApiOperation(value = "Get all locations")
     fun getLocations(
-            @RequestParam(value = "keysetID", required = false)
-            keysetId: String?
+            @RequestParam("keysetId", required = false)
+            keysetId: Long?
     ): ResponseEntity<WrappedResponse<Page<LocationDTO>>> {
+
+
+        val all = locationRepository.findAll();
 
         val size = 5
         val locations = locationTransformer.toDTOs(
@@ -37,7 +40,7 @@ class LocationController {
         )
         val next =
             if (locations.count() == size)
-                "/locations/${locations.last().id}"
+                "/locations?keysetId=${locations.last().id}"
             else null
 
         val page = Page(locations, next)
@@ -47,7 +50,7 @@ class LocationController {
         ))
     }
 
-    //TODO: remove this possibility:
+    //TODO: remove this possibility?
     @PostMapping("")
     fun createLocation(@RequestBody dto: LocationDTO): ResponseEntity<WrappedResponse<Nothing>> {
 

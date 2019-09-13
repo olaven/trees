@@ -27,7 +27,7 @@ abstract class ControllerTestBase {
     @Autowired
     private lateinit var databaseReset: DatabaseReset
     @Autowired
-    private lateinit var locationRepository: LocationRepository
+    protected lateinit var locationRepository: LocationRepository
 
     @Autowired
     private lateinit var plantRepository: PlantRepository
