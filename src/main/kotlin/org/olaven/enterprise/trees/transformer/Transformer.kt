@@ -1,7 +1,14 @@
 package org.olaven.enterprise.trees.transformer
 
-internal abstract class Transformer<DTO, Entity> {
+import org.olaven.enterprise.trees.dto.DTO
 
-    abstract fun toDTO(entity: Entity): DTO
-    abstract fun toEntity(dto: DTO): Entity
+internal abstract class Transformer<D: DTO, E> {
+
+    abstract fun toDTO(entity: E): D
+    fun toDTOs(entities: List<E>) =
+            entities.map { toDTO(it) }
+
+    abstract fun toEntity(dto: D): E
+    fun toEntities(dtos: List<D>) =
+            dtos.map { toEntity(it) }
 }

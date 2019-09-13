@@ -7,4 +7,4 @@ data class PlantDto (
         var age: Int?,
         var location: LocationDTO?,
         var id: Long? = null
-)
+): DTO()

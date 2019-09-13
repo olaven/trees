@@ -4,6 +4,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import org.olaven.enterprise.trees.dto.LocationDTO
+import org.olaven.enterprise.trees.dto.Page
 import org.olaven.enterprise.trees.dto.WrappedResponse
 import org.olaven.enterprise.trees.repository.LocationRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
@@ -25,10 +26,26 @@ class LocationController {
     @GetMapping("") //TODO: should use pagination
     @ApiResponse(code = 200, message = "All locations")
     @ApiOperation(value = "Get all locations")
-    fun getLocations() =
-            locationRepository.findAll()
-                    .map { locationTransformer.toDTO(it) }
-                    .map { WrappedResponse(200, it) }
+    fun getLocations(
+            @RequestParam(value = "keysetID", required = false)
+            keysetId: String?
+    ): ResponseEntity<WrappedResponse<Page<LocationDTO>>> {
+
+        val size = 5
+        val locations = locationTransformer.toDTOs(
+                locationRepository.getNextPage(size, keysetId)
+        )
+        val next =
+            if (locations.count() == size)
+                "/locations/${locations.last().id}"
+            else null
+
+        val page = Page(locations, next)
+        return ResponseEntity.status(200).body(WrappedResponse(
+                200,
+                page
+        ))
+    }
 
     //TODO: remove this possibility:
     @PostMapping("")
