@@ -3,7 +3,6 @@ package org.olaven.enterprise.trees.controller
 import com.github.javafaker.Faker
 import io.restassured.RestAssured
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.olaven.enterprise.trees.DatabaseReset
 import org.olaven.enterprise.trees.TreeApplication

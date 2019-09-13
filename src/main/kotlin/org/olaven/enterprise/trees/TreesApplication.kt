@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 
 fun main(args: Array<String>) {
-    SpringApplication.run(TreeApplication::class.java, *args)
+    SpringApplication.run(TreeApplication::class.java, "--spring.profiles.active=local")
 }
 
 @SpringBootApplication

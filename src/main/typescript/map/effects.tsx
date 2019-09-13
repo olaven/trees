@@ -9,7 +9,13 @@ export const useGetLocations = () => {
         const loadLocations = async () => {
 
             const response = await fetch("trees/api/locations");
-            const locations = await response.json();
+            if (response.status !== 200) {
+
+                throw "failed to fetch from server";
+            }
+
+            const wrappers = await response.json();
+            const locations = wrappers.map(wrapper => wrapper.data);
             setLocations(locations);
         };
 
