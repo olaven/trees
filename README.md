@@ -7,7 +7,7 @@
 TODO: 
 - [X] Finish wrapped responses on _all endpoints_ 
 - [X] noarg heller enn default-verdier paa entities 
-- [ ] Implement keyset pagination 
+- [X] Implement keyset pagination 
 - [ ] Some expand filtering 
 - [ ] Override spring sin haandtering av exceptions 
 - [ ] Legge inn en validation-annotation
