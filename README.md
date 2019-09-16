@@ -12,3 +12,4 @@ TODO:
 - [ ] Override spring sin haandtering av exceptions 
 - [ ] Legge inn en validation-annotation
 - [ ] Ikke sende stacktrace  
+- [ ] Cut "/trees/" from path

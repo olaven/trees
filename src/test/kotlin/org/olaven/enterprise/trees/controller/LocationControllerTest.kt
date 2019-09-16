@@ -2,11 +2,11 @@ package org.olaven.enterprise.trees.controller
 
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import io.restassured.response.ValidatableResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
-import java.util.*
-import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 internal class LocationControllerTest: ControllerTestBase() {
 
@@ -17,7 +17,7 @@ internal class LocationControllerTest: ControllerTestBase() {
         getAll()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("list.size()", CoreMatchers.`is`(0))
+                .body("data.list.size()", CoreMatchers.`is`(0))
     }
 
     @Test
@@ -36,7 +36,7 @@ internal class LocationControllerTest: ControllerTestBase() {
     }
 
     @Test
-    fun `can get a locations`() {
+    fun `can get locations`() {
 
         val n = 5;
         persistLocations(n)
@@ -44,7 +44,7 @@ internal class LocationControllerTest: ControllerTestBase() {
         getAll()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("list.size()", CoreMatchers.`is`(n))
+                .body("data.list.size()", CoreMatchers.`is`(n))
     }
 
 
@@ -54,14 +54,65 @@ internal class LocationControllerTest: ControllerTestBase() {
         val location = getLocationDTO()
         persistLocation(location)
 
-        val retrieved = getAll() //NOTE: object is in ".data"
+        getAll()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .extract().jsonPath().getList<HashMap<String, Any>>("").first()
-
-        assertEquals(200, retrieved["code"])
+                .body("code", equalTo(200))
+                .body("data.list.size()", equalTo(1))
     }
 
+    @Test
+    fun `a page only contains 5 items`() {
+
+        val total = 6
+        val expected = 5
+
+        persistLocations(total)
+        getAll()
+                .contentType(ContentType.JSON)
+                .body("data.list.size()", equalTo(expected))
+    }
+
+    @Test
+    fun `can navigate using "next" on page`() {
+
+        val all = 15
+        persistLocations(all)
+
+        /*
+        * There's a lot of repetition here.
+        * However, the repetition proves the point
+        * of the test
+        * */
+
+        val allLocations = locationRepository.findAll()
+        println(allLocations)
+        val secondPage = getAll()
+                .body("data.list.size()", equalTo(5))
+                .extract()
+                .jsonPath()
+                .get<String>("data.next")
+
+        val thirdPage = getAll(secondPage)
+                .body("data.list.size()", equalTo(5))
+                .extract()
+                .jsonPath()
+                .get<String>("data.next")
+
+        val fourthPage = getAll(thirdPage)
+                .body("data.list.size()", equalTo(5))
+                .extract()
+                .jsonPath()
+                .get<String>("data.next")
+
+        val fifthPage = getAll(fourthPage)
+                .body("data.list.size()", equalTo(0))
+                .extract()
+                .jsonPath()
+                .get<String>("data.next")
+
+        assertNull(fifthPage)
+    }
 
     private fun persistLocations(n: Int) {
 
@@ -72,8 +123,14 @@ internal class LocationControllerTest: ControllerTestBase() {
         }
     }
 
-    private fun getAll() = given()
-            .contentType(ContentType.JSON)
-            .get("/locations")
-            .then()
+    private fun getAll(location: String? = null): ValidatableResponse {
+
+        val path =
+                location ?: "/locations"
+
+        return given()
+                .contentType(ContentType.JSON)
+                .get(path)
+                .then()
+    }
 }
