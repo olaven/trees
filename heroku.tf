@@ -6,16 +6,28 @@ provider "heroku" {}
 resource "heroku_app" "test" {
   name = "trees-ci"
   region = "eu"
+  buildpacks = [
+    "heroku/node",
+    "heroku/java"
+  ]
 }
 
 resource "heroku_app" "staging" {
   name = "trees-staging"
   region = "eu"
+  buildpacks = [
+    "heroku/node",
+    "heroku/java"
+  ]
 }
 
 resource "heroku_app" "production" {
   name = "trees-production"
   region = "eu"
+  buildpacks = [
+    "heroku/node",
+    "heroku/java"
+  ]
 }
 
 
