@@ -105,8 +105,13 @@ internal class LocationControllerTest: ControllerTestBase() {
                 .jsonPath()
                 .get<String>("data.next")
 
-        // as we have 15 elements in db and 5 per page
-        assertNull(fourthPage)
+        val fifthPage = getAll(fourthPage)
+                .body("data.list.size()", equalTo(0))
+                .extract()
+                .jsonPath()
+                .get<String>("data.next")
+
+        assertNull(fifthPage)
     }
 
     private fun persistLocations(n: Int) {

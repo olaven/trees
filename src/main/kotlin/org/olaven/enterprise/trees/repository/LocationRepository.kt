@@ -31,13 +31,11 @@ open class LocationRepositoryImpl(
                     .createQuery("select location from LocationEntity location order by location.id desc", LocationEntity::class.java)
         else
             entityManager
-                    .createQuery("select location from LocationEntity location where location.id < :keysetId order by location.id desc", LocationEntity::class.java)
-                    .setParameter("keysetId", keysetId)
-
-
+                    .createQuery("select location from LocationEntity location where location.id < ?1 order by location.id desc", LocationEntity::class.java)
+                    .setParameter(1, keysetId)
 
         query.maxResults = size
-
-        return query.resultList
+        val results = query.resultList
+        return results
     }
 }
