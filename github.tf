@@ -12,9 +12,12 @@ resource "github_branch_protection" "travis" {
   repository = github_repository.trees.name
   branch = "master"
   enforce_admins = true
-  
+
   required_status_checks {
     strict = true
-    contexts = ["ci/travis"]
+    contexts = [
+      "Travis CI - Branch",
+      "Travis CI - Pull Request"
+    ]
   }
 }
