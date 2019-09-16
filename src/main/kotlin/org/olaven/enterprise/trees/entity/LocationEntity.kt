@@ -5,7 +5,7 @@ import javax.persistence.*
 import javax.validation.constraints.Min
 
 @Entity
-class LocationEntity (
+open class LocationEntity (
 
         @field:NotNull
         @field:Min(0)

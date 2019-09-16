@@ -9,9 +9,11 @@ import org.olaven.enterprise.trees.TreeApplication
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
 import org.olaven.enterprise.trees.entity.LocationEntity
+import org.olaven.enterprise.trees.entity.PlantEntity
 import org.olaven.enterprise.trees.repository.LocationRepository
 import org.olaven.enterprise.trees.repository.PlantRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
+import org.olaven.enterprise.trees.transformer.PlantTransformer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
@@ -28,11 +30,13 @@ abstract class ControllerTestBase {
     private lateinit var databaseReset: DatabaseReset
     @Autowired
     protected lateinit var locationRepository: LocationRepository
-
     @Autowired
     private lateinit var plantRepository: PlantRepository
+
     @Autowired
     private lateinit var locationTransformer: LocationTransformer
+    @Autowired
+    private lateinit var plantTransformer: PlantTransformer
 
     protected val faker = Faker()
 
@@ -49,9 +53,14 @@ abstract class ControllerTestBase {
 
     protected fun persistLocation(dto: LocationDTO): LocationEntity {
 
-
         val entity = locationTransformer.toEntity(dto)
         return locationRepository.save(entity)
+    }
+
+    protected fun persistPlant(dto: PlantDto): PlantEntity {
+
+        val entity = plantTransformer.toEntity(dto)
+        return plantRepository.save(entity)
     }
 
     protected fun getLocationDTO(): LocationDTO {

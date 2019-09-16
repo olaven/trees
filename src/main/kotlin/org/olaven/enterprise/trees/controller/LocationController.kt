@@ -13,6 +13,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
+enum class Expand {
+    NONE, PLANTS
+}
+
 @RestController
 @Api(value ="trees/api/locations", description = "doing operations on locations")
 @RequestMapping(value = ["trees/api/locations"])
@@ -28,15 +32,14 @@ class LocationController {
     @ApiOperation(value = "Get all locations")
     fun getLocations(
             @RequestParam("keysetId", required = false)
-            keysetId: Long?
+            keysetId: Long?,
+            @RequestParam("expand", required = false, defaultValue = "NONE")
+            expand: Expand
     ): ResponseEntity<WrappedResponse<Page<LocationDTO>>> {
-
-
-        val all = locationRepository.findAll();
 
         val size = 5
         val locations = locationTransformer.toDTOs(
-                locationRepository.getNextPage(size, keysetId)
+                locationRepository.getNextPage(size, keysetId, expand == Expand.PLANTS)
         )
         val next =
             if (locations.count() == size)

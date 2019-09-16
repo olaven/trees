@@ -17,7 +17,7 @@ internal class PlantTransformer: Transformer<PlantDto, PlantEntity>() {
         PlantDto(
             entity.name, entity.description,
             entity.height, entity.age,
-            LocationDTO(entity.location!!.x, entity.location!!.y, entity.location!!.id), entity.id
+            LocationDTO(entity.location.x, entity.location.y, entity.location.id), entity.id
         )
 
 

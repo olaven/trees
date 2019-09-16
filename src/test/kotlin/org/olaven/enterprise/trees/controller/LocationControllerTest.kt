@@ -1,11 +1,13 @@
 package org.olaven.enterprise.trees.controller
 
+import com.fasterxml.jackson.databind.JsonNode
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import io.restassured.response.ValidatableResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 internal class LocationControllerTest: ControllerTestBase() {
@@ -114,12 +116,56 @@ internal class LocationControllerTest: ControllerTestBase() {
         assertNull(fifthPage)
     }
 
-    private fun persistLocations(n: Int) {
 
-        (0 until n).forEach { _ ->
+    @Test
+    fun `locations does not include plants by default`() {
 
-            val dto = getLocationDTO()
-            persistLocation(dto)
+        persistLocations(1, 1)
+        given()
+                .contentType(ContentType.JSON)
+                .get("/locations")
+                .then()
+                .extract()
+                .jsonPath()
+                .getList<HashMap<String, JsonNode>>("data.list")
+                .forEach {
+
+                    val size = it["plants"]!!.asIterable().count()
+                    assertEquals(0, size)
+                }
+    }
+
+    @Test
+    fun `locations includes plants with correct expand parameter`() {
+
+        persistLocations(1, 1)
+        given()
+                .contentType(ContentType.JSON)
+                .get("/locations?expand=PLANTS")
+                .then()
+                .extract()
+                .jsonPath()
+                .getList<HashMap<String, JsonNode>>("data.list")
+                .forEach {
+
+                    val size = it["plants"]!!.asIterable().count()
+                    assertEquals(1, size)
+                }
+
+    }
+
+    private fun persistLocations(count: Int, plantsPerLocation: Int = 0) {
+
+        (0 until count).forEach { _ ->
+
+            val location = getLocationDTO()
+            persistLocation(location)
+
+            (0 until plantsPerLocation).forEach { _ ->
+
+                val plant = getPlantDTO(location)
+                persistPlant(plant)
+            }
         }
     }
 

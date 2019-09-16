@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service
 @Service
 internal class LocationTransformer: Transformer<LocationDTO, LocationEntity>() {
 
+    val plantTransformer = PlantTransformer()
+
     override fun toDTO(entity: LocationEntity) =
-            LocationDTO(entity.x, entity.y, entity.id)
+            LocationDTO(entity.x, entity.y, entity.id, entity.plants.map { plantTransformer.toDTO(it) })
 
     override fun toEntity(dto: LocationDTO) =
         LocationEntity(
