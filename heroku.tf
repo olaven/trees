@@ -16,7 +16,7 @@ resource "heroku_app" "staging" {
   name = "trees-staging"
   region = "eu"
   buildpacks = [
-    "heroku/node",
+    "heroku/nodejs",
     "heroku/java"
   ]
 }
