@@ -10,6 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Running all tests
-      run: |
+    - run: |
         mvn clean
         mvn verify
