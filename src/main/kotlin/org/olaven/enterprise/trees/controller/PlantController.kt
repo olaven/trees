@@ -19,8 +19,8 @@ import java.net.URI
 import javax.validation.ConstraintViolationException
 
 @RestController
-@Api(value ="trees/api/plants", description = "doing operations on plants")
-@RequestMapping(value = ["trees/api/plants"])
+@Api(value ="api/plants", description = "doing operations on plants")
+@RequestMapping(value = ["api/plants"])
 class PlantController {
 
     @Autowired

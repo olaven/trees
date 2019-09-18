@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@Api(value ="trees/api/", description = "Welcome-message and instructions for the API.")
-@RequestMapping(value = ["trees/api/"])
+@Api(value ="api/", description = "Welcome-message and instructions for the API.")
+@RequestMapping(value = ["api/"])
 class WelcomeController {
 
                                         //is default because first
