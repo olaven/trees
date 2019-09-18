@@ -130,15 +130,22 @@ internal class LocationControllerTest: ControllerTestBase() {
                 .getList<HashMap<String, JsonNode>>("data.list")
                 .forEach {
 
-                    val size = it["plants"]!!.asIterable().count()
-                    assertEquals(0, size)
+                    val plants = it["plants"]!!.asIterable()
+                    print(plants);
+                    assertEquals(0, plants.count())
                 }
+
     }
 
     @Test
     fun `locations includes plants with correct expand parameter`() {
 
+        assertEquals(0, locationRepository.findAll().count())
+        assertEquals(0, plantRepository.findAll().count())
+
         persistLocations(1, 1)
+        assertEquals(1, locationRepository.findAll().count())
+        assertEquals(1, plantRepository.findAll().count())
         given()
                 .contentType(ContentType.JSON)
                 .get("/locations?expand=PLANTS")
@@ -148,8 +155,9 @@ internal class LocationControllerTest: ControllerTestBase() {
                 .getList<HashMap<String, JsonNode>>("data.list")
                 .forEach {
 
-                    val size = it["plants"]!!.asIterable().count()
-                    assertEquals(1, size)
+                    val plants = it["plants"]!!.asIterable()
+                    print(plants);
+                    assertEquals(1, plants.count())
                 }
 
     }
@@ -159,11 +167,11 @@ internal class LocationControllerTest: ControllerTestBase() {
         (0 until count).forEach { _ ->
 
             val location = getLocationDTO()
-            persistLocation(location)
+            val locationEntity = persistLocation(location)
 
-            (0 until plantsPerLocation).forEach { _ ->
+            (0 until  plantsPerLocation).forEach { _ ->
 
-                val plant = getPlantDTO(location)
+                val plant = getPlantDTO(locationEntity)
                 persistPlant(plant)
             }
         }

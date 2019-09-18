@@ -24,6 +24,7 @@ open class LocationRepositoryImpl(
 
     override fun getNextPage(size: Int, keysetId: Long?, fetchPlants: Boolean): List<LocationEntity> {
 
+
         require(!(size < 0 || size > 1000)) { "Invalid size: $size" }
 
         val query: TypedQuery<LocationEntity> = if (keysetId == null)
@@ -35,6 +36,10 @@ open class LocationRepositoryImpl(
                     .setParameter(1, keysetId)
         query.maxResults = size
 
+        if (fetchPlants) {
+
+            print("hello")
+        }
         val locations =  query.resultList
         if (fetchPlants) locations.forEach { it.plants.isEmpty() }
         return locations
