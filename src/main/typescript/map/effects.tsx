@@ -8,7 +8,7 @@ export const useGetLocations = () => {
 
         const loadLocations = async () => {
 
-            const response = await fetch("trees/api/locations");
+            const response = await fetch("api/locations");
             if (response.status !== 200) {
 
                 throw "failed to fetch from server";
