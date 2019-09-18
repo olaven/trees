@@ -13,14 +13,14 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
-enum class Expand {
-    NONE, PLANTS
-}
-
 @RestController
 @Api(value ="trees/api/locations", description = "doing operations on locations")
 @RequestMapping(value = ["trees/api/locations"])
 class LocationController {
+
+    enum class Expand {
+        NONE, PLANTS
+    }
 
     @Autowired
     private lateinit var locationRepository: LocationRepository
@@ -38,9 +38,9 @@ class LocationController {
     ): ResponseEntity<WrappedResponse<Page<LocationDTO>>> {
 
         val size = 5
-        val locations = locationTransformer.toDTOs(
-                locationRepository.getNextPage(size, keysetId, expand == Expand.PLANTS)
-        )
+        val entities = locationRepository.getNextPage(size, keysetId, expand == Expand.PLANTS)
+        val locations = locationTransformer.toDTOs(entities)
+
         val next =
             if (locations.count() == size)
                 "/locations?keysetId=${locations.last().id}"

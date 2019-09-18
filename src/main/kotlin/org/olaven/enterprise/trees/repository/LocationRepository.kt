@@ -36,10 +36,6 @@ open class LocationRepositoryImpl(
                     .setParameter(1, keysetId)
         query.maxResults = size
 
-        if (fetchPlants) {
-
-            print("hello")
-        }
         val locations =  query.resultList
         if (fetchPlants) locations.forEach { it.plants.isEmpty() }
         return locations
