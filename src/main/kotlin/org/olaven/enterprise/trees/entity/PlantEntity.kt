@@ -1,5 +1,6 @@
 package org.olaven.enterprise.trees.entity
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import org.jetbrains.annotations.NotNull
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue

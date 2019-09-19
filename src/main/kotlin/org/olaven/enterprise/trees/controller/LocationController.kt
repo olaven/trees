@@ -18,6 +18,10 @@ import java.net.URI
 @RequestMapping(value = ["api/locations"])
 class LocationController {
 
+    enum class Expand {
+        NONE, PLANTS
+    }
+
     @Autowired
     private lateinit var locationRepository: LocationRepository
     @Autowired
@@ -28,16 +32,15 @@ class LocationController {
     @ApiOperation(value = "Get all locations")
     fun getLocations(
             @RequestParam("keysetId", required = false)
-            keysetId: Long?
+            keysetId: Long?,
+            @RequestParam("expand", required = false, defaultValue = "NONE")
+            expand: Expand
     ): ResponseEntity<WrappedResponse<Page<LocationDTO>>> {
 
-
-        val all = locationRepository.findAll();
-
         val size = 5
-        val locations = locationTransformer.toDTOs(
-                locationRepository.getNextPage(size, keysetId)
-        )
+        val entities = locationRepository.getNextPage(size, keysetId, expand == Expand.PLANTS)
+        val locations = entities.map { locationTransformer.toDTO(it, expand == Expand.PLANTS) }
+
         val next =
             if (locations.count() == size)
                 "/locations?keysetId=${locations.last().id}"

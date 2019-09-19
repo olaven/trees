@@ -5,12 +5,19 @@ import org.olaven.enterprise.trees.entity.LocationEntity
 import org.springframework.stereotype.Service
 
 @Service
-internal class LocationTransformer: Transformer<LocationDTO, LocationEntity>() {
+internal class LocationTransformer() {
 
-    override fun toDTO(entity: LocationEntity) =
-            LocationDTO(entity.x, entity.y, entity.id)
+    val plantTransformer = PlantTransformer()
 
-    override fun toEntity(dto: LocationDTO) =
+    //TODO: handle lazy plants
+    fun toDTO(entity: LocationEntity, includePlants: Boolean) =
+            LocationDTO(entity.x, entity.y, entity.id, if (includePlants) {
+                entity.plants.map { plantTransformer.toDTO(it) }
+            } else {
+                emptyList()
+            })
+
+    fun toEntity(dto: LocationDTO) =
         LocationEntity(
                 x = dto.x,
                 y = dto.y,
