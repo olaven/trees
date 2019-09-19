@@ -13,3 +13,6 @@ TODO:
 - [ ] Legge inn en validation-annotation
 - [ ] Ikke sende stacktrace  
 - [ ] Cut "/trees/" from path
+- [ ] Redirection 
+- [ ] Conditional requests 
+- [ ] Caching 
