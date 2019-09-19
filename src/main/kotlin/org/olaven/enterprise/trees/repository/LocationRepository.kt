@@ -12,7 +12,7 @@ interface LocationRepository: CrudRepository<LocationEntity, Long>, CustomLocati
 
 interface CustomLocationRepository {
 
-    fun getNextPage(n: Int, keysetId: Long?): List<LocationEntity>
+    fun getNextPage(n: Int, keysetId: Long?, fetchPlants: Boolean = false): List<LocationEntity>
 }
 
 
@@ -22,7 +22,8 @@ open class LocationRepositoryImpl(
         private val entityManager: EntityManager
 ): CustomLocationRepository {
 
-    override fun getNextPage(size: Int, keysetId: Long?): List<LocationEntity> {
+    override fun getNextPage(size: Int, keysetId: Long?, fetchPlants: Boolean): List<LocationEntity> {
+
 
         require(!(size < 0 || size > 1000)) { "Invalid size: $size" }
 
@@ -33,9 +34,12 @@ open class LocationRepositoryImpl(
             entityManager
                     .createQuery("select location from LocationEntity location where location.id < ?1 order by location.id desc", LocationEntity::class.java)
                     .setParameter(1, keysetId)
-
         query.maxResults = size
-        val results = query.resultList
-        return results
+
+        //NOTE: plants are always fetched, even if lazy. I.e. `locations` already contains them.
+        //TODO: make JPA respect FetchType.LAZY
+        val locations =  query.resultList
+        if (fetchPlants) locations.forEach { it.plants.size }
+        return locations
     }
 }

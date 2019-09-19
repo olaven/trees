@@ -1,11 +1,13 @@
 package org.olaven.enterprise.trees.controller
 
+import com.fasterxml.jackson.databind.JsonNode
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import io.restassured.response.ValidatableResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 internal class LocationControllerTest: ControllerTestBase() {
@@ -114,12 +116,64 @@ internal class LocationControllerTest: ControllerTestBase() {
         assertNull(fifthPage)
     }
 
-    private fun persistLocations(n: Int) {
 
-        (0 until n).forEach { _ ->
+    @Test
+    fun `locations does not include plants by default`() {
 
-            val dto = getLocationDTO()
-            persistLocation(dto)
+        persistLocations(1, 1)
+        given()
+                .contentType(ContentType.JSON)
+                .get("/locations")
+                .then()
+                .extract()
+                .jsonPath()
+                .getList<HashMap<String, JsonNode>>("data.list")
+                .forEach {
+
+                    val plants = it["plants"]!!.asIterable()
+                    print(plants);
+                    assertEquals(0, plants.count())
+                }
+
+    }
+
+    @Test
+    fun `locations includes plants with correct expand parameter`() {
+
+        assertEquals(0, locationRepository.findAll().count())
+        assertEquals(0, plantRepository.findAll().count())
+
+        persistLocations(1, 1)
+        assertEquals(1, locationRepository.findAll().count())
+        assertEquals(1, plantRepository.findAll().count())
+        given()
+                .contentType(ContentType.JSON)
+                .get("/locations?expand=PLANTS")
+                .then()
+                .extract()
+                .jsonPath()
+                .getList<HashMap<String, JsonNode>>("data.list")
+                .forEach {
+
+                    val plants = it["plants"]!!.asIterable()
+                    print(plants);
+                    assertEquals(1, plants.count())
+                }
+
+    }
+
+    private fun persistLocations(count: Int, plantsPerLocation: Int = 0) {
+
+        (0 until count).forEach { _ ->
+
+            val location = getLocationDTO()
+            val locationEntity = persistLocation(location)
+
+            (0 until  plantsPerLocation).forEach { _ ->
+
+                val plant = getPlantDTO(locationEntity)
+                persistPlant(plant)
+            }
         }
     }
 

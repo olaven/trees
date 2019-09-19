@@ -8,20 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-internal class PlantTransformer: Transformer<PlantDto, PlantEntity>() {
+internal class PlantTransformer() {
 
     @Autowired
     private lateinit var locationRepository: LocationRepository
 
-    override fun toDTO(entity: PlantEntity): PlantDto =
+    fun toDTO(entity: PlantEntity): PlantDto =
         PlantDto(
             entity.name, entity.description,
             entity.height, entity.age,
-            LocationDTO(entity.location!!.x, entity.location!!.y, entity.location!!.id), entity.id
+            LocationDTO(entity.location.x, entity.location.y, entity.location.id), entity.id
         )
 
 
-    override fun toEntity(dto: PlantDto): PlantEntity {
+    fun toEntity(dto: PlantDto): PlantEntity {
 
         require(dto.name != null && dto.description != null &&
                 dto.age != null && dto.height != null && dto.location != null && dto.location!!.id != null) {"Plant DTO was invalid"}

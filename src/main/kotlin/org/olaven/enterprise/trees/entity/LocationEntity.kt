@@ -5,7 +5,7 @@ import javax.persistence.*
 import javax.validation.constraints.Min
 
 @Entity
-class LocationEntity (
+open class LocationEntity (
 
         @field:NotNull
         @field:Min(0)
@@ -20,7 +20,7 @@ class LocationEntity (
                 mappedBy = "location",
                 fetch = FetchType.LAZY
         )
-        val plants: List<PlantEntity> = emptyList(),
+        var plants: List<PlantEntity> = emptyList(),
 
         @field:Id
         @field:GeneratedValue
