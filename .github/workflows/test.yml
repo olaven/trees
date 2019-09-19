@@ -1,0 +1,15 @@
+name: trees-test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest 
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Running all tests
+      run: |
+        mvn clean
+        mvn verify

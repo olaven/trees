@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
-@Api(value ="trees/api/locations", description = "doing operations on locations")
-@RequestMapping(value = ["trees/api/locations"])
+@Api(value ="api/locations", description = "doing operations on locations")
+@RequestMapping(value = ["api/locations"])
 class LocationController {
 
     enum class Expand {
