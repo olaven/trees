@@ -52,7 +52,7 @@ open class TestBase {
         return LocationDTO(x, y, null)
     }
 
-    protected fun getPlantDTO(location: LocationEntity? = null): PlantDto {
+    protected fun getPlantDTO(location: LocationEntity? = null, includePlants: Boolean = false): PlantDto {
 
         val name = faker.funnyName().name()
         val description = faker.lorem().paragraph()
@@ -60,7 +60,7 @@ open class TestBase {
         val age = faker.number().numberBetween(4, 20)
 
         val actualLocation = location ?: persistLocation(getLocationDTO())
-        val locationDTO = locationTransformer.toDTO(actualLocation)
+        val locationDTO = locationTransformer.toDTO(actualLocation, includePlants)
 
         return PlantDto(name, description, height, age, locationDTO)
     }

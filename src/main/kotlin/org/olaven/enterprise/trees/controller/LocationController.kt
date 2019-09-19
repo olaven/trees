@@ -39,7 +39,7 @@ class LocationController {
 
         val size = 5
         val entities = locationRepository.getNextPage(size, keysetId, expand == Expand.PLANTS)
-        val locations = locationTransformer.toDTOs(entities)
+        val locations = entities.map { locationTransformer.toDTO(it, expand == Expand.PLANTS) }
 
         val next =
             if (locations.count() == size)

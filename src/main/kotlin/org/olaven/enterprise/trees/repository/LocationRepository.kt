@@ -36,8 +36,10 @@ open class LocationRepositoryImpl(
                     .setParameter(1, keysetId)
         query.maxResults = size
 
+        //NOTE: plants are always fetched, even if lazy. I.e. `locations` already contains them.
+        //TODO: make JPA respect FetchType.LAZY
         val locations =  query.resultList
-        if (fetchPlants) locations.forEach { it.plants.isEmpty() }
+        if (fetchPlants) locations.forEach { it.plants.size }
         return locations
     }
 }

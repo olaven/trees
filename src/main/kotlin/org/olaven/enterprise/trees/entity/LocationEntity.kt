@@ -20,7 +20,7 @@ open class LocationEntity (
                 mappedBy = "location",
                 fetch = FetchType.LAZY
         )
-        val plants: List<PlantEntity> = emptyList(),
+        var plants: List<PlantEntity> = emptyList(),
 
         @field:Id
         @field:GeneratedValue
