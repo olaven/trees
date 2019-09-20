@@ -22,7 +22,7 @@ data class WrappedResponse<T> (
         @ApiModelProperty(value = "The status HTTP status code")
         val code: Int,
         @ApiModelProperty(value = "The data object")
-        val data: T?,
+        val data: T? = null,
         @ApiModelProperty(value = "Error message if any")
         val message: String? = null,
         val status: Status = statusFromCode(code)
