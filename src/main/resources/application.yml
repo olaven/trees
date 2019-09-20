@@ -1,7 +1,12 @@
-#server.servlet.context-path=/trees/api - removed as is only applicable to API, not entire application
+#server.servlet.context-path=/api - removed as is only applicable to API, not entire application
 server:
   port: ${PORT:8080}
 togglz:
   features:
     INFO_PAGE:
       enabled: true
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false # this is false in Andrea's example. That ruins frontend..

@@ -16,7 +16,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
-import javax.validation.ConstraintViolationException
 
 @RestController
 @Api(value ="api/plants", description = "doing operations on plants")
@@ -84,17 +83,13 @@ class PlantController {
                     .body(WrappedResponse<PlantDto?>(
                             201, plantTransformer.toDTO(entity)
                     ))
-
         } catch (exception: Exception) {
 
-            if (Throwables.getRootCause(exception) is ConstraintViolationException || Throwables.getRootCause(exception) is IllegalArgumentException)
-                return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body(WrappedResponse<PlantDto?>(
-                                400, null, "plant was invalid"
-                        ))
-            else throw exception;
+            //NOTE: I want to rethrow `ConstraintValidationException`, not Springs wrapper
+            val cause = Throwables.getRootCause(exception)
+            throw cause
         }
+
     }
 
     @PutMapping(value = ["/{id}"], consumes = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_ATOM_XML_VALUE])

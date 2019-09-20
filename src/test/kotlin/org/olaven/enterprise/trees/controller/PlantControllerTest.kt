@@ -4,6 +4,7 @@ import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -170,6 +171,26 @@ internal class PlantControllerTest: ControllerTestBase() {
         put(dto)
                 .then()
                 .statusCode(404)
+    }
+
+    @Test
+    fun `POST with null value throws error with exception handling`() {
+
+        val dto = getPlantDTO()
+        dto.name = null
+        post(dto)
+                .statusCode(400)
+                .body("message", containsString("was invalid"))
+    }
+
+    @Test
+    fun `POST with constraint validation throws error`() {
+
+        val dto = getPlantDTO()
+        dto.name = "a" //NOTE: entity requires  >= 2
+        post(dto)
+                .statusCode(400)
+                .body("message", containsString("name"))
     }
 
     @Test
