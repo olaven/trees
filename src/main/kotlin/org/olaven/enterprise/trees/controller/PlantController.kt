@@ -2,6 +2,7 @@ package org.olaven.enterprise.trees.controller
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.base.Throwables
 import io.swagger.annotations.*
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
@@ -71,29 +72,24 @@ class PlantController {
 
         }
 
-        //try {
+        try {
 
-        val entity = plantRepository.save(plantTransformer.toEntity(plantDto))
-        val location = URI.create("plants/${entity.id}")
+            val entity = plantRepository.save(plantTransformer.toEntity(plantDto))
+            val location = URI.create("plants/${entity.id}")
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .location(location)
-                .body(WrappedResponse<PlantDto?>(
-                        201, plantTransformer.toDTO(entity)
-                ))
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .location(location)
+                    .body(WrappedResponse<PlantDto?>(
+                            201, plantTransformer.toDTO(entity)
+                    ))
+        } catch (exception: Exception) {
 
-            //TODO / note: exception should be handled by exceptionHandlers automatically
-        /*} catch (exception: Exception) {
+            //NOTE: I want to rethrow `ConstraintValidationException`, not Springs wrapper
+            val cause = Throwables.getRootCause(exception)
+            throw cause
+        }
 
-            if (Throwables.getRootCause(exception) is ConstraintViolationException || Throwables.getRootCause(exception) is IllegalArgumentException)
-                return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body(WrappedResponse<PlantDto?>(
-                                400, null, "plant was invalid"
-                        ))
-            else throw exception
-        }*/
     }
 
     @PutMapping(value = ["/{id}"], consumes = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_ATOM_XML_VALUE])

@@ -1,6 +1,5 @@
 package org.olaven.enterprise.trees
 
-import com.google.common.base.Throwables
 import org.olaven.enterprise.trees.dto.WrappedResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -12,26 +11,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.validation.ConstraintViolationException
 
 @ControllerAdvice
-class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
+open class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 
-    companion object {
+    private val INTERNAL_SERVER_ERROR_MESSAGE = "Internal server error"
 
-        /**
-         * For security reasons, we should not leak internal details, like
-         * class names, or even the fact we are using Spring
-         */
-        const val INTERNAL_SERVER_ERROR_MESSAGE = "Internal server error"
-
-        fun handlePossibleConstraintViolation(e: Exception){
-            val cause = Throwables.getRootCause(e)
-            if(cause is ConstraintViolationException) {
-                throw cause
-            }
-            throw e
-        }
-    }
-
-    //TODO: FIX -> get to run
     @ExceptionHandler(value = [IllegalArgumentException::class])
     protected fun handleIllegalArgument(exception: Exception, request: WebRequest)
             : ResponseEntity<Any> {
@@ -43,17 +26,17 @@ class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 
     //NOTE: written by Andrea, TODO: go through / rewrite
     @ExceptionHandler(value = [ConstraintViolationException::class])
-    protected fun handleFrameworkExceptionsForUserInputs(ex: Exception, request: WebRequest)
+    protected fun handleFrameworkExceptionsForUserInputs(exception: Exception, request: WebRequest)
             : ResponseEntity<Any> {
 
-        if(ex is ConstraintViolationException) {
-            val messages = StringBuilder()
+        if(exception is ConstraintViolationException) {
 
-            for (violation in ex.constraintViolations) {
+            val messages = StringBuilder()
+            for (violation in exception.constraintViolations) {
                 messages.append(violation.message + "\n")
             }
 
-            val msg = ex.constraintViolations.map { it.propertyPath.toString() + " " + it.message }
+            val msg = exception.constraintViolations.map { it.propertyPath.toString() + " " + it.message }
                     .joinToString("; ")
 
             return handleExceptionInternal(
@@ -61,12 +44,11 @@ class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
         }
 
         return handleExceptionInternal(
-                ex, null, HttpHeaders(), HttpStatus.valueOf(400), request)
+                exception, null, HttpHeaders(), HttpStatus.valueOf(400), request)
     }
 
-    //NOTE: written by Andrea, TODO: go through / rewrite
     @ExceptionHandler(Exception::class)
-    fun handleBugsForUnexpectedExceptions(ex: Exception, request: WebRequest): ResponseEntity<Any> {
+    fun `handle unexpected bugs`(ex: Exception, request: WebRequest): ResponseEntity<Any> {
 
         return handleExceptionInternal(
                 RuntimeException(INTERNAL_SERVER_ERROR_MESSAGE),
