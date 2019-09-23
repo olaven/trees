@@ -6,6 +6,8 @@ import io.restassured.http.ContentType
 import io.restassured.response.ValidatableResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.notNullValue
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -161,6 +163,54 @@ internal class LocationControllerTest: ControllerTestBase() {
                 }
 
     }
+
+
+    @Test
+    fun `getting random returns a location`() {
+
+
+        (0..10).forEach {
+            persistLocation(getLocationDTO())
+        }
+        getRandom()
+                .body("data", notNullValue())
+    }
+
+    @Test @Disabled
+    fun `redirection on random is temporary`() {
+
+
+    }
+
+    @Test @Disabled
+    fun `returns 404 when no locations are available`() {
+
+
+    }
+
+
+    @Test @Disabled
+    fun `random locations have a reasonable distribution`() {
+
+
+    }
+
+    @Test @Disabled
+    fun `random locations returns no plants by default`() {
+
+
+    }
+
+    @Test @Disabled
+    fun `random locations returns plants if ?expand=PLANTS`() {
+
+
+    }
+
+
+    private fun getRandom() = given()
+            .get("locations/random")
+            .then()
 
     private fun persistLocations(count: Int, plantsPerLocation: Int = 0) {
 

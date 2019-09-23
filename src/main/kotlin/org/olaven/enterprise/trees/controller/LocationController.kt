@@ -53,6 +53,25 @@ class LocationController {
         ))
     }
 
+    @GetMapping("random")
+    @ApiResponse(code = 200, message = "Temporary redirect to random location.")
+    @ApiOperation(value = "Get redirected to a random location.")
+    fun getRandomLocation(
+            @RequestParam("expand", required = false, defaultValue = "NONE")
+            expand: Expand
+    ): ResponseEntity<WrappedResponse<LocationDTO>> {
+
+
+        val entity = locationRepository.getRandom()
+        val dto = if (entity == null) null else locationTransformer.toDTO(entity, expand == Expand.PLANTS)
+        val status = if (entity == null) 404 else 307
+
+        return ResponseEntity.status(status).body(WrappedResponse(
+                status,
+                dto
+        ))
+    }
+
     //TODO: remove this possibility?
     @PostMapping("")
     fun createLocation(@RequestBody dto: LocationDTO): ResponseEntity<WrappedResponse<Nothing>> {
