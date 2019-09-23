@@ -6,6 +6,7 @@ import javax.validation.ConstraintValidatorContext
 
 class IsLongitudeValidator: ConstraintValidator<IsLongitude, Double> {
 
+    //TODO: make test pass
     override fun isValid(value: Double?, p1: ConstraintValidatorContext?): Boolean {
 
         // -180 / +180
@@ -20,7 +21,7 @@ class IsLongitudeValidator: ConstraintValidator<IsLongitude, Double> {
 
 @Constraint(validatedBy = [IsLongitudeValidator::class])
 @Target(AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER)
-@Retention(AnnotationRetention.RUNTIME) //TODO: check if works
+@Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 annotation class IsLongitude (
 

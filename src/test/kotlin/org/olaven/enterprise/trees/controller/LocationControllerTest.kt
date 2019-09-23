@@ -162,6 +162,20 @@ internal class LocationControllerTest: ControllerTestBase() {
 
     }
 
+
+    @Test
+    fun `longitude greater than 180 gives 400`() {
+
+        val dto = getLocationDTO()
+        dto.y = 181.0
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .post("/locations")
+                .then()
+                .statusCode(400)
+    }
+
     private fun persistLocations(count: Int, plantsPerLocation: Int = 0) {
 
         (0 until count).forEach { _ ->
