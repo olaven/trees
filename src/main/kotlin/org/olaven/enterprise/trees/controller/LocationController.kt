@@ -10,13 +10,15 @@ import org.olaven.enterprise.trees.dto.WrappedResponse
 import org.olaven.enterprise.trees.repository.LocationRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.net.URI
+import javax.validation.Valid
 
 @RestController
 @Api(value ="api/locations", description = "doing operations on locations")
 @RequestMapping(value = ["api/locations"])
-//@Validated
+@Validated
 open class LocationController(
 
         val locationRepository: LocationRepository,
@@ -58,8 +60,10 @@ open class LocationController(
     @PostMapping("")
     fun createLocation(
             @RequestBody
+            @Valid
             @IsLocation
-            dto: LocationDTO): ResponseEntity<WrappedResponse<Nothing>> {
+            dto: LocationDTO
+    ): ResponseEntity<WrappedResponse<Nothing>> {
 
         val entity = locationRepository.save(locationTransformer.toEntity(dto));
         val location = URI.create("locations/${entity.id}")
