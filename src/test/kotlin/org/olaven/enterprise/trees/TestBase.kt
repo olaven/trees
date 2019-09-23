@@ -10,25 +10,18 @@ import org.olaven.enterprise.trees.repository.LocationRepository
 import org.olaven.enterprise.trees.repository.PlantRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.olaven.enterprise.trees.transformer.PlantTransformer
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @SpringBootTest
 @ExtendWith(SpringExtension::class)
-open class TestBase {
-
-    @Autowired //TODO: should perhaps move clearing to this class?
-    protected lateinit var databaseReset: DatabaseReset
-    @Autowired
-    protected lateinit var locationRepository: LocationRepository
-    @Autowired
-    protected lateinit var plantRepository: PlantRepository
-
-    @Autowired
-    internal lateinit var locationTransformer: LocationTransformer
-    @Autowired
-    private lateinit var plantTransformer: PlantTransformer
+open class TestBase(
+        protected val databaseReset: DatabaseReset,
+        protected val locationRepository: LocationRepository,
+        protected val plantRepository: PlantRepository,
+        private val locationTransformer: LocationTransformer,
+        private val plantTransformer: PlantTransformer
+) {
 
     private val faker = Faker()
 

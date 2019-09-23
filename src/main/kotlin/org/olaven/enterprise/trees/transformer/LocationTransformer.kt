@@ -5,7 +5,7 @@ import org.olaven.enterprise.trees.entity.LocationEntity
 import org.springframework.stereotype.Service
 
 @Service
-internal class LocationTransformer() {
+class LocationTransformer() {
 
     val plantTransformer = PlantTransformer()
 

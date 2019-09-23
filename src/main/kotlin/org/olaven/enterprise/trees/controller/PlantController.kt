@@ -10,7 +10,6 @@ import org.olaven.enterprise.trees.dto.WrappedResponse
 import org.olaven.enterprise.trees.repository.PlantRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.olaven.enterprise.trees.transformer.PlantTransformer
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -20,14 +19,11 @@ import java.net.URI
 @RestController
 @Api(value ="api/plants", description = "doing operations on plants")
 @RequestMapping(value = ["api/plants"])
-class PlantController {
-
-    @Autowired
-    private lateinit var plantRepository: PlantRepository
-    @Autowired
-    private val plantTransformer = PlantTransformer()
-    @Autowired
-    private val locationTransformer = LocationTransformer()
+class PlantController(
+        private val plantRepository: PlantRepository,
+        private val plantTransformer: PlantTransformer,
+        private val locationTransformer: LocationTransformer
+) {
 
     //TODO: use pagination
     @GetMapping("", produces = [MediaType.APPLICATION_JSON_VALUE])
