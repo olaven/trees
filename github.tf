@@ -1,5 +1,6 @@
 provider "github" {
   organization = "olaven"
+  anonymous = true
 }
 
 resource "github_repository" "trees" {
