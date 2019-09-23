@@ -17,3 +17,4 @@ TODO:
 - [ ] Conditional requests 
 - [ ] Caching 
 - [ ] constructor validation
+- [ ] Trello Integration
