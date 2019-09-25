@@ -3,6 +3,7 @@ package org.olaven.enterprise.trees.repository
 import org.olaven.enterprise.trees.entity.LocationEntity
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 import javax.persistence.EntityManager
 import javax.persistence.TypedQuery
 import javax.transaction.Transactional
@@ -13,6 +14,7 @@ interface LocationRepository: CrudRepository<LocationEntity, Long>, CustomLocati
 interface CustomLocationRepository {
 
     fun getNextPage(n: Int, keysetId: Long?, fetchPlants: Boolean = false): List<LocationEntity>
+    fun getRandom(): LocationEntity?
 }
 
 
@@ -42,4 +44,21 @@ open class LocationRepositoryImpl(
         if (fetchPlants) locations.forEach { it.plants.size }
         return locations
     }
+
+    override fun getRandom(): LocationEntity? {
+
+        val total = (entityManager
+                .createQuery("select count(location.id) from LocationEntity location")
+                .singleResult as Long).toInt()
+
+        if (total == 0) return null
+        val selected = Random().nextInt(total)
+
+        return entityManager
+                .createQuery("select location from LocationEntity location", LocationEntity::class.java)
+                .setFirstResult(selected)
+                .setMaxResults(1)
+                .singleResult;
+    }
+
 }

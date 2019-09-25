@@ -5,10 +5,13 @@ import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import io.restassured.response.ValidatableResponse
 import org.hamcrest.CoreMatchers
-import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
+import org.olaven.enterprise.trees.dto.PlantDto
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 internal class LocationControllerTest: ControllerTestBase() {
 
@@ -160,6 +163,96 @@ internal class LocationControllerTest: ControllerTestBase() {
                     assertEquals(1, plants.count())
                 }
 
+    }
+
+
+    @Test
+    fun `getting random returns a location`() {
+
+        persistLocations(5)
+        getRandom()
+                .body("data", notNullValue())
+    }
+
+    @Test
+    fun `redirection on random is temporary`() {
+
+        persistLocations(5)
+        getRandom(false)
+                .statusCode(307)
+    }
+
+    @Test
+    fun `returns 404 when no locations are available`() {
+
+        persistLocations(0) //could skip this line, just to make it explicit
+        getRandom()
+                .statusCode(404)
+    }
+
+
+    //NOTE: may fail due to the randomness being tested
+    @Test
+    fun `random locations have a reasonable distribution`() {
+
+        val total = 20
+        val distributionMap = HashMap<Int, Int?>()
+        persistLocations(total)
+        repeat((0..100).count()) {
+
+            val id = getRandom()
+                    .extract()
+                    .jsonPath()
+                    .get<Int>("data.id")
+
+            if (distributionMap[id] == null) {
+
+                distributionMap[id] = 0
+            }
+
+
+            val currentCount = distributionMap[id as Int]!!
+            val updatedCount = currentCount + 1
+            distributionMap[id] = updatedCount
+        }
+
+        distributionMap.values.forEach {
+
+            //could fail because of randomness, but should be ~5 -  100/20
+            assertNotNull(it)
+            assertTrue(it > 0)
+            assertTrue(it < 15)
+        }
+    }
+
+    @Test
+    fun `random locations returns no plants by default`() {
+
+        persistLocations(1, 1)
+        getRandom(includePlants = false)
+                .body("data.plants", hasSize<PlantDto>(0))
+    }
+
+    @Test
+    fun `random locations returns plants if ?expand=PLANTS`() {
+
+        persistLocations(1, 1)
+        getRandom(includePlants = true)
+                .body("data.plants", hasSize<PlantDto>(1))
+    }
+
+
+    private fun getRandom(followRedirect: Boolean = true, includePlants: Boolean = false): ValidatableResponse {
+
+        val path = if (includePlants)
+            "/locations/random?expand=PLANTS"
+        else
+            "/locations/random"
+
+        return given()
+                .redirects().follow(followRedirect)
+                .get(path)
+                .then()
     }
 
     private fun persistLocations(count: Int, plantsPerLocation: Int = 0) {

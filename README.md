@@ -9,12 +9,14 @@ TODO:
 - [X] noarg heller enn default-verdier paa entities 
 - [X] Implement keyset pagination 
 - [X] Some expand filtering 
-- [ ] Override spring sin haandtering av exceptions 
+- [X] Override spring sin haandtering av exceptions 
 - [ ] Legge inn en validation-annotation
-- [ ] Ikke sende stacktrace  
+- [X] Ikke sende stacktrace  
 - [X] Cut "/trees/" from path
 - [ ] Redirection 
 - [ ] Conditional requests 
 - [ ] Caching 
 - [ ] constructor validation
-- [ ] Trello Integration
+- [ ] Add code coverage test 
+- [X] Trello Integration
+- [ ] Postgres database 
