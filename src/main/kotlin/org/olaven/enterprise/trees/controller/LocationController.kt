@@ -3,24 +3,30 @@ package org.olaven.enterprise.trees.controller
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
+import org.olaven.enterprise.trees.CallCount
+import org.olaven.enterprise.trees.HasCallCount
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.Page
 import org.olaven.enterprise.trees.dto.WrappedResponse
 import org.olaven.enterprise.trees.repository.LocationRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.CacheControl
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
+import java.util.concurrent.TimeUnit
 
 @RestController
 @Api(value ="api/locations", description = "doing operations on locations")
 @RequestMapping(value = ["api/locations"])
-class LocationController {
+class LocationController: HasCallCount {
 
     enum class Expand {
         NONE, PLANTS
     }
+
+    override val callCount = CallCount()
 
     @Autowired
     private lateinit var locationRepository: LocationRepository
@@ -37,6 +43,7 @@ class LocationController {
             expand: Expand
     ): ResponseEntity<WrappedResponse<Page<LocationDTO>>> {
 
+        callCount.getAll++
         val size = 5
         val entities = locationRepository.getNextPage(size, keysetId, expand == Expand.PLANTS)
         val locations = entities.map { locationTransformer.toDTO(it, expand == Expand.PLANTS) }
@@ -47,7 +54,10 @@ class LocationController {
             else null
 
         val page = Page(locations, next)
-        return ResponseEntity.status(200).body(WrappedResponse(
+        return ResponseEntity
+                .status(200)
+                .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
+                .body(WrappedResponse(
                 200,
                 page
         ))

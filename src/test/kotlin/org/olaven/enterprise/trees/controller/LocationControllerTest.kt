@@ -13,7 +13,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-internal class LocationControllerTest: ControllerTestBase() {
+internal class LocationControllerTest(): ControllerTestBase() {
 
 
     @Test
@@ -239,6 +239,12 @@ internal class LocationControllerTest: ControllerTestBase() {
         persistLocations(1, 1)
         getRandom(includePlants = true)
                 .body("data.plants", hasSize<PlantDto>(1))
+    }
+
+    @Test
+    fun `caching is enabled on getting all`() {
+
+
     }
 
 

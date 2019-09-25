@@ -5,12 +5,15 @@ import io.restassured.http.ContentType
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.containsString
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
 import org.olaven.enterprise.trees.dto.Status
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.Cache
 import kotlin.test.assertNotEquals
 
 internal class PlantControllerTest: ControllerTestBase() {
