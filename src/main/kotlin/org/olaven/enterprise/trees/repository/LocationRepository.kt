@@ -47,9 +47,9 @@ open class LocationRepositoryImpl(
 
     override fun getRandom(): LocationEntity? {
 
-        val total = entityManager
-                .createQuery("select count(location) from LocationEntity location")
-                .firstResult
+        val total = (entityManager
+                .createQuery("select count(location.id) from LocationEntity location")
+                .singleResult as Long).toInt()
 
         if (total == 0) return null
         val selected = Random().nextInt(total) + 1

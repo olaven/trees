@@ -168,10 +168,7 @@ internal class LocationControllerTest: ControllerTestBase() {
     @Test
     fun `getting random returns a location`() {
 
-
-        (0..10).forEach {
-            persistLocation(getLocationDTO())
-        }
+        persistLocations(10)
         getRandom()
                 .body("data", notNullValue())
     }
@@ -209,7 +206,7 @@ internal class LocationControllerTest: ControllerTestBase() {
 
 
     private fun getRandom() = given()
-            .get("locations/random")
+            .get("/locations/random")
             .then()
 
     private fun persistLocations(count: Int, plantsPerLocation: Int = 0) {
