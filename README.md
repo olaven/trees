@@ -17,5 +17,6 @@ TODO:
 - [ ] Conditional requests 
 - [ ] Caching 
 - [ ] constructor validation
+- [ ] Add code coverage test 
 - [X] Trello Integration
 - [ ] Postgres database 

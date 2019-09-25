@@ -52,7 +52,7 @@ open class LocationRepositoryImpl(
                 .singleResult as Long).toInt()
 
         if (total == 0) return null
-        val selected = Random().nextInt(total) + 1
+        val selected = Random().nextInt(total)
 
         return entityManager
                 .createQuery("select location from LocationEntity location", LocationEntity::class.java)

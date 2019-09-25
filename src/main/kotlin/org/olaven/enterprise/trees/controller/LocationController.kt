@@ -57,13 +57,15 @@ class LocationController {
     @ApiResponse(code = 200, message = "One specific location")
     @ApiOperation("Get a specific location")
     fun getLocation(
-            @PathVariable(required = true) //TODO: validiation has to be positive (same for plantcontroller?)
-            id: Long
+            @PathVariable(required = true)
+            id: Long,
+            @RequestParam(value = "expand", required = false, defaultValue = "NONE")
+            expand: Expand
     ): ResponseEntity<WrappedResponse<LocationDTO>> {
 
         val entity = locationRepository.findById(id)
         val dto = if (entity.isPresent)
-            locationTransformer.toDTO(entity.get(), false)
+            locationTransformer.toDTO(entity.get(), expand == Expand.PLANTS)
         else
             null
         val code = if (dto == null) 404 else 200
@@ -83,16 +85,17 @@ class LocationController {
 
 
         val entity = locationRepository.getRandom()
-        val dto = if (entity == null) null else locationTransformer.toDTO(entity, expand == Expand.PLANTS)
         val status = if (entity == null) 404 else 307
-        val location = if (entity == null) "" else "${entity.id}"
+        val location = if (entity == null)
+            ""
+        else
+            "${entity.id}?expand=${expand}"
 
         return ResponseEntity
                 .status(status)
                 .location(URI.create(location)) //TODO: avoid sending if 404?
                 .body(WrappedResponse(
-                status,
-                dto
+                status
         ))
     }
 
