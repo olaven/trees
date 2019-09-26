@@ -4,14 +4,12 @@ import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
 import org.olaven.enterprise.trees.entity.PlantEntity
 import org.olaven.enterprise.trees.repository.LocationRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-internal class PlantTransformer() {
-
-    @Autowired
-    private lateinit var locationRepository: LocationRepository
+class PlantTransformer(
+        private val locationRepository: LocationRepository
+) {
 
     fun toDTO(entity: PlantEntity): PlantDto =
         PlantDto(

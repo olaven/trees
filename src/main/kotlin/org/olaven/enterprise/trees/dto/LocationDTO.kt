@@ -7,11 +7,14 @@ import io.swagger.annotations.ApiModelProperty
 class LocationDTO (
 
         @ApiModelProperty("X coordinate of location")
-        val x: Double?,
+        var x: Double?,
+
         @ApiModelProperty("Y coordinate of location")
-        val y: Double?,
+        var y: Double?,
+
         @ApiModelProperty("ID of location")
         val id: Long?,
+
         @ApiModelProperty("Plants on this location")
         val plants: List<PlantDto> = emptyList()
 ): DTO()

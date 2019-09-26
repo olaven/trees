@@ -16,19 +16,17 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @SpringBootTest
 @ExtendWith(SpringExtension::class)
-open class TestBase {
+open class TestBase() {
 
-    @Autowired //TODO: should perhaps move clearing to this class?
-    protected lateinit var databaseReset: DatabaseReset
+    @Autowired
+    private lateinit var locationTransformer: LocationTransformer
+    @Autowired
+    private lateinit var plantTransformer: PlantTransformer
+
     @Autowired
     protected lateinit var locationRepository: LocationRepository
     @Autowired
     protected lateinit var plantRepository: PlantRepository
-
-    @Autowired
-    internal lateinit var locationTransformer: LocationTransformer
-    @Autowired
-    private lateinit var plantTransformer: PlantTransformer
 
     private val faker = Faker()
 

@@ -3,29 +3,31 @@ package org.olaven.enterprise.trees.controller
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
+import org.olaven.enterprise.trees.annotations.IsLocation
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.Page
 import org.olaven.enterprise.trees.dto.WrappedResponse
 import org.olaven.enterprise.trees.repository.LocationRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
 @Api(value ="api/locations", description = "doing operations on locations")
 @RequestMapping(value = ["api/locations"])
-class LocationController {
+@Validated
+class LocationController(
+
+        val locationRepository: LocationRepository,
+        val locationTransformer: LocationTransformer
+) {
 
     enum class Expand {
         NONE, PLANTS
     }
 
-    @Autowired
-    private lateinit var locationRepository: LocationRepository
-    @Autowired
-    private lateinit var locationTransformer: LocationTransformer
 
     @GetMapping("")
     @ApiResponse(code = 200, message = "All locations")
@@ -101,7 +103,11 @@ class LocationController {
 
     //TODO: remove this possibility?
     @PostMapping("")
-    fun createLocation(@RequestBody dto: LocationDTO): ResponseEntity<WrappedResponse<Nothing>> {
+    fun createLocation(
+            @RequestBody
+            @IsLocation
+            dto: LocationDTO
+    ): ResponseEntity<WrappedResponse<Nothing>> {
 
         val entity = locationRepository.save(locationTransformer.toEntity(dto));
         val location = URI.create("locations/${entity.id}")
