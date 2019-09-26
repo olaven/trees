@@ -13,13 +13,12 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.net.URI
-import javax.validation.Valid
 
 @RestController
 @Api(value ="api/locations", description = "doing operations on locations")
 @RequestMapping(value = ["api/locations"])
-@Validated
-open class LocationController(
+@Validated 
+class LocationController(
 
         val locationRepository: LocationRepository,
         val locationTransformer: LocationTransformer
@@ -60,7 +59,6 @@ open class LocationController(
     @PostMapping("")
     fun createLocation(
             @RequestBody
-            @Valid
             @IsLocation
             dto: LocationDTO
     ): ResponseEntity<WrappedResponse<Nothing>> {

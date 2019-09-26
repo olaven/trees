@@ -1,11 +1,10 @@
 package org.olaven.enterprise.trees.annotations
 
-import org.olaven.enterprise.trees.dto.LocationDTO
 import java.lang.annotation.Documented
 import javax.validation.Constraint
-import javax.validation.ConstraintValidator
-import javax.validation.ConstraintValidatorContext
+import javax.validation.Payload
 import javax.validation.constraints.NotNull
+import kotlin.reflect.KClass
 
 
 @NotNull
@@ -15,6 +14,8 @@ import javax.validation.constraints.NotNull
 @Documented
 annotation class IsLocation (
 
-        val message: String = "Location is invalid"
+        val message: String = "Location is invalid",
+        val groups: Array<KClass<*>> = [],
+        val payload: Array<KClass<out Payload>> = []
 )
 
