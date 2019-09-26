@@ -167,19 +167,6 @@
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
         <plugins>
             <plugin>
-                <!-- Need to create self-executable uber/fat jars -->
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${version.springboot}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${version.kotlin}</version>
@@ -200,7 +187,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>${version.java}</jvmTarget>
                 </configuration>
             </plugin>
 

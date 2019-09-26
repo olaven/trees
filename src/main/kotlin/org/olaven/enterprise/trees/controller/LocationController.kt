@@ -17,7 +17,7 @@ import java.net.URI
 @RestController
 @Api(value ="api/locations", description = "doing operations on locations")
 @RequestMapping(value = ["api/locations"])
-@Validated 
+@Validated
 class LocationController(
 
         val locationRepository: LocationRepository,
