@@ -14,7 +14,9 @@ TODO:
 - [X] Ikke sende stacktrace  
 - [X] Cut "/trees/" from path
 - [ ] Redirection 
-- [ ] Conditional requests 
+- [ ] Conditional requests
+- [ ] Circuit breaker 
+- [ ] Test mocking 
 - [ ] Caching 
 - [ ] constructor validation
 - [ ] Add code coverage test 
