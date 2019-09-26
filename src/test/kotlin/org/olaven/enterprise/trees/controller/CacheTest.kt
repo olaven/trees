@@ -18,6 +18,7 @@ class CacheTest : ControllerTestBase() {
     fun `init cache tests`() {
 
         locationController.callCount.getAll = 0
+        locationController.callCount.getOne = 0
     }
 
     @Test
@@ -33,16 +34,28 @@ class CacheTest : ControllerTestBase() {
     }
 
     @Test
-    fun `response has max-age`() {
+    fun `all locations has max-age`() {
 
         given()
                 .get("/locations")
                 .then()
+                .statusCode(200)
                 .header("cache-control", containsString("max-age"))
     }
 
     @Test
-    fun `getting locations is cached`() {
+    fun `specific location has max-age`() {
+
+        val entity = persistLocation(getLocationDTO())
+        given()
+                .get("/locations/${entity.id}")
+                .then()
+                .statusCode(200)
+                .header("cache-control", containsString("max-age"))
+    }
+
+    @Test
+    fun `locations are cached`() {
 
         val before = locationController.callCount.getAll
         repeat((0..10).count()) {
@@ -53,6 +66,24 @@ class CacheTest : ControllerTestBase() {
 
         }
         val after = locationController.callCount.getAll
+
+        assertEquals(0, before)
+        assertEquals(1, after)
+    }
+
+    @Test
+    fun `getting specific location is cached`() {
+
+        val before = locationController.callCount.getOne
+        val location = persistLocation(getLocationDTO())
+        repeat((0..10).count()) {
+
+            given()
+                    .param("port", port)
+                    .get("/cacheproxy/locations/${location.id}")
+
+        }
+        val after = locationController.callCount.getOne
 
         assertEquals(0, before)
         assertEquals(1, after)

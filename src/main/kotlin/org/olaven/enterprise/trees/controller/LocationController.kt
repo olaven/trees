@@ -73,15 +73,19 @@ class LocationController: HasCallCount {
             expand: Expand
     ): ResponseEntity<WrappedResponse<LocationDTO>> {
 
+        callCount.getOne++
         val entity = locationRepository.findById(id)
         val dto = if (entity.isPresent)
             locationTransformer.toDTO(entity.get(), expand == Expand.PLANTS)
         else null
         val code = if (dto == null) 404 else 200
 
-        return ResponseEntity.ok(WrappedResponse(
-                code, dto
-        ))
+        return ResponseEntity
+                .status(code)
+                .cacheControl(CacheControl.maxAge(5, TimeUnit.HOURS))
+                .body(WrappedResponse(
+                        code, dto
+                ))
     }
 
     @GetMapping("/random")

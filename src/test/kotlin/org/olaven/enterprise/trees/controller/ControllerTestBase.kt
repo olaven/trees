@@ -1,7 +1,6 @@
 package org.olaven.enterprise.trees.controller
 
 import io.restassured.RestAssured
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.olaven.enterprise.trees.TestBase
@@ -22,11 +21,6 @@ abstract class ControllerTestBase: TestBase() {
     @Value("#{cacheManager.getCache('httpClient')}")
     protected lateinit var httpClientCache: Cache
 
-    @AfterEach
-    fun teardown() {
-
-        httpClientCache.clear()
-    }
 
     @BeforeEach
     fun init() {
@@ -37,6 +31,7 @@ abstract class ControllerTestBase: TestBase() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
         databaseReset.reset()
+        httpClientCache.clear()
     }
 
 }

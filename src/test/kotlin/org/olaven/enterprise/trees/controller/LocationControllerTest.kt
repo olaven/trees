@@ -162,7 +162,6 @@ internal class LocationControllerTest(): ControllerTestBase() {
                     print(plants);
                     assertEquals(1, plants.count())
                 }
-
     }
 
 
@@ -240,13 +239,6 @@ internal class LocationControllerTest(): ControllerTestBase() {
         getRandom(includePlants = true)
                 .body("data.plants", hasSize<PlantDto>(1))
     }
-
-    @Test
-    fun `caching is enabled on getting all`() {
-
-
-    }
-
 
     private fun getRandom(followRedirect: Boolean = true, includePlants: Boolean = false): ValidatableResponse {
 
