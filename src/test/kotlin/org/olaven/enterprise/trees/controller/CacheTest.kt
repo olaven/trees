@@ -19,6 +19,9 @@ class CacheTest : ControllerTestBase() {
 
         locationController.callCount.getAll = 0
         locationController.callCount.getOne = 0
+
+        plantController.callCount.getAll = 0 //NOTE not used yet
+        plantController.callCount.getOne = 0
     }
 
     @Test

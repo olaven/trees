@@ -12,7 +12,6 @@ import org.olaven.enterprise.trees.dto.WrappedResponse
 import org.olaven.enterprise.trees.repository.PlantRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.olaven.enterprise.trees.transformer.PlantTransformer
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -24,19 +23,11 @@ import java.util.concurrent.TimeUnit
 @RestController
 @Api(value ="api/plants", description = "doing operations on plants")
 @RequestMapping(value = ["api/plants"])
-class PlantController: HasCallCount {
-
-    @Autowired
-    private lateinit var plantRepository: PlantRepository
-    @Autowired
-    private val plantTransformer = PlantTransformer()
-    @Autowired
-    private val locationTransformer = LocationTransformer()
 class PlantController(
         private val plantRepository: PlantRepository,
         private val plantTransformer: PlantTransformer,
         private val locationTransformer: LocationTransformer
-) {
+): HasCallCount {
 
     override val callCount = CallCount()
 
