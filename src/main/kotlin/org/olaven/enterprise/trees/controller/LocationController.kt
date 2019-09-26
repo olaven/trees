@@ -76,8 +76,7 @@ class LocationController: HasCallCount {
         val entity = locationRepository.findById(id)
         val dto = if (entity.isPresent)
             locationTransformer.toDTO(entity.get(), expand == Expand.PLANTS)
-        else
-            null
+        else null
         val code = if (dto == null) 404 else 200
 
         return ResponseEntity.ok(WrappedResponse(
