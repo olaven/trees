@@ -177,6 +177,7 @@ internal class LocationControllerTest: ControllerTestBase() {
                 .post("/locations")
                 .then()
                 .statusCode(400)
+    }
 
     fun `getting random returns a location`() {
 
