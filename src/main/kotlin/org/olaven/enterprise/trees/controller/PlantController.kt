@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.base.Throwables
 import io.swagger.annotations.*
+import org.olaven.enterprise.trees.CallCount
+import org.olaven.enterprise.trees.HasCallCount
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
 import org.olaven.enterprise.trees.dto.WrappedResponse
@@ -11,16 +13,18 @@ import org.olaven.enterprise.trees.repository.PlantRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.olaven.enterprise.trees.transformer.PlantTransformer
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.CacheControl
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
+import java.util.concurrent.TimeUnit
 
 @RestController
 @Api(value ="api/plants", description = "doing operations on plants")
 @RequestMapping(value = ["api/plants"])
-class PlantController {
+class PlantController: HasCallCount {
 
     @Autowired
     private lateinit var plantRepository: PlantRepository
@@ -28,6 +32,8 @@ class PlantController {
     private val plantTransformer = PlantTransformer()
     @Autowired
     private val locationTransformer = LocationTransformer()
+
+    override val callCount = CallCount()
 
     //TODO: use pagination
     @GetMapping("", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -44,6 +50,7 @@ class PlantController {
     @ApiResponse(code = 200, message = "the body of plant")
     fun getTree(@PathVariable id: Long): ResponseEntity<WrappedResponse<PlantDto?>> {
 
+        callCount.getOne++
         val result = plantRepository.findById(id)
         return if (!result.isPresent)
             ResponseEntity.status(404).body(WrappedResponse<PlantDto?>(
@@ -52,9 +59,12 @@ class PlantController {
         else {
 
             val dto = plantTransformer.toDTO(result.get())
-            ResponseEntity.status(200).body(WrappedResponse<PlantDto?>(
+            ResponseEntity
+                .status(200)
+                .cacheControl(CacheControl.maxAge(30, TimeUnit.MINUTES))
+                .body(WrappedResponse<PlantDto?>(
                     200, dto
-            ))
+                ))
         }
     }
 

@@ -88,4 +88,25 @@ class CacheTest : ControllerTestBase() {
         assertEquals(0, before)
         assertEquals(1, after)
     }
+
+    @Test
+    fun `getting specific plant is cached`() {
+
+        val before = plantController.callCount.getOne
+
+        val plant = persistPlant(getPlantDTO())
+        repeat((0..10).count()) {
+
+            given()
+                    .param("port", port)
+                    .get("/cacheproxy/plants/${plant.id}")
+                    .then()
+                    .statusCode(200)
+        }
+
+        val after = plantController.callCount.getOne
+
+        assertEquals(0, before)
+        assertEquals(1, after)
+    }
 }

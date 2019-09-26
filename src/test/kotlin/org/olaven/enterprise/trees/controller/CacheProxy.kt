@@ -1,6 +1,5 @@
 package org.olaven.enterprise.trees.controller
 
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.RestTemplate
 
@@ -25,13 +24,7 @@ class CacheProxy(
     fun getLocationsProxy(
             @RequestParam(value = "port", required = true)
             port: Int
-    ): ResponseEntity<String> {
-
-        val res =
-                restTemplate.getForEntity("http://localhost:$port/api/locations", String::class.java)
-
-        return ResponseEntity.ok(res.body)
-    }
+    ) = callOrigin("/locations", port)
 
 
     @GetMapping("/locations/{id}")
@@ -40,12 +33,17 @@ class CacheProxy(
             id: Long,
             @RequestParam(value = "port", required = true)
             port: Int
-    ): ResponseEntity<String> {
+    ) = callOrigin("locations/$id", port)
 
-        val res =
-                restTemplate.getForEntity("http://localhost:$port/api/locations/$id", String::class.java)
+    @GetMapping("/plants/{id}")
+    fun getTreeProxy(
+            @PathVariable(required = true)
+            id: Long,
+            @RequestParam(value = "port", required = true)
+            port: Int
+    ) = callOrigin("plants/$id", port)
 
-        return ResponseEntity.ok(res.body)
-    }
 
+    private fun callOrigin(path: String, port: Int) =
+            restTemplate.getForEntity("http://localhost:$port/api/$path", String::class.java)
 }
