@@ -2,18 +2,15 @@ package org.olaven.enterprise.trees
 
 import org.olaven.enterprise.trees.entity.LocationEntity
 import org.olaven.enterprise.trees.repository.LocationRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import javax.annotation.PostConstruct
 
 @Service
 @Profile(value = ["local"])
-class DefaultDataInitializer {
-
-
-    @Autowired
-    lateinit var locationRepository: LocationRepository;
+class DefaultDataInitializer(
+        private val locationRepository: LocationRepository
+) {
 
     @PostConstruct
     fun initialize() {

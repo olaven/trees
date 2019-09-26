@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import org.olaven.enterprise.trees.CallCount
 import org.olaven.enterprise.trees.HasCallCount
+import org.olaven.enterprise.trees.annotations.IsLocation
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.Page
 import org.olaven.enterprise.trees.dto.WrappedResponse
@@ -13,6 +14,7 @@ import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.CacheControl
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 import java.util.concurrent.TimeUnit
@@ -20,18 +22,18 @@ import java.util.concurrent.TimeUnit
 @RestController
 @Api(value ="api/locations", description = "doing operations on locations")
 @RequestMapping(value = ["api/locations"])
-class LocationController: HasCallCount {
+@Validated
+class LocationController(
+
+        val locationRepository: LocationRepository,
+        val locationTransformer: LocationTransformer
+): HasCallCount {
 
     enum class Expand {
         NONE, PLANTS
     }
 
     override val callCount = CallCount()
-
-    @Autowired
-    private lateinit var locationRepository: LocationRepository
-    @Autowired
-    private lateinit var locationTransformer: LocationTransformer
 
     @GetMapping("")
     @ApiResponse(code = 200, message = "All locations")
@@ -114,7 +116,11 @@ class LocationController: HasCallCount {
 
     //TODO: remove this possibility?
     @PostMapping("")
-    fun createLocation(@RequestBody dto: LocationDTO): ResponseEntity<WrappedResponse<Nothing>> {
+    fun createLocation(
+            @RequestBody
+            @IsLocation
+            dto: LocationDTO
+    ): ResponseEntity<WrappedResponse<Nothing>> {
 
         val entity = locationRepository.save(locationTransformer.toEntity(dto));
         val location = URI.create("locations/${entity.id}")

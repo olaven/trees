@@ -32,6 +32,11 @@ class PlantController: HasCallCount {
     private val plantTransformer = PlantTransformer()
     @Autowired
     private val locationTransformer = LocationTransformer()
+class PlantController(
+        private val plantRepository: PlantRepository,
+        private val plantTransformer: PlantTransformer,
+        private val locationTransformer: LocationTransformer
+) {
 
     override val callCount = CallCount()
 
