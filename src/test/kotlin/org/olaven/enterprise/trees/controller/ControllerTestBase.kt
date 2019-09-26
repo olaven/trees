@@ -6,9 +6,11 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.olaven.enterprise.trees.DatabaseReset
 import org.olaven.enterprise.trees.TestBase
 import org.olaven.enterprise.trees.TreeApplication
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.cache.Cache
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
@@ -21,6 +23,9 @@ abstract class ControllerTestBase: TestBase() {
     @LocalServerPort
     protected var port = 0
 
+    @Value("#{cacheManager.getCache('httpClient')}")
+    protected lateinit var httpClientCache: Cache
+
 
     @BeforeEach
     fun init() {
@@ -30,6 +35,8 @@ abstract class ControllerTestBase: TestBase() {
         RestAssured.port = port
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
-        databaseReset.reset();
+        databaseReset.reset()
+        httpClientCache.clear()
     }
+
 }

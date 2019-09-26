@@ -3,16 +3,21 @@ package org.olaven.enterprise.trees.controller
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
+import org.olaven.enterprise.trees.CallCount
+import org.olaven.enterprise.trees.HasCallCount
 import org.olaven.enterprise.trees.annotations.IsLocation
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.Page
 import org.olaven.enterprise.trees.dto.WrappedResponse
 import org.olaven.enterprise.trees.repository.LocationRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.CacheControl
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.net.URI
+import java.util.concurrent.TimeUnit
 
 @RestController
 @Api(value ="api/locations", description = "doing operations on locations")
@@ -22,12 +27,13 @@ class LocationController(
 
         val locationRepository: LocationRepository,
         val locationTransformer: LocationTransformer
-) {
+): HasCallCount {
 
     enum class Expand {
         NONE, PLANTS
     }
 
+    override val callCount = CallCount()
 
     @GetMapping("")
     @ApiResponse(code = 200, message = "All locations")
@@ -39,6 +45,7 @@ class LocationController(
             expand: Expand
     ): ResponseEntity<WrappedResponse<Page<LocationDTO>>> {
 
+        callCount.getAll++
         val size = 5
         val entities = locationRepository.getNextPage(size, keysetId, expand == Expand.PLANTS)
         val locations = entities.map { locationTransformer.toDTO(it, expand == Expand.PLANTS) }
@@ -49,7 +56,10 @@ class LocationController(
             else null
 
         val page = Page(locations, next)
-        return ResponseEntity.status(200).body(WrappedResponse(
+        return ResponseEntity
+                .status(200)
+                .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
+                .body(WrappedResponse(
                 200,
                 page
         ))
@@ -65,16 +75,19 @@ class LocationController(
             expand: Expand
     ): ResponseEntity<WrappedResponse<LocationDTO>> {
 
+        callCount.getOne++
         val entity = locationRepository.findById(id)
         val dto = if (entity.isPresent)
             locationTransformer.toDTO(entity.get(), expand == Expand.PLANTS)
-        else
-            null
+        else null
         val code = if (dto == null) 404 else 200
 
-        return ResponseEntity.ok(WrappedResponse(
-                code, dto
-        ))
+        return ResponseEntity
+                .status(code)
+                .cacheControl(CacheControl.maxAge(5, TimeUnit.HOURS))
+                .body(WrappedResponse(
+                        code, dto
+                ))
     }
 
     @GetMapping("/random")

@@ -109,6 +109,26 @@
             <version>${version.postgres}</version>
         </dependency>
 
+        <!-- Caching -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!--<dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>-->
+        <dependency><!-- Replacing? -->
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-ehcache</artifactId>
+            <version>5.0.2.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient-cache</artifactId>
+        </dependency>
+
+
         <!-- Feature toggles -->
         <dependency>
             <groupId>org.togglz</groupId>

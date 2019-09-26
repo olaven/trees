@@ -13,7 +13,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-internal class LocationControllerTest: ControllerTestBase() {
+internal class LocationControllerTest(): ControllerTestBase() {
 
 
     @Test
@@ -162,7 +162,6 @@ internal class LocationControllerTest: ControllerTestBase() {
                     print(plants);
                     assertEquals(1, plants.count())
                 }
-
     }
 
 
@@ -252,7 +251,6 @@ internal class LocationControllerTest: ControllerTestBase() {
         getRandom(includePlants = true)
                 .body("data.plants", hasSize<PlantDto>(1))
     }
-
 
     private fun getRandom(followRedirect: Boolean = true, includePlants: Boolean = false): ValidatableResponse {
 
