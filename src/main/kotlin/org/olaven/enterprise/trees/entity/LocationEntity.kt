@@ -24,6 +24,14 @@ open class LocationEntity (
 
         @field:Id
         @field:GeneratedValue
-        val id: Long? = -1
+        val id: Long? = -1,
+
+
+        @field:NotNull
+        @field:Min(0)
+        val timestamp: Long,
+
+        @Version
+        internal val version: Long = 0
 )
 

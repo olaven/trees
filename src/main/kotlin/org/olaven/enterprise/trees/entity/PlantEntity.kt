@@ -2,17 +2,13 @@ package org.olaven.enterprise.trees.entity
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import org.jetbrains.annotations.NotNull
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.ManyToOne
+import javax.persistence.*
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.Size
 
 @Entity
 class PlantEntity (
-
 
     /*
     * NOTE: '@field' is specifying that the
@@ -40,5 +36,8 @@ class PlantEntity (
 
     @field:Id
     @field:GeneratedValue
-    var id: Long = -1
+    var id: Long = -1,
+
+    @Version
+    private val version: Long = 0
 )

@@ -252,6 +252,55 @@ internal class LocationControllerTest(): ControllerTestBase() {
                 .body("data.plants", hasSize<PlantDto>(1))
     }
 
+    @Test
+    fun `locations return with an e-tag`() {
+
+        val entity = persistLocation(getLocationDTO())
+        getSpecific(entity.id!!)
+                .statusCode(200)
+                .header("ETag", notNullValue())
+    }
+
+
+    @Test
+    fun `returns 304 if unmodified ETag supplied`() {
+
+        val entity = persistLocation(getLocationDTO())
+        val etag = getSpecific(entity.id!!)
+                .statusCode(200)
+                .extract().header("ETag")
+
+        given()
+                .header("if-none-match", etag)
+                .get("/locations/${entity.id}")
+                .then()
+                .statusCode(304)
+    }
+
+    @Test
+    fun `location returns with last-modified header`() {
+
+        val entity = persistLocation(getLocationDTO())
+        getSpecific(entity.id!!)
+                .header("last-modified", notNullValue())
+    }
+
+    @Test
+    fun `returns 304 if modified sine`() {
+
+        val entity = persistLocation(getLocationDTO())
+        val lastModified =getSpecific(entity.id!!)
+                .statusCode(200)
+                .extract().header("last-modified")
+
+        given()
+                .header("If-Modified-Since", lastModified)
+                .get("/locations/${entity.id}")
+                .then()
+                .statusCode(304)
+
+    }
+
     private fun getRandom(followRedirect: Boolean = true, includePlants: Boolean = false): ValidatableResponse {
 
         val path = if (includePlants)
@@ -290,4 +339,9 @@ internal class LocationControllerTest(): ControllerTestBase() {
                 .get(path)
                 .then()
     }
+
+    private fun getSpecific(id: Long) = given()
+            .get("/locations/$id")
+            .then()
+
 }

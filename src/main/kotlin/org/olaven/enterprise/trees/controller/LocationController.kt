@@ -11,7 +11,6 @@ import org.olaven.enterprise.trees.dto.Page
 import org.olaven.enterprise.trees.dto.WrappedResponse
 import org.olaven.enterprise.trees.repository.LocationRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.CacheControl
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -76,18 +75,28 @@ class LocationController(
     ): ResponseEntity<WrappedResponse<LocationDTO>> {
 
         callCount.getOne++
-        val entity = locationRepository.findById(id)
-        val dto = if (entity.isPresent)
-            locationTransformer.toDTO(entity.get(), expand == Expand.PLANTS)
-        else null
-        val code = if (dto == null) 404 else 200
 
-        return ResponseEntity
-                .status(code)
-                .cacheControl(CacheControl.maxAge(5, TimeUnit.HOURS))
-                .body(WrappedResponse(
-                        code, dto
-                ))
+        val entity = locationRepository.findById(id)
+
+        if (entity.isPresent) {
+
+            val dto =
+                    locationTransformer.toDTO(entity.get(), expand == Expand.PLANTS)
+
+            return ResponseEntity
+                    .status(200)
+                    .cacheControl(CacheControl.maxAge(5, TimeUnit.HOURS))
+                    .eTag(entity.get().version.toString())
+                    .lastModified(entity.get().timestamp)
+                    .body(WrappedResponse(
+                            200, dto
+                    ))
+        } else {
+
+            return ResponseEntity
+                    .notFound()
+                    .build()
+        }
     }
 
     @GetMapping("/random")
@@ -122,7 +131,7 @@ class LocationController(
             dto: LocationDTO
     ): ResponseEntity<WrappedResponse<Nothing>> {
 
-        val entity = locationRepository.save(locationTransformer.toEntity(dto));
+        val entity = locationRepository.save(locationTransformer.toEntity(dto))
         val location = URI.create("locations/${entity.id}")
 
         return ResponseEntity.created(location).body(WrappedResponse(
