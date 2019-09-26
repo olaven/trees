@@ -2,6 +2,7 @@ package org.olaven.enterprise.trees.entity
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import org.jetbrains.annotations.NotNull
+import java.sql.Timestamp
 import javax.persistence.*
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
@@ -38,6 +39,8 @@ class PlantEntity (
     @field:GeneratedValue
     var id: Long = -1,
 
-    @Version
-    private val version: Long = 0
+    @field:NotNull
+    var timestamp: Long,
+
+    @Version internal val version: Long = 0
 )

@@ -1,4 +1,4 @@
-package org.olaven.enterprise.trees;
+package org.olaven.enterprise.trees.misc;
 
 import org.togglz.core.Feature;
 import org.togglz.core.annotation.Label;

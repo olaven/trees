@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.base.Throwables
 import io.swagger.annotations.*
-import org.olaven.enterprise.trees.CallCount
-import org.olaven.enterprise.trees.HasCallCount
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
 import org.olaven.enterprise.trees.dto.WrappedResponse
+import org.olaven.enterprise.trees.misc.CallCount
+import org.olaven.enterprise.trees.misc.HasCallCount
 import org.olaven.enterprise.trees.repository.PlantRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.olaven.enterprise.trees.transformer.PlantTransformer
@@ -54,10 +54,13 @@ class PlantController(
             ))
         else {
 
-            val dto = plantTransformer.toDTO(result.get())
+            val entity = result.get()
+            val dto = plantTransformer.toDTO(entity)
             ResponseEntity
                 .status(200)
                 .cacheControl(CacheControl.maxAge(30, TimeUnit.MINUTES))
+                .eTag(entity.version.toString())
+                .lastModified(entity.timestamp)
                 .body(WrappedResponse<PlantDto?>(
                     200, dto
                 ))

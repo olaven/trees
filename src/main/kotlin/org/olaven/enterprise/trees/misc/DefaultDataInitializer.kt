@@ -1,4 +1,4 @@
-package org.olaven.enterprise.trees
+package org.olaven.enterprise.trees.misc
 
 import org.olaven.enterprise.trees.entity.LocationEntity
 import org.olaven.enterprise.trees.repository.LocationRepository

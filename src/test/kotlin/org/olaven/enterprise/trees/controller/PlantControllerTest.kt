@@ -2,11 +2,14 @@ package org.olaven.enterprise.trees.controller
 
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import io.restassured.response.ValidatableResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.notNullValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
@@ -80,7 +83,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `getting all returns wrapped responses`() {
 
-        val posted = postAndGet()
+        val posted = postAndGetTransformed()
         given()
                 .contentType(ContentType.JSON)
                 .get("/plants")
@@ -126,7 +129,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `can update a plant`() {
 
-        val dto = postAndGet()
+        val dto = postAndGetTransformed()
 
         val originalName = dto?.name
         val newName = "Updated name"
@@ -147,7 +150,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `returns bad request if any part of DTO is missing`() {
 
-        val dto = postAndGet()!!
+        val dto = postAndGetTransformed()!!
 
         dto.name = null
         put(dto)
@@ -216,7 +219,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     private fun `can update plant`() {
 
-        val original = postAndGet()!!
+        val original = postAndGetTransformed()!!
         val newName = "SOME UPDATED NAME"
 
         val json = """
@@ -253,7 +256,7 @@ internal class PlantControllerTest: ControllerTestBase() {
     @Test
     fun `return appropriate code on bad PATCH request`() {
 
-        val original = postAndGet()!!
+        val original = postAndGetTransformed()!!
         val wrongValue = "NOT AN INTEGER"
 
         val json = """
@@ -278,6 +281,67 @@ internal class PlantControllerTest: ControllerTestBase() {
                 .statusCode(400)
     }
 
+    @Test
+    fun `returned plant has ETag`() {
+
+        postAndGet()
+                .header("ETag", notNullValue())
+    }
+
+    @Test
+    fun `Responds to If-Match`() {
+
+        val dto = postAndGetTransformed()!!
+        val tag = given()
+                .get("/plants/${dto.id}")
+                .then()
+                .statusCode(200)
+                .extract().header("ETag")
+
+        given()
+                .header("If-Match", tag)
+                .get("/plants/${dto.id}")
+                .then()
+                .statusCode(200) //NOTE: it should match, request OK
+
+        dto.name = "Updated name"
+        put(dto) //NOTE: Updating (ETag should change)
+                .then()
+                .statusCode(204)
+
+        given()
+                .header("If-Match", tag)
+                .get("/plants/${dto.id}")
+                .then()
+                .statusCode(304) //NOTE: No longer matches (304 Not Modified)
+    }
+
+    @Test @Disabled
+    fun `returns 304 based on etag, on If-None-Match`() {
+
+
+    }
+
+
+    @Test
+    fun `returned plant has last-modified`() {
+
+        postAndGet()
+                .header("last-modified", notNullValue())
+    }
+
+    @Test @Disabled
+    fun `returns 304 based on etag, on If-Unmodified-Since`() {
+
+
+    }
+
+    @Test @Disabled
+    fun `returns 304 based on etag, on If-Modified-Since`() {
+
+
+    }
+
 
 
     private fun getAll() = given()
@@ -296,15 +360,25 @@ internal class PlantControllerTest: ControllerTestBase() {
         .pathParam("id", updated.id)
         .put("plants/{id}")
 
+    private fun postAndGet(): ValidatableResponse {
 
-    private fun postAndGet(): PlantDto? {
+        val location = post(getPlantDTO())
+                .statusCode(201)
+                .extract()
+                .header("location")
+
+        return given()
+                .get(location)
+                .then()
+    }
+
+    private fun postAndGetTransformed(): PlantDto? {
 
         val location = post(getPlantDTO())
                 .statusCode(201)
                 .extract()
                 .header("Location")
 
-        println(location)
         val json = given()
                 .get(location)
                 .then()
