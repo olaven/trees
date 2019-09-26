@@ -55,6 +55,52 @@ class LocationController(
         ))
     }
 
+    @GetMapping("/{id}")
+    @ApiResponse(code = 200, message = "One specific location")
+    @ApiOperation("Get a specific location")
+    fun getLocation(
+            @PathVariable(required = true)
+            id: Long,
+            @RequestParam(value = "expand", required = false, defaultValue = "NONE")
+            expand: Expand
+    ): ResponseEntity<WrappedResponse<LocationDTO>> {
+
+        val entity = locationRepository.findById(id)
+        val dto = if (entity.isPresent)
+            locationTransformer.toDTO(entity.get(), expand == Expand.PLANTS)
+        else
+            null
+        val code = if (dto == null) 404 else 200
+
+        return ResponseEntity.ok(WrappedResponse(
+                code, dto
+        ))
+    }
+
+    @GetMapping("/random")
+    @ApiResponse(code = 200, message = "Temporary redirect to random location.")
+    @ApiOperation(value = "Get redirected to a random location.")
+    fun getRandomLocation(
+            @RequestParam("expand", required = false, defaultValue = "NONE")
+            expand: Expand
+    ): ResponseEntity<WrappedResponse<LocationDTO>> {
+
+
+        val entity = locationRepository.getRandom()
+        val status = if (entity == null) 404 else 307
+        val location = if (entity == null)
+            ""
+        else
+            "${entity.id}?expand=${expand}"
+
+        return ResponseEntity
+                .status(status)
+                .location(URI.create(location)) //TODO: avoid sending if 404?
+                .body(WrappedResponse(
+                status
+        ))
+    }
+
     //TODO: remove this possibility?
     @PostMapping("")
     fun createLocation(
