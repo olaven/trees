@@ -9,7 +9,6 @@ import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.notNullValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
@@ -339,16 +338,63 @@ internal class PlantControllerTest: ControllerTestBase() {
                 .header("last-modified", notNullValue())
     }
 
-    @Test @Disabled
-    fun `returns 304 based on etag, on If-Unmodified-Since`() {
+    @Test
+    fun `returns 200 based on timestamp, on If-Modified-Since`() {
+
+        val dto = postAndGetTransformed()!!
+        val timestamp = get(dto.id!!)
+                .extract()
+                .header("Last-Modified")
 
 
+        Thread.sleep(2_000)
+        put(dto.apply {
+            name = "UPDATED"
+        }).then().statusCode(204)
+        //Thread.sleep(2_000)
+
+
+        given()
+                .header("If-Modified-Since", timestamp)
+                .get("/plants/${dto.id}")
+                .then()
+                .statusCode(200)
     }
 
-    @Test @Disabled
-    fun `returns 304 based on etag, on If-Modified-Since`() {
+    @Test
+    fun `returns 304 based on timestamp, on If-Modified-Since`() {
 
+        val dto = postAndGetTransformed()!!
+        val timestamp = get(dto.id!!)
+                .extract()
+                .header("Last-Modified")
 
+        Thread.sleep(2_000) //waiting, as timestamp is based on seconds
+        given()
+                .header("If-Modified-Since", timestamp)
+                .get("/plants/${dto.id}")
+                .then()
+                .statusCode(304)
+    }
+
+    @Test
+    fun `returns 412 based on timestamp, on If-Unmodified-Since`() {
+
+        val dto = postAndGetTransformed()!!
+        val timestamp = get(dto.id!!)
+                .extract()
+                .header("Last-Modified")
+
+        Thread.sleep(2_000)
+        dto.name = "UPDATED"
+        put(dto)
+                .then().statusCode(204)
+
+        given()
+                .header("If-Unmodified-Since", timestamp)
+                .get("/plants/${dto.id}")
+                .then()
+                .statusCode(412)
     }
 
 

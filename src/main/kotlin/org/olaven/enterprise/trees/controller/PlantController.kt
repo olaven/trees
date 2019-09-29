@@ -44,7 +44,11 @@ class PlantController(
     @GetMapping("/{id}")
     @ApiOperation(value = "Get a specific plant")
     @ApiResponse(code = 200, message = "the body of plant")
-    fun getTree(@PathVariable id: Long, @RequestHeader(value = "If-Match", required = false) ifMatch: String?): ResponseEntity<WrappedResponse<PlantDto?>> {
+    fun getTree(
+            @PathVariable id: Long,
+            @RequestHeader(value = "If-Match", required = false) ifMatch: String?,
+            @RequestHeader(value = "If-Modified-Since", required = false) ifModifiedSince: String?
+    ): ResponseEntity<WrappedResponse<PlantDto?>> {
 
         callCount.getOne++
         val result = plantRepository.findById(id)
@@ -139,9 +143,9 @@ class PlantController(
                 if (noneMatch != null && noneMatch == version) {
                     return ResponseEntity.status(412).build()
                 }
-                
-                val newEntity = locationTransformer.toEntity(dto.location!!)
-                plantRepository.update(id, dto.name!!, dto.description!!, dto.age!!, dto.height!!, newEntity)
+
+                val location = locationTransformer.toEntity(dto.location!!)
+                plantRepository.update(id, dto.name!!, dto.description!!, dto.age!!, dto.height!!, location)
                 ResponseEntity.status(204).body(WrappedResponse(
                         204, null
                 ))
