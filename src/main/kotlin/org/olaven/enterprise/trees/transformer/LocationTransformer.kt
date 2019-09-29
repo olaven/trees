@@ -3,6 +3,7 @@ package org.olaven.enterprise.trees.transformer
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.entity.LocationEntity
 import org.springframework.stereotype.Service
+import java.time.ZonedDateTime
 
 @Service
 class LocationTransformer(
@@ -20,6 +21,7 @@ class LocationTransformer(
         LocationEntity(
                 x = dto.x,
                 y = dto.y,
-                id = dto.id
+                id = dto.id,
+                timestamp = ZonedDateTime.now().toInstant().toEpochMilli()
         )
 }

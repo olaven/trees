@@ -10,14 +10,14 @@ TODO:
 - [X] Implement keyset pagination 
 - [X] Some expand filtering 
 - [X] Override spring sin haandtering av exceptions 
-- [ ] Legge inn en validation-annotation
+- [X] Legge inn en validation-annotation
 - [X] Ikke sende stacktrace  
 - [X] Cut "/trees/" from path
-- [ ] Redirection 
+- [X] Redirection 
 - [ ] Conditional requests
 - [ ] Circuit breaker 
 - [ ] Test mocking 
-- [ ] Caching 
+- [X] Caching 
 - [ ] constructor validation
 - [ ] Add code coverage test 
 - [X] Trello Integration

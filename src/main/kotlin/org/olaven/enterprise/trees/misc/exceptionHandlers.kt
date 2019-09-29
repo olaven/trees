@@ -1,4 +1,4 @@
-package org.olaven.enterprise.trees
+package org.olaven.enterprise.trees.misc
 
 import org.olaven.enterprise.trees.dto.WrappedResponse
 import org.springframework.http.HttpHeaders

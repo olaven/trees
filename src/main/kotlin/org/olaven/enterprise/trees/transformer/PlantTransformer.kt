@@ -5,6 +5,7 @@ import org.olaven.enterprise.trees.dto.PlantDto
 import org.olaven.enterprise.trees.entity.PlantEntity
 import org.olaven.enterprise.trees.repository.LocationRepository
 import org.springframework.stereotype.Service
+import java.time.ZonedDateTime
 
 @Service
 class PlantTransformer(
@@ -27,6 +28,13 @@ class PlantTransformer(
         val location = locationRepository.findById(dto.location!!.id)
         require(location.isPresent) { "Could not find location with id ${dto.location!!.id}" }
 
-        return PlantEntity(dto.name!!, dto.description!!, dto.height!!, dto.age!!, location.get());
+        return PlantEntity(
+                dto.name!!,
+                dto.description!!,
+                dto.height!!,
+                dto.age!!,
+                location.get(),
+                timestamp = ZonedDateTime.now().toInstant().toEpochMilli()
+        )
     }
 }

@@ -1,7 +1,7 @@
 package org.olaven.enterprise.trees.controller;
 
 import io.swagger.annotations.Api;
-import org.olaven.enterprise.trees.FeatureToggles;
+import org.olaven.enterprise.trees.misc.FeatureToggles;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
