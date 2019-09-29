@@ -297,8 +297,10 @@ internal class PlantControllerTest: ControllerTestBase() {
                 .then()
                 .statusCode(200)
                 .extract().header("ETag")
+                .removePrefix("\"")
+                .removeSuffix("\"")
 
-        given()
+        given().contentType(ContentType.JSON)
                 .header("If-Match", tag)
                 .get("/plants/${dto.id}")
                 .then()
@@ -309,17 +311,24 @@ internal class PlantControllerTest: ControllerTestBase() {
                 .then()
                 .statusCode(204)
 
-        given()
+        given().contentType(ContentType.JSON)
                 .header("If-Match", tag)
                 .get("/plants/${dto.id}")
                 .then()
-                .statusCode(304) //NOTE: No longer matches (304 Not Modified)
+                .statusCode(304) //NOTE: would be 412 (Precondition Failed) on methods other than GET/HEAD
     }
 
-    @Test @Disabled
-    fun `returns 304 based on etag, on If-None-Match`() {
+    @Test
+    fun `returns 412 based on etag, on If-None-Match`() {
 
-
+        val dto = postAndGetTransformed()!!
+        val etag = getETag(dto.id!!)
+        given().contentType(ContentType.JSON)
+                .header("If-None-Match", etag)
+                .body(dto)
+                .put("/plants/${dto.id}")
+                .then()
+                .statusCode(412) // as something actually _does_ match
     }
 
 
@@ -418,4 +427,12 @@ internal class PlantControllerTest: ControllerTestBase() {
             .body(body)
             .post("/plants")
             .then()
+
+    private fun getETag(id: Long) = given()
+            .get("/plants/${id}")
+            .then()
+            .statusCode(200)
+            .extract().header("ETag")
+            .removePrefix("\"")
+            .removeSuffix("\"")
 }

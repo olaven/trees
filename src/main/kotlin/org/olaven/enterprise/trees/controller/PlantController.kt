@@ -44,7 +44,7 @@ class PlantController(
     @GetMapping("/{id}")
     @ApiOperation(value = "Get a specific plant")
     @ApiResponse(code = 200, message = "the body of plant")
-    fun getTree(@PathVariable id: Long): ResponseEntity<WrappedResponse<PlantDto?>> {
+    fun getTree(@PathVariable id: Long, @RequestHeader(value = "If-Match", required = false) ifMatch: String?): ResponseEntity<WrappedResponse<PlantDto?>> {
 
         callCount.getOne++
         val result = plantRepository.findById(id)
@@ -55,11 +55,16 @@ class PlantController(
         else {
 
             val entity = result.get()
+            val version = entity.version.toString()
+            if (ifMatch != null && ifMatch != version)
+                return ResponseEntity.status(304).build()
+
             val dto = plantTransformer.toDTO(entity)
+
             ResponseEntity
                 .status(200)
                 .cacheControl(CacheControl.maxAge(30, TimeUnit.MINUTES))
-                .eTag(entity.version.toString())
+                .eTag(version)
                 .lastModified(entity.timestamp)
                 .body(WrappedResponse<PlantDto?>(
                     200, dto
@@ -109,7 +114,8 @@ class PlantController(
     @ApiOperation("Replace a plant with new value")
     fun updatePlant(
             @ApiParam(value = "plants's id") @PathVariable id: Long,
-            @ApiParam(value = "the new plant") @RequestBody dto: PlantDto
+            @ApiParam(value = "the new plant") @RequestBody dto: PlantDto,
+            @RequestHeader(value = "If-None-Match", required = false) noneMatch: String?
     ): ResponseEntity<WrappedResponse<Nothing>> {
 
         if (id != dto.id) return ResponseEntity.status(HttpStatus.CONFLICT).build()
@@ -128,8 +134,14 @@ class PlantController(
 
             return if (plantRepository.existsById(id)) {
 
-                val locationEntity = locationTransformer.toEntity(dto.location!!)
-                plantRepository.update(id, dto.name!!, dto.description!!, dto.age!!, dto.height!!, locationEntity)
+                val oldEntity = plantRepository.findById(id).get()
+                val version = oldEntity.version.toString()
+                if (noneMatch != null && noneMatch == version) {
+                    return ResponseEntity.status(412).build()
+                }
+                
+                val newEntity = locationTransformer.toEntity(dto.location!!)
+                plantRepository.update(id, dto.name!!, dto.description!!, dto.age!!, dto.height!!, newEntity)
                 ResponseEntity.status(204).body(WrappedResponse(
                         204, null
                 ))
