@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.base.Throwables
 import io.swagger.annotations.*
-import org.olaven.enterprise.trees.CallCount
-import org.olaven.enterprise.trees.HasCallCount
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
 import org.olaven.enterprise.trees.dto.WrappedResponse
+import org.olaven.enterprise.trees.misc.CallCount
+import org.olaven.enterprise.trees.misc.HasCallCount
 import org.olaven.enterprise.trees.repository.PlantRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
 import org.olaven.enterprise.trees.transformer.PlantTransformer
@@ -44,7 +44,11 @@ class PlantController(
     @GetMapping("/{id}")
     @ApiOperation(value = "Get a specific plant")
     @ApiResponse(code = 200, message = "the body of plant")
-    fun getTree(@PathVariable id: Long): ResponseEntity<WrappedResponse<PlantDto?>> {
+    fun getTree(
+            @PathVariable id: Long,
+            @RequestHeader(value = "If-Match", required = false) ifMatch: String?,
+            @RequestHeader(value = "If-Modified-Since", required = false) ifModifiedSince: String?
+    ): ResponseEntity<WrappedResponse<PlantDto?>> {
 
         callCount.getOne++
         val result = plantRepository.findById(id)
@@ -54,10 +58,18 @@ class PlantController(
             ))
         else {
 
-            val dto = plantTransformer.toDTO(result.get())
+            val entity = result.get()
+            val version = entity.version.toString()
+            if (ifMatch != null && ifMatch != version)
+                return ResponseEntity.status(304).build()
+
+            val dto = plantTransformer.toDTO(entity)
+
             ResponseEntity
                 .status(200)
                 .cacheControl(CacheControl.maxAge(30, TimeUnit.MINUTES))
+                .eTag(version)
+                .lastModified(entity.timestamp)
                 .body(WrappedResponse<PlantDto?>(
                     200, dto
                 ))
@@ -106,7 +118,8 @@ class PlantController(
     @ApiOperation("Replace a plant with new value")
     fun updatePlant(
             @ApiParam(value = "plants's id") @PathVariable id: Long,
-            @ApiParam(value = "the new plant") @RequestBody dto: PlantDto
+            @ApiParam(value = "the new plant") @RequestBody dto: PlantDto,
+            @RequestHeader(value = "If-None-Match", required = false) noneMatch: String?
     ): ResponseEntity<WrappedResponse<Nothing>> {
 
         if (id != dto.id) return ResponseEntity.status(HttpStatus.CONFLICT).build()
@@ -125,8 +138,14 @@ class PlantController(
 
             return if (plantRepository.existsById(id)) {
 
-                val locationEntity = locationTransformer.toEntity(dto.location!!)
-                plantRepository.update(id, dto.name!!, dto.description!!, dto.age!!, dto.height!!, locationEntity)
+                val oldEntity = plantRepository.findById(id).get()
+                val version = oldEntity.version.toString()
+                if (noneMatch != null && noneMatch == version) {
+                    return ResponseEntity.status(412).build()
+                }
+
+                val location = locationTransformer.toEntity(dto.location!!)
+                plantRepository.update(id, dto.name!!, dto.description!!, dto.age!!, dto.height!!, location)
                 ResponseEntity.status(204).body(WrappedResponse(
                         204, null
                 ))

@@ -1,5 +1,10 @@
-package org.olaven.enterprise.trees
+package org.olaven.enterprise.trees.misc
 
+/**
+ * Implemented by controllers.
+ *
+ * Used to test caching.
+ */
 class CallCount (
         var getOne: Int = 0,
         var getAll: Int = 0

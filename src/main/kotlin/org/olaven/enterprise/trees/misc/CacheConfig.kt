@@ -1,4 +1,4 @@
-package org.olaven.enterprise.trees
+package org.olaven.enterprise.trees.misc
 
 
 import net.sf.ehcache.Ehcache

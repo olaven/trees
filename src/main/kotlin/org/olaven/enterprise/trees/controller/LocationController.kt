@@ -3,15 +3,15 @@ package org.olaven.enterprise.trees.controller
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
-import org.olaven.enterprise.trees.CallCount
-import org.olaven.enterprise.trees.HasCallCount
 import org.olaven.enterprise.trees.annotations.IsLocation
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.Page
 import org.olaven.enterprise.trees.dto.WrappedResponse
+import org.olaven.enterprise.trees.entity.LocationEntity
+import org.olaven.enterprise.trees.misc.CallCount
+import org.olaven.enterprise.trees.misc.HasCallCount
 import org.olaven.enterprise.trees.repository.LocationRepository
 import org.olaven.enterprise.trees.transformer.LocationTransformer
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.CacheControl
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -76,22 +76,22 @@ class LocationController(
     ): ResponseEntity<WrappedResponse<LocationDTO>> {
 
         callCount.getOne++
-        val entity = locationRepository.findById(id)
-        val dto = if (entity.isPresent)
-            locationTransformer.toDTO(entity.get(), expand == Expand.PLANTS)
-        else null
-        val code = if (dto == null) 404 else 200
 
-        return ResponseEntity
-                .status(code)
-                .cacheControl(CacheControl.maxAge(5, TimeUnit.HOURS))
-                .body(WrappedResponse(
-                        code, dto
-                ))
+        val entity = locationRepository.findById(id)
+
+        return if (entity.isPresent) {
+
+            okLocationResponse(entity.get(), expand == Expand.PLANTS)
+        } else {
+
+            ResponseEntity
+                    .notFound()
+                    .build()
+        }
     }
 
     @GetMapping("/random")
-    @ApiResponse(code = 200, message = "Temporary redirect to random location.")
+    @ApiResponse(code = 307, message = "Temporary redirect to random location.")
     @ApiOperation(value = "Get redirected to a random location.")
     fun getRandomLocation(
             @RequestParam("expand", required = false, defaultValue = "NONE")
@@ -100,18 +100,18 @@ class LocationController(
 
 
         val entity = locationRepository.getRandom()
-        val status = if (entity == null) 404 else 307
+        val code = if (entity == null) 404 else 307
         val location = if (entity == null)
             ""
         else
             "${entity.id}?expand=${expand}"
 
         return ResponseEntity
-                .status(status)
+                .status(code)
                 .location(URI.create(location)) //TODO: avoid sending if 404?
                 .body(WrappedResponse(
-                status
-        ))
+                    code
+                ))
     }
 
     //TODO: remove this possibility?
@@ -122,11 +122,24 @@ class LocationController(
             dto: LocationDTO
     ): ResponseEntity<WrappedResponse<Nothing>> {
 
-        val entity = locationRepository.save(locationTransformer.toEntity(dto));
+        val entity = locationRepository.save(locationTransformer.toEntity(dto))
         val location = URI.create("locations/${entity.id}")
 
         return ResponseEntity.created(location).body(WrappedResponse(
                 code = 201, data = null
         ))
+    }
+
+    private fun okLocationResponse(entity: LocationEntity, includePlants: Boolean): ResponseEntity<WrappedResponse<LocationDTO>> {
+
+        val dto = locationTransformer.toDTO(entity, includePlants)
+        return ResponseEntity
+                .status(200)
+                .cacheControl(CacheControl.maxAge(5, TimeUnit.HOURS))
+                .eTag(entity.version.toString())
+                .lastModified(entity.timestamp)
+                .body(WrappedResponse(
+                        200, dto
+                ))
     }
 }

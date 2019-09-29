@@ -4,6 +4,7 @@ import org.olaven.enterprise.trees.entity.LocationEntity
 import org.olaven.enterprise.trees.entity.PlantEntity
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import java.time.ZonedDateTime
 import javax.persistence.EntityManager
 import javax.transaction.Transactional
 
@@ -20,7 +21,7 @@ interface CustomPlantRepository {
 
 @Transactional
 @Repository
-open class PlantRepositoryImpl(
+class PlantRepositoryImpl(
         private val entityManager: EntityManager
 ): CustomPlantRepository {
 
@@ -33,6 +34,7 @@ open class PlantRepositoryImpl(
         entity.age = age
         entity.height = height
         entity.location = location
+        entity.timestamp = ZonedDateTime.now().toInstant().toEpochMilli()
 
         entityManager.persist(entity)
         return true
