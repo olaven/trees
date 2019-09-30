@@ -19,6 +19,7 @@
         <version.springfox>2.9.2</version.springfox>
         <version.faker>1.0.1</version.faker>
         <version.togglz>2.6.1.Final</version.togglz>
+        <version.hystrix>1.5.18</version.hystrix>
     </properties>
 
     <parent>
@@ -128,6 +129,27 @@
             <artifactId>httpclient-cache</artifactId>
         </dependency>
 
+        <!-- Circuit breaker -->
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-core</artifactId>
+            <version>${version.hystrix}</version>
+        </dependency>
+        <dependency>
+            <!--
+                This in theory is a third-party library coming
+                with Hystrix. Although it works fine from Maven,
+                it fails to build in IntelliJ if explicit
+                declaration is missing here.
+                Might be a bug in IntelliJ, or some weird
+                classpath edge-case
+            -->
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.8</version>
+        </dependency>
+
+
 
         <!-- Feature toggles -->
         <dependency>
@@ -186,30 +208,6 @@
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
         <plugins>
-            <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <version>${version.kotlin}</version>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <jvmTarget>${version.java}</jvmTarget>
-                </configuration>
-            </plugin>
 
             <!--Adding no-arg for JPA, automatically creating default constructors -->
             <plugin>
