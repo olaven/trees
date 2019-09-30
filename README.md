@@ -1,5 +1,8 @@
 # Trees 
 
+## Running app 
+`docker run -p 8080:8080 olaven/trees`
+__note__: using http, not https. For now :) 
 ## Local setup:
 * add `.env` with the `MAPBOX_KEY=your_mapbox_key`
 
