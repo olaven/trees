@@ -6,7 +6,8 @@ deploy:
   provider: script
   script: bash docker_push.sh
   on:
-    branch: master, dockerize
+    #branch: master
+    all_branches: true #TODO: comment out when working 
   api_key:
     secure: SPU/tykRhn6UT7CruASYAURZAnYVa9lpCXECeE4VZ+FDDl89fYVLpEw+UEMc+/iGFDYz6sih0JzQIdUu6fr4MRZ4VWLvBbuHLf3iunGhMSFuJfAUMGDh4YBxlP1csEyj41jqpF/Rg2MfSzkyc+Z5kvLylZFfsaGsAqxTvrVrMu2huOoSem7lakC5Wj1lv0gLdO89hihSWWgBdfKOXA/L88w75AIP2A4Y8+7dB34ZC3RB8wRCE7QXw8b8JG2K/kRU1DRHp0pPgQKl5PA2o1vX3L9C+henLaAmIO8FzIAZzHeueJxbk4gPj9mANlQoKaQK2UBLGWoC4z8MkaUkpFMfZ2msn2HG7e3JIWXO0G81A+okFA7gzE1KcM+D8PTmHfcNJWDTl/9OP6jSNBPVACYssU1zwFRmmdkDo/3MiDSr9faF2By9+azJrezlgFoX/KOKDI0HfK7jZ3PjVN8yf+Itdj2LPbimyDVMc2zNFoPxCDdmkokBMWb1q8W1LcFlDk/ilrcXkaIWCZZ+0CUyNjULdhf3rF7BRHDVtNbinaizVLxlUCF1oExBDgpDaFctVjAZTRm79fl5E9hYtw9oFa2B3iYBK679g9HBmCuqc7WXKNyc41AgAYJb+XSIsL3pHdsDG8gXxz5RAYzMAX8uNGfLCe1U2wqtFvxgkoncosHY0Ew=
 env:
