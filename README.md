@@ -14,11 +14,12 @@ TODO:
 - [X] Ikke sende stacktrace  
 - [X] Cut "/trees/" from path
 - [X] Redirection 
-- [ ] Conditional requests
-- [ ] Circuit breaker 
+- [X] Conditional requests
+- [X] Circuit breaker 
 - [ ] Test mocking 
 - [X] Caching 
 - [ ] constructor validation
 - [ ] Add code coverage test 
 - [X] Trello Integration
+- [ ] Dockerize app
 - [ ] Postgres database 
