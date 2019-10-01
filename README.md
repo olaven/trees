@@ -1,5 +1,8 @@
 # Trees 
 
+## Running app 
+`docker run -p 8080:8080 olaven/trees`
+__note__: using http, not https. For now :) 
 ## Local setup:
 * add `.env` with the `MAPBOX_KEY=your_mapbox_key`
 
@@ -14,11 +17,12 @@ TODO:
 - [X] Ikke sende stacktrace  
 - [X] Cut "/trees/" from path
 - [X] Redirection 
-- [ ] Conditional requests
-- [ ] Circuit breaker 
+- [X] Conditional requests
+- [X] Circuit breaker 
 - [ ] Test mocking 
 - [X] Caching 
 - [ ] constructor validation
 - [ ] Add code coverage test 
 - [X] Trello Integration
+- [ ] Dockerize app
 - [ ] Postgres database 

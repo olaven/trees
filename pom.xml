@@ -19,6 +19,7 @@
         <version.springfox>2.9.2</version.springfox>
         <version.faker>1.0.1</version.faker>
         <version.togglz>2.6.1.Final</version.togglz>
+        <main.class>org.olaven.enterprise.trees.TreeApplication</main.class>
         <version.hystrix>1.5.18</version.hystrix>
     </properties>
 
@@ -209,22 +210,18 @@
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
         <plugins>
 
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${version.springboot}</version>
+            </plugin>
+
             <!--Adding no-arg for JPA, automatically creating default constructors -->
             <plugin>
                 <!-- see https://kotlinlang.org/docs/reference/using-maven.html -->
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <version>${version.kotlin}</version>
-                <!--
-                    Kotlin has a major "limitation" that all classes are final by default.
-                    Someone call it a "feature", others (like me) call it a "design flaw".
-                    See more at: https://discuss.kotlinlang.org/t/classes-final-by-default/166/77
-
-                    Why is it a problem? for example, it does not play well with all major frameworks
-                    out there like JPA, Spring, mocking, etc, as they require to create proxy
-                    classes that extend the classes you write.
-                    So here we have to use special plugins to bypass this Kotlin "feature"...
-                -->
                 <configuration>
                     <jvmTarget>${version.java}</jvmTarget>
                     <compilerPlugins>
@@ -279,12 +276,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
-                    <!--
-                        Make sure to call following:
-                        yarn install
-                        yarn build
-                        docker build
-                    -->
                     <execution>
                         <id>yarn install</id>
                         <goals>
@@ -311,22 +302,6 @@
                             </arguments>
                         </configuration>
                     </execution>
-                    <!--<execution>
-                        <id>docker build</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <executable>docker</executable>
-                            <arguments>
-                                <argument>build</argument>
-                                <argument>.</argument>
-                                <argument>-t</argument>
-                                <argument>trees-image</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>-->
                 </executions>
             </plugin>
         </plugins>
