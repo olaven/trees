@@ -19,10 +19,10 @@ TODO:
 - [X] Redirection 
 - [X] Conditional requests
 - [X] Circuit breaker 
-- [ ] Test mocking 
+- [X] Test mocking 
 - [X] Caching 
 - [ ] constructor validation
 - [ ] Add code coverage test 
 - [X] Trello Integration
-- [ ] Dockerize app
+- [X] Dockerize app
 - [ ] Postgres database 
