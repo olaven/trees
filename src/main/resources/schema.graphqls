@@ -1,0 +1,30 @@
+type Query {
+
+    plants: [Plant!],
+    plant(id: String): Plant,
+
+    locations: [Location!],
+    location(id: String): Location,
+}
+
+
+type Mutation {
+
+        # TODO
+}
+
+
+type Location {
+    id: String!,
+    x: Float!,
+    y: Float!,
+}
+
+type Plant {
+    name: String!,
+    description: String!,
+    height: Float!,
+    age: Int!,
+    location: String!, #NOTE: ID
+    id: Float!,
+}
