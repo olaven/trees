@@ -7,5 +7,5 @@ import org.springframework.stereotype.Component
 @Component
 class LocationResolver: GraphQLResolver<LocationType> {
 
-
+    //TODO: I think I need the same methods as in schema
 }
