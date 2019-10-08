@@ -4,10 +4,11 @@ import io.restassured.RestAssured.given
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.olaven.enterprise.trees.WebTestBase
 import org.springframework.beans.factory.annotation.Autowired
 import kotlin.test.assertEquals
 
-class CacheTest : ControllerTestBase() {
+class CacheTest : WebTestBase() {
 
     @Autowired
     private lateinit var locationController: LocationController

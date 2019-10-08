@@ -1,9 +1,9 @@
 type Query {
 
-    plant(id: String): Plant,
+    plant(id: Int): Plant,
     plants: [Plant!],
 
-    location(id: String): Location,
+    location(id: Int): Location,
     locations: [Location!]
 }
 

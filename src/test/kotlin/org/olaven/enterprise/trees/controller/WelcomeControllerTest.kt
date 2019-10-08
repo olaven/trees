@@ -2,9 +2,10 @@ package org.olaven.enterprise.trees.controller
 
 import io.restassured.RestAssured.given
 import org.junit.jupiter.api.Test
+import org.olaven.enterprise.trees.WebTestBase
 import kotlin.test.assertTrue
 
-internal class WelcomeControllerTest: ControllerTestBase() {
+internal class WelcomeControllerTest: WebTestBase() {
 
     @Test
     fun `welcome message defaults to english`() {

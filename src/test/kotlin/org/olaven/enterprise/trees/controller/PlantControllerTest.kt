@@ -10,12 +10,13 @@ import org.hamcrest.Matchers.notNullValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
+import org.olaven.enterprise.trees.WebTestBase
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
 import org.olaven.enterprise.trees.dto.Status
 import kotlin.test.assertNotEquals
 
-internal class PlantControllerTest: ControllerTestBase() {
+internal class PlantControllerTest: WebTestBase() {
 
     @Test 
     fun `database has none of this entity before tests run`() {
