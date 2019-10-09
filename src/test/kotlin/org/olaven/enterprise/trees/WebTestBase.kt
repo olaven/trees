@@ -30,13 +30,9 @@ abstract class WebTestBase(
     fun init() {
         // RestAssured configs shared by all the tests
         RestAssured.baseURI = "http://localhost"
+        RestAssured.basePath = if (excludeBasePath) "" else "api"
         RestAssured.port = port
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
-
-        if (!excludeBasePath) {
-
-            RestAssured.basePath = "api"
-        }
 
         databaseReset.reset()
         httpClientCache.clear()

@@ -49,7 +49,6 @@ open class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler()
 
     @ExceptionHandler(Exception::class)
     fun `handle unexpected bugs`(ex: Exception, request: WebRequest): ResponseEntity<Any> {
-
         return handleExceptionInternal(
                 RuntimeException(INTERNAL_SERVER_ERROR_MESSAGE),
                 null, HttpHeaders(),
