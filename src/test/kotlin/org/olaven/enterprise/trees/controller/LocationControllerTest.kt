@@ -7,13 +7,14 @@ import io.restassured.response.ValidatableResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
+import org.olaven.enterprise.trees.WebTestBase
 import org.olaven.enterprise.trees.dto.PlantDto
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-internal class LocationControllerTest(): ControllerTestBase() {
+internal class LocationControllerTest(): WebTestBase() {
 
 
     @Test

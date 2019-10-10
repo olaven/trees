@@ -1,8 +1,6 @@
 package org.olaven.enterprise.trees.entity
 
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import org.jetbrains.annotations.NotNull
-import java.sql.Timestamp
 import javax.persistence.*
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min

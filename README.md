@@ -6,6 +6,10 @@ __note__: using http, not https. For now :)
 ## Local setup:
 * add `.env` with the `MAPBOX_KEY=your_mapbox_key`
 
+## About GraphQL 
+* Main endpoint: http://localhost:8080/graphql
+* UI accessible at http://localhost:8080/graphiql
+* UI graph representation at http://localhost:8080/voyager
 
 TODO: 
 - [X] Finish wrapped responses on _all endpoints_ 
@@ -22,7 +26,13 @@ TODO:
 - [X] Test mocking 
 - [X] Caching 
 - [ ] constructor validation
-- [ ] Add code coverage test 
+- [ ] Add code coverage check 
 - [X] Trello Integration
 - [X] Dockerize app
+- [ ] GraphQL -> samme funksjonalitet som REST 
+- [ ] Microservice 
+    - [ ] Docker compose 
+    - [ ] Gateway 
+    - [ ] Service Discovery 
+    - [ ] Load Balancer 
 - [ ] Postgres database 
