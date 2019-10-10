@@ -49,14 +49,59 @@ class LocationResolverTest: WebTestBase(excludeBasePath = true) {
                 .body("data.location.id", equalTo(entity.id?.toInt()))
     }
 
-    @Test @Disabled
+    @Test
     fun `can create location`() {
 
+        val id = given().accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body("""
+                    { "query" : "mutation{createLocation(location: {x: 34.4, y: 44.3})}" }
+                    """.trimIndent())
+                .post("/graphql")
+                .then()
+                .statusCode(200)
+                .extract().jsonPath()
+                .getLong("data.createLocation")
 
+        val retrievedLocation = locationRepository.findById(id)
+        assertThat(retrievedLocation)
+                .isPresent
     }
 
     @Test @Disabled
     fun `can update location`() {
 
+        val original = 10.0
+        val updated = 20.0
+
+        // First create
+        val locationID = persistLocation(getLocationDTO()).id
+        val id = given().accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body("""
+                    { "query" : "mutation{createLocation(location: {x: $original, y: 44.3})}" }
+                    """.trimIndent())
+                .post("/graphql")
+                .then()
+                .statusCode(200)
+                .extract().jsonPath()
+                .getLong("data.createLocation")
+
+
+        assertThat(locationRepository.findById(id).get().x)
+                .isEqualTo(original)
+
+        given().accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body("""
+                    { "query" : "mutation{updateLocation(id: $id, location: {x: $updated, y: 44.3})}" }
+                    """.trimIndent())
+                .post("/graphql")
+                .then()
+                .statusCode(200)
+
+        assertThat(locationRepository.findById(id).get().x)
+                .isNotEqualTo(original)
+                .isEqualTo(updated)
     }
 }
