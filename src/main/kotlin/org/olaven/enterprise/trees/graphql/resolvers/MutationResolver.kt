@@ -75,6 +75,7 @@ class MutationResolver(
     }
 
 
+    //TODO: This error returns to much information about internal implementation. Message should avoid implementation details if possible. 
     private fun handledPersisting(action: () -> DataFetcherResult<Long>): DataFetcherResult<Long> {
 
         return try {

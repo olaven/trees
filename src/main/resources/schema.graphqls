@@ -24,10 +24,10 @@ type Plant {
 
 
 type Mutation {
-    createPlant(plant: InputPlant!): Int!
+    createPlant(plant: InputPlant!): Int
     updatePlant(id: Int!, plant: InputPlant!): Boolean
 
-    createLocation(location: InputLocation!): Int!
+    createLocation(location: InputLocation!): Int
     updateLocation(id: Int!, location: InputLocation!): Boolean
 }
 

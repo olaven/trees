@@ -26,8 +26,13 @@ TODO:
 - [X] Test mocking 
 - [X] Caching 
 - [ ] constructor validation
-- [ ] Add code coverage test 
+- [ ] Add code coverage check 
 - [X] Trello Integration
 - [X] Dockerize app
 - [ ] GraphQL -> samme funksjonalitet som REST 
+- [ ] Microservice 
+    - [ ] Docker compose 
+    - [ ] Gateway 
+    - [ ] Service Discovery 
+    - [ ] Load Balancer 
 - [ ] Postgres database 

@@ -4,6 +4,7 @@ import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.*
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.olaven.enterprise.trees.WebTestBase
 
@@ -46,5 +47,16 @@ class LocationResolverTest: WebTestBase(excludeBasePath = true) {
                 .body("$", hasKey("data"))
                 .body("$", not(hasKey("errors")))
                 .body("data.location.id", equalTo(entity.id?.toInt()))
+    }
+
+    @Test @Disabled
+    fun `can create location`() {
+
+
+    }
+
+    @Test @Disabled
+    fun `can update location`() {
+
     }
 }
