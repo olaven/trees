@@ -6,3 +6,8 @@ class LocationType (
         val id: Long?
         //NOTE: entity in db keeps relation to plant
 )
+
+class InputLocation (
+    var x: Double,
+    var y: Double
+)

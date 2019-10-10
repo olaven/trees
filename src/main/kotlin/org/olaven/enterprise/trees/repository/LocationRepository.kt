@@ -3,6 +3,7 @@ package org.olaven.enterprise.trees.repository
 import org.olaven.enterprise.trees.entity.LocationEntity
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import java.time.ZonedDateTime
 import java.util.*
 import javax.persistence.EntityManager
 import javax.persistence.TypedQuery
@@ -13,6 +14,7 @@ interface LocationRepository: CrudRepository<LocationEntity, Long>, CustomLocati
 
 interface CustomLocationRepository {
 
+    fun update(id: Long, x: Double, y: Double): Boolean
     fun getNextPage(n: Int, keysetId: Long?, fetchPlants: Boolean = false): List<LocationEntity>
     fun getRandom(): LocationEntity?
 }
@@ -24,6 +26,17 @@ open class LocationRepositoryImpl(
         private val entityManager: EntityManager
 ): CustomLocationRepository {
 
+    override fun update(id: Long, x: Double, y: Double): Boolean {
+
+        val entity = entityManager.find(LocationEntity::class.java, id) ?: return false
+
+        entity.x = x
+        entity.y = y //TODO: should I update locations?
+        entity.timestamp = ZonedDateTime.now().toInstant().toEpochMilli()
+
+        entityManager.persist(entity)
+        return true
+    }
     override fun getNextPage(size: Int, keysetId: Long?, fetchPlants: Boolean): List<LocationEntity> {
 
 

@@ -9,11 +9,11 @@ open class LocationEntity (
 
         @field:NotNull
         @field:Min(0)
-        val x: Double?,
+        var x: Double?,
 
         @field:NotNull
         @field:Min(0)
-        val y: Double?,
+        var y: Double?,
 
         @field:NotNull
         @field:OneToMany(
@@ -29,7 +29,7 @@ open class LocationEntity (
 
         @field:NotNull
         @field:Min(0)
-        val timestamp: Long,
+        var timestamp: Long,
 
         @Version
         internal val version: Long = 0

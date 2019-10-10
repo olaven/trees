@@ -4,6 +4,7 @@ import org.olaven.enterprise.trees.entity.LocationEntity
 import org.olaven.enterprise.trees.entity.PlantEntity
 import org.olaven.enterprise.trees.graphql.types.LocationType
 import org.olaven.enterprise.trees.graphql.types.PlantType
+import org.olaven.enterprise.trees.repository.LocationRepository
 
 /**
  * Transformer methods between
