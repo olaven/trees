@@ -4,7 +4,6 @@ import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.*
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.olaven.enterprise.trees.WebTestBase
 
@@ -68,7 +67,7 @@ class LocationResolverTest: WebTestBase(excludeBasePath = true) {
                 .isPresent
     }
 
-    @Test @Disabled
+    @Test
     fun `can update location`() {
 
         val original = 10.0
