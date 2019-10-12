@@ -1,6 +1,8 @@
 # Added by @olaven:
 .idea/jsLibraryMappings.xml
 .evosuite
+**/influxdb/*
+**/types.db/*
 
 
 ### Terraform ###
