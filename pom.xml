@@ -19,10 +19,12 @@
         <version.springfox>2.9.2</version.springfox>
         <version.faker>1.0.1</version.faker>
         <version.wiremock>2.2.1</version.wiremock>
+        <version.hibernate-ehcache>5.4.6.Final</version.hibernate-ehcache>
         <version.togglz>2.6.1.Final</version.togglz>
         <version.hystrix>1.5.18</version.hystrix>
         <version.graphql-spring>4.2.0</version.graphql-spring>
         <version.graphql-java-tools>5.1.0</version.graphql-java-tools>
+        <version.influx>1.2.0</version.influx> <!-- Slightly downgraded -->
         <main.class>org.olaven.enterprise.trees.TreeApplication</main.class>
     </properties>
 
@@ -72,6 +74,17 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Metrix -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-influx</artifactId>
+            <version>${version.influx}</version>
+        </dependency>
 
         <!-- GraphQL -->
         <dependency>
@@ -143,7 +156,7 @@
         <dependency><!-- Replacing? -->
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
-            <version>5.0.2.Final</version>
+            <version>${version.hibernate-ehcache}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -220,7 +233,7 @@
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
             <version>${version.faker}</version>
-            <scope>test</scope>
+            <!--<scope>test</scope> NOTE: used in defaultdatainitialiszer, which is not int test scope (as of now)-->
         </dependency>
         <dependency>
             <groupId>com.github.tomakehurst</groupId>

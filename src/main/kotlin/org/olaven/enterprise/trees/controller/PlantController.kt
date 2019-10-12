@@ -3,6 +3,7 @@ package org.olaven.enterprise.trees.controller
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.base.Throwables
+import io.micrometer.core.instrument.MeterRegistry
 import io.swagger.annotations.*
 import org.olaven.enterprise.trees.dto.LocationDTO
 import org.olaven.enterprise.trees.dto.PlantDto
@@ -26,7 +27,8 @@ import java.util.concurrent.TimeUnit
 class PlantController(
         private val plantRepository: PlantRepository,
         private val plantTransformer: PlantTransformer,
-        private val locationTransformer: LocationTransformer
+        private val locationTransformer: LocationTransformer,
+        private val meterRegistery: MeterRegistry
 ): HasCallCount {
 
     override val callCount = CallCount()
@@ -34,12 +36,15 @@ class PlantController(
     //TODO: use pagination
     @GetMapping("", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ApiOperation("Get all plants")
-    @ApiResponse(code = 200, message = "All plants")
-    fun getTrees(): ResponseEntity<List<WrappedResponse<PlantDto>>> =
-            plantRepository.findAll()
-                    .map { plantTransformer.toDTO(it) }
-                    .map { WrappedResponse(200, it) }
-                    .let { ResponseEntity.status(HttpStatus.OK).body(it) }
+    @ApiResponse(code = 200, message = "All plants")                //NOTE: registering for metrics.
+    fun getTrees(): ResponseEntity<List<WrappedResponse<PlantDto>>> = meterRegistery.timer("get.plants.time").recordCallable {
+
+        plantRepository.findAll()
+                .also { meterRegistery.gauge("get.plants.count", it.count()) } //NOTE: also registering
+                .map { plantTransformer.toDTO(it) }
+                .map { WrappedResponse(200, it) }
+                .let { ResponseEntity.status(HttpStatus.OK).body(it) }
+    }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get a specific plant")
@@ -53,6 +58,8 @@ class PlantController(
         callCount.getOne++
         val result = plantRepository.findById(id)
         return if (!result.isPresent)
+
+
             ResponseEntity.status(404).body(WrappedResponse<PlantDto?>(
                     404, null
             ))
@@ -82,12 +89,13 @@ class PlantController(
     fun postPlant(@RequestBody plantDto: PlantDto): ResponseEntity<WrappedResponse<PlantDto?>> {
 
         if (plantDto.id != null) {
+
+            meterRegistery.counter("post.plant.conflict").increment()
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body(WrappedResponse<PlantDto?>(
                             409, null
                     ))
-
         }
 
         try {
@@ -95,6 +103,7 @@ class PlantController(
             val entity = plantRepository.save(plantTransformer.toEntity(plantDto))
             val location = URI.create("plants/${entity.id}")
 
+            meterRegistery.counter("post.plant.success").increment()
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .location(location)
@@ -104,6 +113,7 @@ class PlantController(
         } catch (exception: Exception) {
 
             //NOTE: I want to rethrow `ConstraintValidationException`, not Springs wrapper
+            meterRegistery.counter("post.plant.exception").increment()
             val cause = Throwables.getRootCause(exception)
             throw cause
         }
@@ -180,6 +190,7 @@ class PlantController(
 
         } catch (exception: Exception) {
 
+            meterRegistery.counter("put.plant.user.error").increment()
             return ResponseEntity.status(400).body(WrappedResponse(
                     400, null
             ))
@@ -201,14 +212,16 @@ class PlantController(
 
         } catch (exception: IllegalArgumentException) {
 
+            meterRegistery.counter("put.plant.user.error").increment()
             return ResponseEntity.status(400).body(WrappedResponse(
                     400, null
             ))
         }
 
         val locationEntity = locationTransformer.toEntity(newLocation!!)
-        plantRepository.update(entity.id!!, newName!!, newDescription!!, newAge!!, newHeight!!, locationEntity)
+        plantRepository.update(entity.id, newName!!, newDescription!!, newAge!!, newHeight!!, locationEntity)
 
+        meterRegistery.counter("put.plant.user.success").increment()
         return ResponseEntity.status(201).body(WrappedResponse(
                 201, null
         ))
