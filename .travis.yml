@@ -1,10 +1,11 @@
 language: java
 services:
 - docker
+before_script: ./scripts/install_terraform.sh
 deploy:
   skip_cleanup: true
-  provider: script
-  script: bash ./scripts/docker_push.sh
+  provider: script    # push to docker and apply terraform 
+  script: bash ./scripts/docker_push.sh && terraform apply
   on:
     branch: master
   api_key: #Remove this, as heroku is no longer relevant? 
