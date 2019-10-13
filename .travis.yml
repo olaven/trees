@@ -1,7 +1,7 @@
 language: java
 services:
 - docker
-before_script: ./scripts/install_terraform.sh
+before_script: bash ./scripts/install_terraform.sh
 deploy:
   skip_cleanup: true
   provider: script    # push to docker and apply terraform 
