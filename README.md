@@ -1,7 +1,7 @@
 # Trees 
 
 ## Running app 
-`docker run -p 8080:8080 olaven/trees`
+`docker run -p 8080:8080 olaven/org.olaven.enterprise.trees`
 __note__: using http, not https. For now :) 
 ## Local setup:
 * add `.env` with the `MAPBOX_KEY=your_mapbox_key`
@@ -19,7 +19,7 @@ TODO:
 - [X] Override spring sin haandtering av exceptions 
 - [X] Legge inn en validation-annotation
 - [X] Ikke sende stacktrace  
-- [X] Cut "/trees/" from path
+- [X] Cut "/org.olaven.enterprise.trees/" from path
 - [X] Redirection 
 - [X] Conditional requests
 - [X] Circuit breaker 

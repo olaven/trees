@@ -1,4 +1,4 @@
-name: trees-test
+name: org.olaven.enterprise.trees-test
 
 on: [push, pull_request]
 
