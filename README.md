@@ -35,4 +35,8 @@ TODO:
     - [ ] Gateway 
     - [ ] Service Discovery 
     - [ ] Load Balancer 
+- [ ] After microservice refactor 
+    - [ ] Make sure cache works 
+    - [ ] Retry terraform/travis deploy 
+    - [ ] Re-implement metrics 
 - [ ] Postgres database 

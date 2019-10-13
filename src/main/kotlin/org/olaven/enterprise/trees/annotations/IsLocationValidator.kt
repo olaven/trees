@@ -10,7 +10,6 @@ class IsLocationValidator: ConstraintValidator<IsLocation, LocationDTO> {
 
     }
 
-    //TODO: make test pass
     override fun isValid(location: LocationDTO?, context: ConstraintValidatorContext?): Boolean {
 
         var validLatitude = false;
