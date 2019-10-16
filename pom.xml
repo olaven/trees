@@ -33,6 +33,8 @@
         <version.hystrix>1.5.18</version.hystrix>
         <version.graphql-spring>4.2.0</version.graphql-spring>
         <version.graphql-java-tools>5.1.0</version.graphql-java-tools>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <main.class>org.olaven.enterprise.org.olaven.enterprise.treesTreeApplication</main.class>
     </properties>
 
