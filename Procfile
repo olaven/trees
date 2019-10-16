@@ -1,1 +1,1 @@
-web: java -jar target/trees.jar
+web: java -jar target/org.olaven.enterprise.trees.jar
