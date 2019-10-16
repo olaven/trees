@@ -39,4 +39,5 @@ TODO:
     - [ ] Make sure cache works 
     - [ ] Retry terraform/travis deploy 
     - [ ] Re-implement metrics 
+    - [ ] Hystrix (circuit breaker) should be going to _outgoing_ requests
 - [ ] Postgres database 

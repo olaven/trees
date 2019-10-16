@@ -4,14 +4,17 @@ services:
   api:
     build:
       context: ./api
-      dockerfile: Dockerfile
     image: olaven/trees-api
-    ports:
-      - "9001:8080"
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
     image: olaven/trees-frontend
+  discovery:
+    build:
+      context: ./discovery
+    image: olaven/trees-discovery
+  gateway:
+    build:
+      context: ./gateway
     ports:
-      - "9002:80"
+          - "80:8080"
