@@ -5,11 +5,13 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
+    image: olaven/trees-api
     ports:
       - "9001:8080"
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    image: olaven/trees-frontend
     ports:
       - "9002:80"
