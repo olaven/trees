@@ -4,7 +4,9 @@
 `docker run -p 8080:8080 olaven/org.olaven.enterprise.trees`
 __note__: using http, not https. For now :) 
 ## Local setup:
-* add `.env` with the `MAPBOX_KEY=your_mapbox_key`
+* add `/frontend/.env` with the `MAPBOX_KEY=your_mapbox_key`
+## Running the application 
+`mvn package && docker-compose up`
 
 ## About GraphQL 
 * Main endpoint: http://localhost:8080/graphql
@@ -41,3 +43,5 @@ TODO:
     - [ ] Re-implement metrics 
     - [ ] Hystrix (circuit breaker) should be going to _outgoing_ requests
 - [ ] Postgres database 
+- [ ] Flyway 
+- [ ] Mock Eureka away locally (look at mock exam)

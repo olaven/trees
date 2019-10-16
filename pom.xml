@@ -11,10 +11,7 @@
     <modules>
         <module>api</module>
         <module>gateway</module>
-        <module>gateway</module>
         <module>discovery</module>
-        <module>discovery</module>
-        <module>test</module>
     </modules>
 
     <properties>
