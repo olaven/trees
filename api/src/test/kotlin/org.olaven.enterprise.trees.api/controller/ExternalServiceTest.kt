@@ -9,7 +9,6 @@ import io.restassured.http.ContentType
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.olaven.enterprise.trees.api.WebTestBase
 
 internal class ExternalServiceTest: WebTestBase() {
 

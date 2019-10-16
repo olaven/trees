@@ -46,8 +46,9 @@ class CacheProxy(
 
 
     private fun callOrigin(path: String, port: Int): ResponseEntity<String> {
-        
-        val result =  restTemplate.getForEntity("http://localhost:$port/api/$path", String::class.java)
+
+        val url = "http://localhost:$port/api/$path"
+        val result =  restTemplate.getForEntity(url, String::class.java)
         return result;
     }
 

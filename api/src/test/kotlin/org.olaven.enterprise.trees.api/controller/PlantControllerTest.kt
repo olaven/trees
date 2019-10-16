@@ -10,7 +10,6 @@ import org.hamcrest.Matchers.notNullValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
-import org.olaven.enterprise.trees.api.WebTestBase
 import org.olaven.enterprise.trees.api.dto.LocationDTO
 import org.olaven.enterprise.trees.api.dto.PlantDto
 import org.olaven.enterprise.trees.api.dto.Status

@@ -1,6 +1,5 @@
 package org.olaven.enterprise.trees.api
 
-
 import net.sf.ehcache.Ehcache
 import org.apache.http.client.HttpClient
 import org.apache.http.client.cache.HttpCacheStorage
@@ -10,17 +9,12 @@ import org.apache.http.impl.client.cache.ehcache.EhcacheHttpCacheStorage
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.Cache
-import org.springframework.cache.annotation.CachingConfigurerSupport
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.web.client.RestTemplate
 
-/*
-* NOTE: This file is copied from:
-* https://github.com/arcuri82/testing_security_development_enterprise_systems/blob/master/advanced/rest/cache/src/main/kotlin/org/tsdes/advanced/rest/cache/EhCacheForRestTemplateConfig.kt
-* */
 /**
  * Here, we want to create a bean for RestTemplate which is configured
  * to have a EhCache when dealing with cacheable HTTP responses.
@@ -37,7 +31,7 @@ import org.springframework.web.client.RestTemplate
  */
 @Configuration
 @EnableCaching // needed for auto-configure the cache beans
-class EhCacheForRestTemplateConfig: CachingConfigurerSupport() {
+class EhCacheForRestTemplateConfig {
 
     /*
         This is the actual bean that we want, and that we will @Autowire

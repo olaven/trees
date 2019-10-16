@@ -4,7 +4,6 @@ import io.restassured.RestAssured.given
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.olaven.enterprise.trees.api.WebTestBase
 import org.springframework.beans.factory.annotation.Autowired
 import kotlin.test.assertEquals
 

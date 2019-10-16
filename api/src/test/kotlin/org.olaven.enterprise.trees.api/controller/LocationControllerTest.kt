@@ -7,7 +7,6 @@ import io.restassured.response.ValidatableResponse
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
-import org.olaven.enterprise.trees.api.WebTestBase
 import org.olaven.enterprise.trees.api.dto.PlantDto
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull

@@ -9,7 +9,7 @@ import org.hamcrest.Matchers
 import org.hamcrest.Matchers.hasKey
 import org.hamcrest.Matchers.isEmptyOrNullString
 import org.junit.jupiter.api.Test
-import org.olaven.enterprise.trees.api.WebTestBase
+import org.olaven.enterprise.trees.api.controller.WebTestBase
 
 class PlantResolverTest: WebTestBase(excludeBasePath = true) {
 

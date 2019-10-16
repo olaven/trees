@@ -35,7 +35,7 @@ class LocationController(
 
     override val callCount = CallCount()
 
-    @GetMapping("/")
+    @GetMapping("")
     @ApiResponse(code = 200, message = "All locations")
     @ApiOperation(value = "Get all locations")
     fun getLocations(

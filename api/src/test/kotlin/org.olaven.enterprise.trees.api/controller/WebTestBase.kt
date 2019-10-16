@@ -1,8 +1,10 @@
-package org.olaven.enterprise.trees.api
+package org.olaven.enterprise.trees.api.controller
 
 import io.restassured.RestAssured
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
+import org.olaven.enterprise.trees.api.DatabaseReset
+import org.olaven.enterprise.trees.api.TestBase
 import org.olaven.enterprise.trees.api.TreeApplication
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -29,14 +31,14 @@ abstract class WebTestBase(
 
     @BeforeEach
     fun init() {
+
+        httpClientCache.clear()
+        databaseReset.reset()
+
         // RestAssured configs shared by all the tests
         RestAssured.baseURI = "http://localhost"
         RestAssured.basePath = if (excludeBasePath) "" else "api"
         RestAssured.port = port
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
-
-        httpClientCache.clear()
-        databaseReset.reset()
     }
-
 }

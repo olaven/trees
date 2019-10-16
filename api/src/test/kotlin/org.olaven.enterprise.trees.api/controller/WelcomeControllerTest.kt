@@ -2,7 +2,6 @@ package org.olaven.enterprise.trees.api.controller
 
 import io.restassured.RestAssured.given
 import org.junit.jupiter.api.Test
-import org.olaven.enterprise.trees.api.WebTestBase
 import kotlin.test.assertTrue
 
 internal class WelcomeControllerTest: WebTestBase() {

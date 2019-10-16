@@ -26,7 +26,8 @@
         <version.wiremock>2.2.1</version.wiremock>
         <version.togglz>2.6.1.Final</version.togglz>
         <!--<version.httpclient-cache>4.5.10</version.httpclient-cache>-->
-        <version.httpclient-cache>4.5.6</version.httpclient-cache>
+        <version.httpclient-cache>4.5.7</version.httpclient-cache>
+        <version.ehcache>2.10.6</version.ehcache>
         <version.hystrix>1.5.18</version.hystrix>
         <version.graphql-spring>4.2.0</version.graphql-spring>
         <version.graphql-java-tools>5.1.0</version.graphql-java-tools>
@@ -71,22 +72,6 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-<!--
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web</artifactId>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-jpa</artifactId>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-validation</artifactId>
-            </dependency>
--->
 
 
             <!-- GraphQL -->
@@ -151,15 +136,12 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-cache</artifactId>
+                <version>${version.springboot}</version>
             </dependency>
-            <!--<dependency>
+            <dependency>
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
-            </dependency>-->
-            <dependency><!-- Replacing? -->
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-ehcache</artifactId>
-                <version>5.0.2.Final</version>
+                <version>${version.ehcache}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>

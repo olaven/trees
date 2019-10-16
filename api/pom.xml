@@ -100,24 +100,18 @@
 
         <!-- Caching -->
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient-cache</artifactId>
-            <version>${version.httpclient-cache}</version> <!-- TODO: maybe comment out -->
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
-            <version>${version.springboot}</version> <!-- Does not get from parent..?-->
         </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
         </dependency>
-<!--        <dependency>&lt;!&ndash; Replacing? &ndash;&gt;
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
-            <version>5.0.2.Final</version>
-        </dependency>-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient-cache</artifactId>
+        </dependency>
+
         <!-- Circuit breaker -->
         <dependency>
             <groupId>com.netflix.hystrix</groupId>

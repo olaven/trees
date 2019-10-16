@@ -5,7 +5,7 @@ import io.restassured.http.ContentType
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
-import org.olaven.enterprise.trees.api.WebTestBase
+import org.olaven.enterprise.trees.api.controller.WebTestBase
 
 class LocationResolverTest: WebTestBase(excludeBasePath = true) {
 
