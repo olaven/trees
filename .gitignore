@@ -1,6 +1,7 @@
 # Added by @olaven:
 .idea/jsLibraryMappings.xml
 .evosuite
+*.env
 
 
 ### Terraform ###
@@ -217,7 +218,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+frontend/.env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
