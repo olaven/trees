@@ -1,20 +1,27 @@
 version: '3.3'
 
 services:
+  # Service registery
+  registery:
+    build:
+      context: ./registery
+    image: olaven/trees-registery
+  gateway:
+    build:
+      context: ./gateway
+    depends_on:
+      - registery
+    ports:
+      - "80:8080"
   api:
     build:
       context: ./api
     image: olaven/trees-api
+    depends_on:
+      - gateway
   frontend:
     build:
       context: ./frontend
     image: olaven/trees-frontend
-  discovery:
-    build:
-      context: ./discovery
-    image: olaven/trees-discovery
-  gateway:
-    build:
-      context: ./gateway
-    ports:
-          - "80:8080"
+    depends_on:
+      - gateway

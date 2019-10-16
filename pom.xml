@@ -11,7 +11,7 @@
     <modules>
         <module>api</module>
         <module>gateway</module>
-        <module>discovery</module>
+        <module>registery</module>
     </modules>
 
     <properties>
