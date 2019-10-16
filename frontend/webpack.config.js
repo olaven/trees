@@ -5,7 +5,7 @@ module.exports = {
     entry: './src/main/typescript/index.tsx',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'target/classes/static')
+        path: path.resolve(__dirname, 'build')
     },
     module: {
         rules: [
