@@ -13,6 +13,8 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.cache.Cache
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
+
+
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [ TreeApplication::class ], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class WebTestBase(
@@ -26,7 +28,7 @@ abstract class WebTestBase(
     protected var port = 0
 
     @Value("#{cacheManager.getCache('httpClient')}")
-    protected lateinit var httpClientCache: Cache
+    private lateinit var httpClientCache: Cache
 
 
     @BeforeEach

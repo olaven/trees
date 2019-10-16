@@ -26,8 +26,8 @@
         <version.wiremock>2.2.1</version.wiremock>
         <version.togglz>2.6.1.Final</version.togglz>
         <!--<version.httpclient-cache>4.5.10</version.httpclient-cache>-->
-        <version.httpclient-cache>4.5.7</version.httpclient-cache>
-        <version.ehcache>2.10.6</version.ehcache>
+        <version.httpclient-cache>4.5.6</version.httpclient-cache>
+        <version.hibernate-ehcache>5.0.2.Final</version.hibernate-ehcache>
         <version.hystrix>1.5.18</version.hystrix>
         <version.graphql-spring>4.2.0</version.graphql-spring>
         <version.graphql-java-tools>5.1.0</version.graphql-java-tools>
@@ -138,10 +138,15 @@
                 <artifactId>spring-boot-starter-cache</artifactId>
                 <version>${version.springboot}</version>
             </dependency>
-            <dependency>
+            <!--<dependency> NOTE: Hibernate version works instead of this
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
                 <version>${version.ehcache}</version>
+            </dependency>-->
+            <dependency><!-- Replacing? -->
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-ehcache</artifactId>
+                <version>${version.hibernate-ehcache}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -168,7 +173,6 @@
                 <artifactId>commons-configuration</artifactId>
                 <version>1.8</version>
             </dependency>
-
 
 
             <!-- Feature toggles -->
