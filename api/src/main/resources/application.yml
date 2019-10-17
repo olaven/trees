@@ -6,6 +6,8 @@ togglz:
     INFO_PAGE:
       enabled: true
 spring:
+  application:
+    name: api
   mvc:
     throw-exception-if-no-handler-found: true
   resources:
