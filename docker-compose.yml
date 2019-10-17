@@ -6,13 +6,16 @@ services:
     build:
       context: ./registery
     image: olaven/trees-registery
+    ports:
+      - "8080:8761" # TODO: remove mapping
   gateway:
     build:
       context: ./gateway
+    image: olaven/trees-gateway
     depends_on:
       - registery
     ports:
-      - "80:8080"
+        - "80:8080"
   api:
     build:
       context: ./api
