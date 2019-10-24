@@ -13,13 +13,11 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: service
+        - id: api
           # "lb" stands for Load-Balance, which is done with Ribbon
           uri: lb://api
           predicates:
             - Path=/api/**
-#          filters:
-#            - StripPrefix=1
         - id: frontend
           uri: http://frontend
           predicates:
@@ -27,9 +25,9 @@ spring:
 
 eureka:
   instance:
-    hostname: eureka
+    preferIpAddress: true
   client:
-    registerWithEureka: false
-    fetchRegistry: false
+    healthcheck:
+      enabled: true
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      defaultZone: http://registry:8761/eureka/
