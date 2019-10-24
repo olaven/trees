@@ -6,9 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="registery" />
         <module name="api" />
         <module name="gateway" />
+        <module name="registry" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

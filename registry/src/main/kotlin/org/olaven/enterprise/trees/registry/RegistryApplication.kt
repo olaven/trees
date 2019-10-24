@@ -1,4 +1,4 @@
-package org.olaven.enterprise.trees.discovery
+package org.olaven.enterprise.trees.registry
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication

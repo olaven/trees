@@ -17,3 +17,12 @@ graphql:
     mapping: /graphql
     enabled: true
     corsEnabled: false
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://registry:8761/eureka/
+

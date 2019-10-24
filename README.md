@@ -31,12 +31,13 @@ TODO:
 - [ ] Add code coverage check 
 - [X] Trello Integration
 - [X] Dockerize app
-- [ ] GraphQL -> samme funksjonalitet som REST 
+- [X] GraphQL -> samme funksjonalitet som REST 
 - [ ] Microservice 
     - [ ] Docker compose 
     - [ ] Gateway 
     - [ ] Service Discovery 
     - [ ] Load Balancer 
+    - [ ] RabbitMQ
 - [ ] After microservice refactor 
     - [ ] Make sure cache works 
     - [ ] Retry terraform/travis deploy 

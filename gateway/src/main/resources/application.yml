@@ -18,8 +18,8 @@ spring:
           uri: lb://api
           predicates:
             - Path=/api/**
-          filters:
-            - StripPrefix=1
+#          filters:
+#            - StripPrefix=1
         - id: frontend
           uri: http://frontend
           predicates:
@@ -27,9 +27,9 @@ spring:
 
 eureka:
   instance:
-    preferIpAddress: true
+    hostname: eureka
   client:
-    healthcheck:
-      enabled: true
+    registerWithEureka: false
+    fetchRegistry: false
     serviceUrl:
-      defaultZone: http://registery:8761/eureka/
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/

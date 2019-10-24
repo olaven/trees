@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.olaven.enterprise.trees</groupId>
-    <artifactId>discovery</artifactId>
+    <artifactId>registry</artifactId>
 
     <dependencies>
         <dependency>

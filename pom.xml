@@ -11,7 +11,7 @@
     <modules>
         <module>api</module>
         <module>gateway</module>
-        <module>registery</module>
+        <module>registry</module>
     </modules>
 
     <properties>
@@ -183,11 +183,11 @@
                 <artifactId>ehcache</artifactId>
                 <version>${version.ehcache}</version>
             </dependency>-->
-            <dependency><!-- Replacing? -->
+            <!--<dependency> //TODO: move back? moved in
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-ehcache</artifactId>
                 <version>${version.hibernate-ehcache}</version>
-            </dependency>
+            </dependency>-->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient-cache</artifactId>
@@ -199,16 +199,19 @@
                 <groupId>com.netflix.hystrix</groupId>
                 <artifactId>hystrix-core</artifactId>
                 <version>${version.hystrix}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>om.netflix.archaius</groupId>
+                        <artifactId>archaius-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
-                <!--
-                    This in theory is a third-party library coming
-                    with Hystrix. Although it works fine from Maven,
-                    it fails to build in IntelliJ if explicit
-                    declaration is missing here.
-                    Might be a bug in IntelliJ, or some weird
-                    classpath edge-case
-                -->
+                <groupId>com.netflix.archaius</groupId>
+                <artifactId>archaius-core</artifactId>
+                <version>0.7.1</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-configuration</groupId>
                 <artifactId>commons-configuration</artifactId>
                 <version>1.8</version>

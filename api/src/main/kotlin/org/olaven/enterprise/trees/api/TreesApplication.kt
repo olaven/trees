@@ -4,6 +4,7 @@ import com.netflix.config.ConfigurationManager
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.cache.annotation.EnableCaching
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient
 import org.springframework.context.annotation.Bean
 import springfox.documentation.builders.ApiInfoBuilder
 import springfox.documentation.builders.PathSelectors
@@ -20,7 +21,8 @@ fun main(args: Array<String>) {
 @SpringBootApplication
 @EnableCaching
 @EnableSwagger2
-class TreeApplication {
+@EnableEurekaClient
+class TreeApplication { //TODO: rename to API-application
 
     /*
         Bean used to configure Swagger documentation
