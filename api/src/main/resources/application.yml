@@ -25,4 +25,3 @@ eureka:
       enabled: true
     serviceUrl:
       defaultZone: http://registry:8761/eureka/
-

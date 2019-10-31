@@ -30,4 +30,7 @@ eureka:
     healthcheck:
       enabled: true
     serviceUrl:
-      defaultZone: http://registry:8761/eureka/
+      defaultZone: http://registry:8761/eureka
+      #defaultZone: http://registry:8761/eureka/
+#    register-with-eureka: false # this and below added by me
+#    fetch-registry: false

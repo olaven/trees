@@ -13,21 +13,6 @@
     <artifactId>api</artifactId>
 
     <dependencies>
-        <!--Kotlin-->
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-reflect</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-        </dependency>
 
         <!--Spring Boot-->
         <dependency>
@@ -105,6 +90,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
+        <!--TODO TODO TODO: check out /Users/olav/Documents/skole/kristiania/5_semester/enterprise_2/testing_security_development_enterprise_systems/pom.xml-->
         <!--<dependency> //NOTE: Hibernate-version (below) works instead of this
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
@@ -128,10 +114,14 @@
             <artifactId>commons-configuration</artifactId>
         </dependency>
 
-        <!-- Discovery Client -->
+        <!-- Spring Cloud  -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
         </dependency>
 
 
@@ -189,6 +179,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <finalName>api</finalName>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
