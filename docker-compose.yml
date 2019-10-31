@@ -5,11 +5,11 @@ services:
   registry:
     build:
       context: ./registry
-    image: olaven/trees-registry
+    #image: olaven/trees-registry
   gateway:
     build:
       context: ./gateway
-    image: olaven/trees-gateway
+    #image: olaven/trees-gateway
     depends_on:
       - registry
     ports:
@@ -17,13 +17,13 @@ services:
   api:
     build:
       context: ./api
-    image: olaven/trees-api
+    #image: olaven/trees-api
     depends_on:
       - gateway
 
   frontend:
     build:
       context: ./frontend
-    image: olaven/trees-frontend
+    #image: olaven/trees-frontend
     depends_on:
       - gateway

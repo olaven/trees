@@ -2,12 +2,12 @@ package org.olaven.enterprise.trees.integration_tests
 
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
-import io.restassured.http.ContentType
 import org.awaitility.Awaitility
-import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.greaterThan
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.util.concurrent.TimeUnit
@@ -24,54 +24,44 @@ class GatewayRestIT : GatewayIntegrationDockerTestBase() {
         }
     }
 
-    @BeforeEach
-    fun clean(){
-        given().delete("/service/messages")
-                .then()
-                .statusCode(204)
 
-        given().get("/service/messages")
+
+    @Test
+    fun `can get some locations`() {
+
+        //NOTE: test assumes that some locations are added by default.
+        given().get("/api/locations")
                 .then()
                 .statusCode(200)
-                .body("size()", equalTo(0))
-    }
-
-    private fun sendMsg(msg: String){
-
-        given().contentType(ContentType.TEXT)
-                .body(msg)
-                .post("/service/messages")
-                .then()
-                .statusCode(201)
+                .body("size()", greaterThan(0))
     }
 
     @Test
-    fun testIntegration() {
+    fun `can get some plants`() {
 
-        given().get("/service/messages")
+        given().get("/api/plants")
                 .then()
                 .statusCode(200)
-                .body("size()", equalTo(0))
-
-
-        sendMsg("Hail Zuul!!!")
-        sendMsg("Just kidding")
-
-        given().get("/service/messages")
-                .then()
-                .statusCode(200)
-                .body("size()", equalTo(2))
     }
 
     @Test
+    fun `can load frontend`() {
+
+        given().get("")
+                .then()
+                .statusCode(200)
+                .body(containsString("mapbox"))
+    }
+
+    @Test @Disabled
     fun testLoadBalance() {
 
 
         Awaitility.await().atMost(120, TimeUnit.SECONDS)
                 .ignoreExceptions()
                 .until{
-                    (0..3).forEach { sendMsg("foo") }
 
+                    //TODO: something that works for my application
                     val messages = given().get("/service/messages")
                             .then()
                             .statusCode(200)

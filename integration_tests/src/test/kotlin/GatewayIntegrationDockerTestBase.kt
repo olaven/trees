@@ -44,6 +44,7 @@ abstract class GatewayIntegrationDockerTestBase {
                          */
                         Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(240)))
                 .withLocalCompose(true)
+                //.withPull(false) //TODO: test if this stops pulling from olaven/name
 
 
         @BeforeAll
@@ -70,10 +71,11 @@ abstract class GatewayIntegrationDockerTestBase {
                                 .then().statusCode(200)
 
                         given().baseUri("http://${env.getServiceHost("registry", 8761)}")
+                                .accept("application/json;charset=UTF-8")
                                 .port(env.getServicePort("registry", 8761))
                                 .get("/eureka/apps")
                                 .then()
-                                .body("applications.application.instance.size()", equalTo(4))
+                                .body("applications.application.instance.size()", equalTo(2))
 
                         true
                     }
