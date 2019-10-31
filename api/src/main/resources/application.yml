@@ -6,6 +6,8 @@ togglz:
     INFO_PAGE:
       enabled: true
 spring:
+  application:
+    name: api
   mvc:
     throw-exception-if-no-handler-found: true
   resources:
@@ -15,3 +17,11 @@ graphql:
     mapping: /graphql
     enabled: true
     corsEnabled: false
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://registry:8761/eureka/

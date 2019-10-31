@@ -34,8 +34,8 @@ abstract class WebTestBase(
     @BeforeEach
     fun init() {
 
-        httpClientCache.clear()
         databaseReset.reset()
+        httpClientCache.clear()
 
         // RestAssured configs shared by all the tests
         RestAssured.baseURI = "http://localhost"
