@@ -12,6 +12,7 @@
         <module>api</module>
         <module>gateway</module>
         <module>registry</module>
+        <module>integration_tests</module>
     </modules>
 
     <properties>
@@ -26,6 +27,7 @@
         <version.h2>1.4.197</version.h2>
         <version.postgres>42.1.4</version.postgres>
         <version.restassured>4.0.0</version.restassured>
+        <version.testcontainers>1.12.2</version.testcontainers>
         <version.springfox>2.9.2</version.springfox>
         <version.faker>1.0.1</version.faker>
         <version.wiremock>2.2.1</version.wiremock>
@@ -99,22 +101,6 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-  <!--          <dependency> NOTE: did removing this make type pom import above default?
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-gateway</artifactId>
-                <version>${version.springcloud}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-                <version>${version.eureka}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
-                <version>${version.eureka}</version>
-            </dependency>-->
-
 
             <!-- GraphQL -->
             <dependency>
@@ -186,27 +172,6 @@
                 <version>4.5.6</version>
             </dependency>
 
-            <!--<dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-cache</artifactId>
-                <version>${version.springboot}</version>
-            </dependency>
-            &lt;!&ndash;<dependency> NOTE: Hibernate version works instead of this
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>${version.ehcache}</version>
-            </dependency>&ndash;&gt;
-            &lt;!&ndash;<dependency> //TODO: move back? moved in
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-ehcache</artifactId>
-                <version>${version.hibernate-ehcache}</version>
-            </dependency> TODO: see andreas master POM ehcache &ndash;&gt;
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient-cache</artifactId>
-                <version>${version.httpclient-cache}</version>
-            </dependency>-->
-
             <!-- Circuit breaker -->
             <dependency>
                 <groupId>com.netflix.hystrix</groupId>
@@ -219,11 +184,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <!--<dependency>
-                <groupId>com.netflix.archaius</groupId>
-                <artifactId>archaius-core</artifactId>
-                <version>0.7.1</version>
-            </dependency>-->
             <dependency>
                 <groupId>commons-configuration</groupId>
                 <artifactId>commons-configuration</artifactId>
@@ -273,6 +233,39 @@
                 <groupId>com.github.tomakehurst</groupId>
                 <artifactId>wiremock-standalone</artifactId>
                 <version>${version.wiremock}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <!-- To use Docker from tests -->
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${version.testcontainers}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <!-- To support JUnit 5  -->
+                <groupId>org.testcontainers</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${version.testcontainers}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>selenium</artifactId>
+                <version>${version.testcontainers}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>selenium-remote-driver</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <!-- For handling waiting of asynchronous events -->
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>3.1.3</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

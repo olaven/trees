@@ -9,6 +9,7 @@
         <module name="api" />
         <module name="gateway" />
         <module name="registry" />
+        <module name="integration_tests" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -19,6 +20,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api" options="-parameters" />
       <module name="gateway" options="-parameters" />
+      <module name="integration_tests" options="-parameters" />
       <module name="registry" options="-parameters" />
       <module name="trees" options="-parameters" />
     </option>
