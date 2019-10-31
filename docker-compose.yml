@@ -6,8 +6,6 @@ services:
     build:
       context: ./registry
     image: olaven/trees-registry
-    ports:
-      - "8080:8761" # TODO: remove mapping
   gateway:
     build:
       context: ./gateway
