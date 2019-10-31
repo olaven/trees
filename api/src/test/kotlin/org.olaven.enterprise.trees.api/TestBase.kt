@@ -12,11 +12,13 @@ import org.olaven.enterprise.trees.api.transformer.LocationTransformer
 import org.olaven.enterprise.trees.api.transformer.PlantTransformer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @SpringBootTest
 @ExtendWith(SpringExtension::class)
-class TestBase() {
+@DirtiesContext // new application for every test (cache is happy)
+class TestBase {
 
     @Autowired
     private lateinit var locationTransformer: LocationTransformer

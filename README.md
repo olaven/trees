@@ -33,10 +33,12 @@ TODO:
 - [X] Dockerize app
 - [X] GraphQL -> samme funksjonalitet som REST 
 - [ ] Microservice 
-    - [ ] Docker compose 
-    - [ ] Gateway 
-    - [ ] Service Discovery 
-    - [ ] Load Balancer 
+    - [X] Docker compose 
+    - [X] Gateway 
+    - [X] Service Discovery 
+    - [ ] Integration tests
+    - [ ] Authentication/security
+    - [X] Load Balancer 
     - [ ] RabbitMQ
 - [ ] After microservice refactor 
     - [ ] Make sure cache works 

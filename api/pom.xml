@@ -90,14 +90,9 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
-        <!--TODO TODO TODO: check out /Users/olav/Documents/skole/kristiania/5_semester/enterprise_2/testing_security_development_enterprise_systems/pom.xml-->
-        <!--<dependency> //NOTE: Hibernate-version (below) works instead of this
+        <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-        </dependency>-->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
