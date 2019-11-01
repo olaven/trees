@@ -36,7 +36,10 @@ TODO:
     - [X] Docker compose 
     - [X] Gateway 
     - [X] Service Discovery 
-    - [ ] Integration tests
+    - [X] Integration tests
+        - [X] Make basic work
+        - [ ] Should not pull from "image"
+    - [ ] Load balancing between two instances (test it in IT)
     - [ ] Authentication/security
     - [X] Load Balancer 
     - [ ] RabbitMQ

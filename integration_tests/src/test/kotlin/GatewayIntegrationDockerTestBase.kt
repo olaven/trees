@@ -44,7 +44,7 @@ abstract class GatewayIntegrationDockerTestBase {
                          */
                         Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(240)))
                 .withLocalCompose(true)
-                //.withPull(false) //TODO: test if this stops pulling from olaven/name
+
 
 
         @BeforeAll

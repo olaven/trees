@@ -5,25 +5,49 @@ services:
   registry:
     build:
       context: ./registry
-    #image: olaven/trees-registry
+    image: olaven/trees-registry
+    ports:
+      - "8080:8761"
+
   gateway:
     build:
       context: ./gateway
-    #image: olaven/trees-gateway
+    image: olaven/trees-gateway
     depends_on:
       - registry
     ports:
         - "80:8080"
+
+
   api:
     build:
       context: ./api
-    #image: olaven/trees-api
+    image: olaven/trees-api
     depends_on:
       - gateway
+
+#  api_1:
+#    build:
+#      context: ./api
+#    image: olaven/trees-api
+#    depends_on:
+#      - gateway
+#    environment:
+#      - service_id=1 #ID is used for testing of load balancing
+#
+#
+#  api_2:
+#    build:
+#      context: ./api
+#    image: olaven/trees-api
+#    depends_on:
+#      - gateway
+#    environment:
+#      - service_id=2 #ID is used for testing of load balancing
 
   frontend:
     build:
       context: ./frontend
-    #image: olaven/trees-frontend
+    image: olaven/trees-frontend
     depends_on:
       - gateway

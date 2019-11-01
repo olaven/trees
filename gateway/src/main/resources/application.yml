@@ -15,7 +15,7 @@ spring:
       routes:
         - id: api
           # "lb" stands for Load-Balance, which is done with Ribbon
-          uri: lb://api
+          uri: lb:/ #lb://api
           predicates:
             - Path=/api/**
         - id: frontend

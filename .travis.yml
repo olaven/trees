@@ -4,7 +4,7 @@ services:
 deploy:
   skip_cleanup: true
   provider: script
-  script: bash ./scripts/docker_push.sh && bash ./scripts/terraform_apply.sh
+  script: bash ./scripts/docker_push.sh #  && bash ./scripts/terraform_apply.sh TODO: add heroku/terraform back when going to deploy
   on:
     branch: master
   api_key: #Remove this, as heroku is no longer relevant? 
