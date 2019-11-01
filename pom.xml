@@ -13,6 +13,7 @@
         <module>gateway</module>
         <module>registry</module>
         <module>integration_tests</module>
+        <module>integration_tests</module>
     </modules>
 
     <properties>

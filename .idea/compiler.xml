@@ -13,6 +13,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="integration_tests (1)" target="1.8" />
       <module name="test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
@@ -21,6 +22,7 @@
       <module name="api" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="integration_tests" options="-parameters" />
+      <module name="integration_tests (1)" options="-parameters" />
       <module name="registry" options="-parameters" />
       <module name="trees" options="-parameters" />
     </option>

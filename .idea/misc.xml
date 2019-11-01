@@ -8,10 +8,12 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/integration_tests/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/temp/pom.xml" />
         <option value="$PROJECT_DIR$/test/pom.xml" />
       </set>
     </option>
