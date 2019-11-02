@@ -1,5 +1,5 @@
 language: java
-before_script: mvn clean install 
+script: mvn clean verify
 services:
 - docker
 deploy:
