@@ -1,5 +1,4 @@
 language: java
-script: mvn clean verify
 services:
 - docker
 deploy:
