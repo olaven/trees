@@ -12,7 +12,10 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="test" target="1.8" />
+      <module name="api" target="1.8" />
+      <module name="gateway" target="1.8" />
+      <module name="registry" target="1.8" />
+      <module name="trees" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -20,7 +23,6 @@
       <module name="api" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="registry" options="-parameters" />
-      <module name="trees" options="-parameters" />
     </option>
   </component>
 </project>
