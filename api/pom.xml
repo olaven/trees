@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>org.olaven.enterprise.trees</artifactId>
-        <groupId>org.olaven.enterprise</groupId>
+        <groupId>org.olaven</groupId>
+        <artifactId>trees</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.olaven.enterprise.org.olaven.enterprise.trees</groupId>
+    <groupId>org.olaven.trees</groupId>
     <artifactId>api</artifactId>
 
     <dependencies>
@@ -34,25 +34,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-
-        <!-- GraphQL -->
-        <dependency>
-            <groupId>com.graphql-java</groupId>
-            <artifactId>graphql-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.graphql-java</groupId>
-            <artifactId>graphiql-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.graphql-java</groupId>
-            <artifactId>voyager-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.graphql-java</groupId>
-            <artifactId>graphql-java-tools</artifactId>
         </dependency>
 
         <!--Swagger-->
@@ -119,14 +100,6 @@
             <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
         </dependency>
 
-
-
-        <!-- Feature toggles -->
-        <dependency>
-            <groupId>org.togglz</groupId>
-            <artifactId>togglz-spring-boot-starter</artifactId>
-        </dependency>
-
         <!-- testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -160,16 +133,9 @@
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock-standalone</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
-        <sourceDirectory>src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
-
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -177,17 +143,6 @@
                 <configuration>
                     <finalName>api</finalName>
                 </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <groupId>org.jetbrains.kotlin</groupId>
             </plugin>
         </plugins>
     </build>
