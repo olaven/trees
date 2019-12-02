@@ -12,6 +12,7 @@
         <module>api</module>
         <module>gateway</module>
         <module>registry</module>
+        <module>frontend</module>
     </modules>
 
     <properties>
@@ -33,6 +34,7 @@
 
         <version.hystrix>1.5.18</version.hystrix>
         <version.eureka>2.1.3.RELEASE</version.eureka>
+        <version.maven-exec>1.6.0</version.maven-exec>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -285,6 +287,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${version.surefire}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${version.maven-exec}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

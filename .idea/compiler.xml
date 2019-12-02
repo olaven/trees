@@ -9,10 +9,12 @@
         <module name="api" />
         <module name="gateway" />
         <module name="registry" />
+        <module name="frontend" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="api" target="1.8" />
+      <module name="frontend" target="1.8" />
       <module name="gateway" target="1.8" />
       <module name="registry" target="1.8" />
       <module name="trees" target="1.8" />
@@ -21,6 +23,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api" options="-parameters" />
+      <module name="frontend" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="registry" options="-parameters" />
     </option>
