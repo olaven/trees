@@ -1,9 +1,10 @@
 {
   "name": "trees",
   "version": "0.0.1",
+  "license": "MPL-2.0",
   "description": "",
   "scripts": {
-    "dev": "webpack --mode development --watch",
+    "dev": "webpack-dev-server --mode development --watch",
     "build": "webpack --mode production"
   },
   "keywords": [],
@@ -25,6 +26,7 @@
     "babel-loader": "^8.0.6",
     "dotenv-webpack": "^1.7.0",
     "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7"
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.9.0"
   }
 }
