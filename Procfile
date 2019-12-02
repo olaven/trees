@@ -1,1 +1,0 @@
-web: java -jar target/org.olaven.enterprise.trees.jar
