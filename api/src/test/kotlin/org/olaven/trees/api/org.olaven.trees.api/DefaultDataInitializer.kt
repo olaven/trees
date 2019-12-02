@@ -1,7 +1,9 @@
 package org.olaven.trees.api.misc
 
 import org.olaven.trees.api.entity.LocationEntity
+import org.olaven.trees.api.repository.CustomPlantRepository
 import org.olaven.trees.api.repository.LocationRepository
+import org.olaven.trees.api.repository.PlantRepository
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
@@ -10,6 +12,7 @@ import javax.annotation.PostConstruct
 @Service
 @Profile(value = ["local"])
 class DefaultDataInitializer(
+        private val plantRepository: PlantRepository
         private val locationRepository: LocationRepository
 ) {
 
@@ -17,10 +20,13 @@ class DefaultDataInitializer(
     fun initialize() {
 
         val locations = getLocations()
+        val plants = getPlants(locations)
+
         locationRepository.saveAll(locations)
+        plantRepository.saveAll(plants)
     }
 
-    //TODO: add plants on locations
+
     private fun getLocations(): List<LocationEntity> = listOf(
             LocationEntity(59.9838, 10.7256, emptyList(), timestamp = epochMilli()),
             LocationEntity(61.1488, 10.3743, emptyList(), timestamp = epochMilli()),
