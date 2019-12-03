@@ -10,6 +10,9 @@ import org.olaven.trees.api.misc.CallCount
 import org.olaven.trees.api.misc.HasCallCount
 import org.olaven.trees.api.repository.LocationRepository
 import org.olaven.trees.api.transformer.LocationTransformer
+import org.springframework.data.geo.Distance
+import org.springframework.data.geo.Metrics
+import org.springframework.data.geo.Point
 import org.springframework.http.CacheControl
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -33,7 +36,7 @@ class LocationController(
 
     override val callCount = CallCount()
 
-    @GetMapping("CHANGE TO DEFAULT (i.e. nothing)")
+    @GetMapping("")
     @ApiOperation("Get locations based on a center")
     @ApiResponses(
             ApiResponse(code = 200, message = "A page of locations, relative to given center")
@@ -51,8 +54,8 @@ class LocationController(
     ): ResponseEntity<WrappedResponse<Page<LocationDTO>>> {
 
         callCount.getAll++
-        val locations = locationRepository
-                .getNextCenterPage(50, lat, long, expand == Expand.PLANTS)
+        val locations = locationRepository      //TODO: change value based on input / page next something
+                .findByPointNear(Point(lat, long), Distance(0.5, Metrics.KILOMETERS))
                 .map { locationTransformer.toDTO(it, expand == Expand.PLANTS) }
 
         //TODO: next logic
@@ -66,7 +69,7 @@ class LocationController(
                 .body(WrappedResponse(200, page))
     }
 
-    @GetMapping("")
+    @GetMapping("TEST_ABOVE_REPLACED_TEMP")
     @ApiResponse(code = 200, message = "All locations")
     @ApiOperation(value = "Get all locations")
     fun getLocations(

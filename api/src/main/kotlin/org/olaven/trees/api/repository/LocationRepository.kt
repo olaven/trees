@@ -1,6 +1,9 @@
 package org.olaven.trees.api.repository
 
 import org.olaven.trees.api.entity.LocationEntity
+import org.springframework.data.geo.Distance
+import org.springframework.data.geo.Point
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import java.time.ZonedDateTime
@@ -10,7 +13,9 @@ import javax.persistence.TypedQuery
 import javax.transaction.Transactional
 
 @Repository
-interface LocationRepository: CrudRepository<LocationEntity, Long>, CustomLocationRepository
+interface LocationRepository : CrudRepository<LocationEntity, Long>, CustomLocationRepository {
+
+}
 
 interface CustomLocationRepository {
 
@@ -26,7 +31,7 @@ interface CustomLocationRepository {
 @Repository
 class LocationRepositoryImpl(
         private val entityManager: EntityManager
-): CustomLocationRepository {
+) : CustomLocationRepository {
 
 
     override fun getNextPage(size: Int, keysetId: Long?, fetchPlants: Boolean): List<LocationEntity> {
@@ -45,21 +50,28 @@ class LocationRepositoryImpl(
 
         //NOTE: plants are always fetched, even if lazy. I.e. `locations` already contains them.
         //TODO: make JPA respect FetchType.LAZY
-        val locations =  query.resultList
+        val locations = query.resultList
         if (fetchPlants) locations.forEach { it.plants.size }
         return locations
     }
 
     override fun getNextCenterPage(count: Int, lat: Double, long: Double, fetchPlants: Boolean): List<LocationEntity> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        val center = Point(lat, long)
+        return entityManager
+                .createQuery("select location from LocationEntity location where location.point IsNear :center", LocationEntity::class.java)
+                .setParameter("center", center)
+                .resultList
+                .toList() //TODO: this crashes, as near is not supported.
     }
 
     override fun update(id: Long, x: Double, y: Double): Boolean {
 
         val entity = entityManager.find(LocationEntity::class.java, id) ?: return false
 
-        entity.x = x
-        entity.y = y //TODO: should I update locations?
+        /*entity.location.x = x
+        entity.location.y = y //TODO: should I update locations?*/
+        entity.point = Point(x, y)
         entity.timestamp = ZonedDateTime.now().toInstant().toEpochMilli()
 
         entityManager.persist(entity)

@@ -2,6 +2,7 @@ package org.olaven.trees.api.transformer
 
 import org.olaven.trees.api.dto.LocationDTO
 import org.olaven.trees.api.entity.LocationEntity
+import org.springframework.data.geo.Point
 import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
 
@@ -11,7 +12,7 @@ class LocationTransformer(
 ) {
 
     fun toDTO(entity: LocationEntity, includePlants: Boolean) =
-            LocationDTO(entity.x, entity.y, entity.id, if (includePlants) {
+            LocationDTO(entity.point.x, entity.point.y, entity.id, if (includePlants) {
                 entity.plants.map { plantTransformer.toDTO(it) }
             } else {
                 emptyList()
@@ -19,8 +20,7 @@ class LocationTransformer(
 
     fun toEntity(dto: LocationDTO) =
         LocationEntity(
-                x = dto.x,
-                y = dto.y,
+                point = Point(dto.x!!, dto.y!!),
                 id = dto.id,
                 timestamp = ZonedDateTime.now().toInstant().toEpochMilli()
         )

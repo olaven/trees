@@ -2,14 +2,15 @@ package org.olaven.trees.api.entity
 
 import org.jetbrains.annotations.NotNull
 import org.olaven.trees.api.misc.epochMilli
+import org.springframework.data.geo.Point
 import javax.persistence.*
-import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 
 @Entity
+@Table(name = "locations")
 open class LocationEntity (
 
-        @field:NotNull
+        /*@field:NotNull
         @field:Min(0)
         @field:Max(90)
         var x: Double?,
@@ -17,7 +18,10 @@ open class LocationEntity (
         @field:NotNull
         @field:Min(-180)
         @field:Max(180)
-        var y: Double?,
+        var y: Double?,*/
+
+        @field:NotNull
+        var point: Point,
 
         @field:NotNull
         @field:OneToMany(
