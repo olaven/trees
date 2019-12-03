@@ -14,8 +14,8 @@ import springfox.documentation.spring.web.plugins.Docket
 import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 
-fun main(args: Array<String>) {
-    SpringApplication.run(TreeApplication::class.java, "--spring.profiles.active=local")
+fun main() {
+    SpringApplication.run(TreeApplication::class.java)
 }
 
 @SpringBootApplication

@@ -1,20 +1,22 @@
-package org.olaven.trees.api.misc
+package org.olaven.trees.api.org.olaven.trees.api
 
+import com.github.javafaker.Faker
 import org.olaven.trees.api.entity.LocationEntity
-import org.olaven.trees.api.repository.CustomPlantRepository
+import org.olaven.trees.api.entity.PlantEntity
 import org.olaven.trees.api.repository.LocationRepository
 import org.olaven.trees.api.repository.PlantRepository
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
-import java.time.ZonedDateTime
 import javax.annotation.PostConstruct
 
 @Service
 @Profile(value = ["local"])
 class DefaultDataInitializer(
+        private val locationRepository: LocationRepository,
         private val plantRepository: PlantRepository
-        private val locationRepository: LocationRepository
 ) {
+
+    private val faker = Faker()
 
     @PostConstruct
     fun initialize() {
@@ -26,16 +28,22 @@ class DefaultDataInitializer(
         plantRepository.saveAll(plants)
     }
 
+    private fun getLocations(): List<LocationEntity> = (0 until 100)
+            .map {
+                LocationEntity(
+                        x = faker.number().randomDouble(8, 0, 90),
+                        y = faker.number().randomDouble(8, -180, 180))
+            }
+            .toList()
 
-    private fun getLocations(): List<LocationEntity> = listOf(
-            LocationEntity(59.9838, 10.7256, emptyList(), timestamp = epochMilli()),
-            LocationEntity(61.1488, 10.3743, emptyList(), timestamp = epochMilli()),
-            LocationEntity(61.9216, 7.6694, emptyList(), timestamp = epochMilli()),
-            LocationEntity(59.0539, 9.7275, emptyList(), timestamp = epochMilli())
-    )
-
-    private fun epochMilli() =
-            ZonedDateTime.now()
-                    .toInstant()
-                    .toEpochMilli()
+    private fun getPlants(locations: List<LocationEntity>) = (0 until 125)
+            .map {
+                PlantEntity(
+                        name = faker.beer().name(),
+                        description = faker.lorem().paragraph(),
+                        height = faker.number().randomDouble(2, 1, 55),
+                        age = faker.number().numberBetween(0, 250),
+                        location = locations.random())
+            }
+            .toList()
 }

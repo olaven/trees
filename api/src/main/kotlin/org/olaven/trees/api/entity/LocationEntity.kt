@@ -1,7 +1,9 @@
 package org.olaven.trees.api.entity
 
 import org.jetbrains.annotations.NotNull
+import org.olaven.trees.api.misc.epochMilli
 import javax.persistence.*
+import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 
 @Entity
@@ -9,10 +11,12 @@ open class LocationEntity (
 
         @field:NotNull
         @field:Min(0)
+        @field:Max(90)
         var x: Double?,
 
         @field:NotNull
-        @field:Min(0)
+        @field:Min(-180)
+        @field:Max(180)
         var y: Double?,
 
         @field:NotNull
@@ -24,12 +28,12 @@ open class LocationEntity (
 
         @field:Id
         @field:GeneratedValue
-        val id: Long? = -1,
+        val id: Long? = null,
 
 
         @field:NotNull
         @field:Min(0)
-        var timestamp: Long,
+        var timestamp: Long = epochMilli(),
 
         @Version
         internal val version: Long = 0

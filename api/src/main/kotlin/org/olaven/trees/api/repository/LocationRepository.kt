@@ -14,29 +14,21 @@ interface LocationRepository: CrudRepository<LocationEntity, Long>, CustomLocati
 
 interface CustomLocationRepository {
 
-    fun update(id: Long, x: Double, y: Double): Boolean
     fun getNextPage(n: Int, keysetId: Long?, fetchPlants: Boolean = false): List<LocationEntity>
+    fun getNextCenterPage(count: Int, lat: Double, long: Double, fetchPlants: Boolean = false): List<LocationEntity>
+
+    fun update(id: Long, x: Double, y: Double): Boolean
     fun getRandom(): LocationEntity?
 }
 
 
 @Transactional
 @Repository
-open class LocationRepositoryImpl(
+class LocationRepositoryImpl(
         private val entityManager: EntityManager
 ): CustomLocationRepository {
 
-    override fun update(id: Long, x: Double, y: Double): Boolean {
 
-        val entity = entityManager.find(LocationEntity::class.java, id) ?: return false
-
-        entity.x = x
-        entity.y = y //TODO: should I update locations?
-        entity.timestamp = ZonedDateTime.now().toInstant().toEpochMilli()
-
-        entityManager.persist(entity)
-        return true
-    }
     override fun getNextPage(size: Int, keysetId: Long?, fetchPlants: Boolean): List<LocationEntity> {
 
 
@@ -56,6 +48,22 @@ open class LocationRepositoryImpl(
         val locations =  query.resultList
         if (fetchPlants) locations.forEach { it.plants.size }
         return locations
+    }
+
+    override fun getNextCenterPage(count: Int, lat: Double, long: Double, fetchPlants: Boolean): List<LocationEntity> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun update(id: Long, x: Double, y: Double): Boolean {
+
+        val entity = entityManager.find(LocationEntity::class.java, id) ?: return false
+
+        entity.x = x
+        entity.y = y //TODO: should I update locations?
+        entity.timestamp = ZonedDateTime.now().toInstant().toEpochMilli()
+
+        entityManager.persist(entity)
+        return true
     }
 
     override fun getRandom(): LocationEntity? {

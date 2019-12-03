@@ -9,7 +9,7 @@ module.exports = {
     },
     devServer: {
         contentBase: path.join(__dirname, 'build'),
-        port: 8080
+        port: 8081
     },
     module: {
         rules: [
@@ -25,7 +25,7 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js', '.tsx', 'jsx']
     },
-    plugins: [ // not applied in production, as it overrides Heroku
+    plugins: [
         new Dotenv({
             path: ".env",
             safe: true

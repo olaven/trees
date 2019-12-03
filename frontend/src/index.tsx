@@ -1,11 +1,11 @@
 import * as React from "react";
 import {render} from "react-dom"
-import {Map} from "./map/component";
+import {MapComponent} from "./map/mapComponent";
 
 
 const App = () => {
     return <div>
-        <Map/>
+        <MapComponent/>
     </div>
 };
 

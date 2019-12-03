@@ -41,7 +41,7 @@ export const initializeMap = () => {
         container: 'map', // container id
         style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
         center: [28.2278, 36.4511], // starting position [lng, lat]
-        zoom: 9// starting zoom
+        zoom: 2// starting zoom
     });
 };
 

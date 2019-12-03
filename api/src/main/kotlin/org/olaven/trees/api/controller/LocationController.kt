@@ -1,8 +1,6 @@
 package org.olaven.trees.api.controller
 
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiResponse
+import io.swagger.annotations.*
 import org.olaven.trees.api.annotations.IsLocation
 import org.olaven.trees.api.dto.LocationDTO
 import org.olaven.trees.api.dto.Page
@@ -34,6 +32,39 @@ class LocationController(
     }
 
     override val callCount = CallCount()
+
+    @GetMapping("CHANGE TO DEFAULT (i.e. nothing)")
+    @ApiOperation("Get locations based on a center")
+    @ApiResponses(
+            ApiResponse(code = 200, message = "A page of locations, relative to given center")
+    )
+    fun getLocationsCenter(
+            @ApiParam("The lattitude of current center")
+            @RequestParam("lat")
+            lat: Double,
+            @ApiParam("The logitude of current center")
+            @RequestParam("long")
+            long: Double,
+            @ApiParam("Define extra data to fetch")
+            @RequestParam("expand", required = false, defaultValue = "NONE")
+            expand: Expand
+    ): ResponseEntity<WrappedResponse<Page<LocationDTO>>> {
+
+        callCount.getAll++
+        val locations = locationRepository
+                .getNextCenterPage(50, lat, long, expand == Expand.PLANTS)
+                .map { locationTransformer.toDTO(it, expand == Expand.PLANTS) }
+
+        //TODO: next logic
+        val next = null
+
+        val page = Page(locations, next)
+
+        return ResponseEntity
+                .status(200)
+                .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
+                .body(WrappedResponse(200, page))
+    }
 
     @GetMapping("")
     @ApiResponse(code = 200, message = "All locations")

@@ -1,9 +1,14 @@
 import {useEffect, useState} from "react";
 import {apiFetch} from "../fetch";
 
-export const useGetLocations = () => {
+interface LocationPage {
+    locations: [], //TODO: type
+    next: string
+}
 
-    const [ locations, setLocations ] = useState([]);
+export const getLocations = () => {
+
+    const [ locations, setLocations ] = useState<LocationPage>({locations: [], next: null});
 
     useEffect(() => {
 
@@ -16,8 +21,10 @@ export const useGetLocations = () => {
             }
 
             const page = await response.json();
-            const {locations, next} = page.data;
-            setLocations(locations);
+            setLocations({
+                locations: page.data.list,
+                next: page.data.next
+            });
         };
 
         loadLocations();

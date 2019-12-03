@@ -1,6 +1,7 @@
 package org.olaven.trees.api.entity
 
 import org.jetbrains.annotations.NotNull
+import org.olaven.trees.api.misc.epochMilli
 import javax.persistence.*
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
@@ -35,10 +36,10 @@ class PlantEntity (
 
     @field:Id
     @field:GeneratedValue
-    var id: Long = -1,
+    var id: Long? = null,
 
     @field:NotNull
-    var timestamp: Long,
+    var timestamp: Long = epochMilli(),
 
     @Version internal val version: Long = 0
 )
