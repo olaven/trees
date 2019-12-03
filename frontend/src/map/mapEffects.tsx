@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import {apiFetch} from "../fetch";
 
 export const useGetLocations = () => {
 
@@ -8,14 +9,14 @@ export const useGetLocations = () => {
 
         const loadLocations = async () => {
 
-            const response = await fetch("api/locations");
+            const response = await apiFetch("/api/locations");
             if (response.status !== 200) {
 
                 throw "failed to fetch from server";
             }
 
-            const wrappers = await response.json();
-            const locations = wrappers.map(wrapper => wrapper.data);
+            const page = await response.json();
+            const {locations, next} = page.data;
             setLocations(locations);
         };
 

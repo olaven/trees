@@ -9,7 +9,7 @@ export const  Map = () => {
     const [ map, setMap ] = useState(null);
     const locations = useGetLocations() as [];
 
-    console.log("locations", locations); 
+    console.log("locations", locations);
     useEffect(() => {
 
         const map = initializeMap();
