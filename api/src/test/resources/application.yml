@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: "jdbc:tc:postgresql://postgres_movies:5432/postgres"
+    username: "postgres"
+    password: ""
+    driver-class-name: "org.testcontainers.jdbc.ContainerDatabaseDriver"
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+    hibernate:
+      ddl-auto: create-drop # TODO: validate with flyway or similar
+eureka:
+  client:
+    enabled: false

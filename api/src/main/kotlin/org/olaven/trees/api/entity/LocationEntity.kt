@@ -7,7 +7,6 @@ import javax.persistence.*
 import javax.validation.constraints.Min
 
 @Entity
-@Table(name = "locations")
 open class LocationEntity (
 
         /*@field:NotNull
@@ -20,7 +19,7 @@ open class LocationEntity (
         @field:Max(180)
         var y: Double?,*/
 
-        @field:NotNull
+        //@Column(columnDefinition = "POINT")
         var point: Point,
 
         @field:NotNull

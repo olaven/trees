@@ -1,9 +1,7 @@
 package org.olaven.trees.api.repository
 
 import org.olaven.trees.api.entity.LocationEntity
-import org.springframework.data.geo.Distance
 import org.springframework.data.geo.Point
-import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import java.time.ZonedDateTime
@@ -15,12 +13,14 @@ import javax.transaction.Transactional
 @Repository
 interface LocationRepository : CrudRepository<LocationEntity, Long>, CustomLocationRepository {
 
+    //@Query(value = "SELECT *, (6371 * acos(cos(radians(?1)) *cos(radians(latitude)) * cos(radians(longitude) - radians(?2)) + sin(radians(?1)) * sin(radians(latitude)))) AS distance FROM location_entity HAVING distance < 20 ORDER BY distance LIMIT 0 , 20", nativeQuery = true)
+    //fun findByPointNear(point: Point, distance: Distance): GeoResults<LocationEntity>
 }
 
 interface CustomLocationRepository {
 
     fun getNextPage(n: Int, keysetId: Long?, fetchPlants: Boolean = false): List<LocationEntity>
-    fun getNextCenterPage(count: Int, lat: Double, long: Double, fetchPlants: Boolean = false): List<LocationEntity>
+    fun getNextCenterPage(radius: Int, lat: Double, long: Double, fetchPlants: Boolean = false): List<LocationEntity>
 
     fun update(id: Long, x: Double, y: Double): Boolean
     fun getRandom(): LocationEntity?
@@ -55,14 +55,14 @@ class LocationRepositoryImpl(
         return locations
     }
 
-    override fun getNextCenterPage(count: Int, lat: Double, long: Double, fetchPlants: Boolean): List<LocationEntity> {
+    override fun getNextCenterPage(radius: Int, lat: Double, long: Double, fetchPlants: Boolean): List<LocationEntity> {
 
         val center = Point(lat, long)
-        return entityManager
-                .createQuery("select location from LocationEntity location where location.point IsNear :center", LocationEntity::class.java)
+        return entityManager.createQuery("select location from LocationEntity location where dwithin(location.point, :center, :radius) = true", LocationEntity::class.java)
+                .setParameter("radius", radius)
                 .setParameter("center", center)
                 .resultList
-                .toList() //TODO: this crashes, as near is not supported.
+                .toList()
     }
 
     override fun update(id: Long, x: Double, y: Double): Boolean {

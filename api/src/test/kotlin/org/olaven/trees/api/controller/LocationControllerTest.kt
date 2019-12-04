@@ -8,6 +8,12 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.olaven.trees.api.dto.PlantDto
+import org.olaven.trees.api.entity.LocationEntity
+import org.springframework.data.geo.Point
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.random.Random
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -56,10 +62,12 @@ internal class LocationControllerTest(): WebTestBase() {
     @Test
     fun `get all-endpoint returns wrapped response`() {
 
-        val location = getLocationDTO()
-        persistLocation(location)
+        /*val location = getLocationDTO()
+        persistLocation(location)*/
+        val center =  Point(10.0, 10.0)
+        createWithin(10, center)
 
-        getAll()
+        getAll(center)
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body("code", equalTo(200))
@@ -90,27 +98,25 @@ internal class LocationControllerTest(): WebTestBase() {
         * of the test
         * */
 
-        val allLocations = locationRepository.findAll()
-        println(allLocations)
         val secondPage = getAll()
                 .body("data.list.size()", equalTo(5))
                 .extract()
                 .jsonPath()
                 .get<String>("data.next")
 
-        val thirdPage = getAll(secondPage)
+        val thirdPage = getAll(location = secondPage)
                 .body("data.list.size()", equalTo(5))
                 .extract()
                 .jsonPath()
                 .get<String>("data.next")
 
-        val fourthPage = getAll(thirdPage)
+        val fourthPage = getAll(location = thirdPage)
                 .body("data.list.size()", equalTo(5))
                 .extract()
                 .jsonPath()
                 .get<String>("data.next")
 
-        val fifthPage = getAll(fourthPage)
+        val fifthPage = getAll(location = fourthPage)
                 .body("data.list.size()", equalTo(0))
                 .extract()
                 .jsonPath()
@@ -178,6 +184,7 @@ internal class LocationControllerTest(): WebTestBase() {
                 .statusCode(400)
     }
 
+    @Test
     fun `getting random returns a location`() {
 
         persistLocations(5)
@@ -329,13 +336,30 @@ internal class LocationControllerTest(): WebTestBase() {
         }
     }
 
-    private fun getAll(location: String? = null): ValidatableResponse {
+    private fun createWithin(radius: Int, center: Point): LocationEntity {
+
+        val a = Random.nextDouble() * 2 * PI
+        val r = radius * kotlin.math.sqrt(Random.nextDouble())
+
+        val x = (r * cos(a)) + center.x
+        val y = (r * sin(a)) + center.y
+
+        return persistLocation(getLocationDTO().apply {
+            this.x = x
+            this.y = y
+        })
+    }
+
+                    //TODO: change point default value
+    private fun getAll(center: Point = Point(0.0, 0.0), location: String? = null): ValidatableResponse {
 
         val path =
                 location ?: "/locations"
 
         return given()
                 .contentType(ContentType.JSON)
+                .queryParam("lat", center.x)
+                .queryParam("long", center.y)
                 .get(path)
                 .then()
     }

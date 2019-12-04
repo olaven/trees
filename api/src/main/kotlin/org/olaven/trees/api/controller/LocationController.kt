@@ -10,9 +10,6 @@ import org.olaven.trees.api.misc.CallCount
 import org.olaven.trees.api.misc.HasCallCount
 import org.olaven.trees.api.repository.LocationRepository
 import org.olaven.trees.api.transformer.LocationTransformer
-import org.springframework.data.geo.Distance
-import org.springframework.data.geo.Metrics
-import org.springframework.data.geo.Point
 import org.springframework.http.CacheControl
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -55,7 +52,7 @@ class LocationController(
 
         callCount.getAll++
         val locations = locationRepository      //TODO: change value based on input / page next something
-                .findByPointNear(Point(lat, long), Distance(0.5, Metrics.KILOMETERS))
+                .getNextCenterPage(15, lat, long, expand == Expand.PLANTS)
                 .map { locationTransformer.toDTO(it, expand == Expand.PLANTS) }
 
         //TODO: next logic
@@ -69,7 +66,7 @@ class LocationController(
                 .body(WrappedResponse(200, page))
     }
 
-    @GetMapping("TEST_ABOVE_REPLACED_TEMP")
+/*    @GetMapping("TEST_ABOVE_REPLACED_TEMP")
     @ApiResponse(code = 200, message = "All locations")
     @ApiOperation(value = "Get all locations")
     fun getLocations(
@@ -97,7 +94,7 @@ class LocationController(
                 200,
                 page
         ))
-    }
+    }*/
 
     @GetMapping("/{id}")
     @ApiResponse(code = 200, message = "One specific location")
