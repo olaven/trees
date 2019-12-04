@@ -58,7 +58,7 @@ class LocationRepositoryImpl(
     override fun getNextCenterPage(radius: Int, lat: Double, long: Double, fetchPlants: Boolean): List<LocationEntity> {
 
         val center = Point(lat, long)
-        return entityManager.createQuery("select location from LocationEntity location where dwithin(location.point, :center, :radius) = true", LocationEntity::class.java)
+        return entityManager.createQuery("select location from LocationEntity location where ST_DWithin(cast(location.point as geometry), cast(:center as geometry), :radius) = true", LocationEntity::class.java)
                 .setParameter("radius", radius)
                 .setParameter("center", center)
                 .resultList

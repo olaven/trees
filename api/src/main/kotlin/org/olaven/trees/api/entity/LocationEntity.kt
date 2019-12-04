@@ -19,7 +19,7 @@ open class LocationEntity (
         @field:Max(180)
         var y: Double?,*/
 
-        //@Column(columnDefinition = "POINT")
+        @Column(columnDefinition = "geometry")
         var point: Point,
 
         @field:NotNull

@@ -1,4 +1,4 @@
-package org.olaven.trees.api.org.olaven.trees.api
+package org.olaven.trees.api
 
 import com.github.javafaker.Faker
 import org.olaven.trees.api.entity.LocationEntity

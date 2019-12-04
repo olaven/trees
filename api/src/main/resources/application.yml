@@ -16,7 +16,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect #TODO: perhaps I need a postgis-image in prod/compose
     hibernate:
       ddl-auto: create-drop # TODO: validate with flyway or similar
 eureka:

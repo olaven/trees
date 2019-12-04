@@ -1,4 +1,4 @@
-package org.olaven.trees.api.org.olaven.trees.api
+package org.olaven.trees.api
 
 import org.olaven.trees.api.TreeApplication
 import org.springframework.boot.SpringApplication

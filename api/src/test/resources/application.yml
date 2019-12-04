@@ -1,15 +1,17 @@
 spring:
   datasource:
     url: "jdbc:tc:postgresql://postgres_movies:5432/postgres"
-    username: "postgres"
-    password: ""
+    username: "docker"
+    password: "docker"
     driver-class-name: "org.testcontainers.jdbc.ContainerDatabaseDriver"
+
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
     hibernate:
-      ddl-auto: create-drop # TODO: validate with flyway or similar
+      ddl-auto: create-drop # TODO Should be validate (with flyway or similar) at some point
+
 eureka:
   client:
     enabled: false

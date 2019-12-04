@@ -14,11 +14,52 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.testcontainers.junit.jupiter.Testcontainers
+
 
 @SpringBootTest
 @ExtendWith(SpringExtension::class)
 @DirtiesContext // new application for every test (cache is happy)
+@Testcontainers
+// @ContextConfiguration(initializers = [TestBase.Companion.Initializer::class])
 class TestBase {
+
+/*
+    companion object {
+
+        *//*
+            workaround to current Kotlin (and other JVM languages) limitation
+            see https://github.com/testcontainers/testcontainers-java/issues/318
+         *//*                     // TODO: test kartoza/postgis with password and username docker if this does not work
+        class KPsqlContainer: PostgreSQLContainer<KPsqlContainer>("kartoza/postgis")
+        //class KPsqlContainer : PostgreSQLContainer<KPsqlContainer>("mdillon/postgis")
+
+        @ClassRule
+        @JvmField
+        val dockerPostgres = KPsqlContainer()
+                .withExposedPorts(5432)
+                .withUsername("docker")
+                .withPassword("docker")
+
+        class Initializer: ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+            override fun initialize(configurableApplicationContext: ConfigurableApplicationContext?) {
+                val values = TestPropertyValues.of(
+                        "spring.datasource.url=" + dockerPostgres.jdbcUrl,
+                        "spring.datasource.password=" + dockerPostgres.password,
+                        "spring.datasource.username=" + dockerPostgres.username
+                )
+                values.applyTo(configurableApplicationContext)
+            }
+        }
+
+        *//*
+        * url: "jdbc:tc:postgresql://postgres_movies:5432/postgres"
+            username: "docker"
+            password: "docker"
+            driver-class-name: "org.testcontainers.jdbc.ContainerDatabaseDriver"
+        * *//*
+    }*/
 
     @Autowired
     private lateinit var locationTransformer: LocationTransformer
