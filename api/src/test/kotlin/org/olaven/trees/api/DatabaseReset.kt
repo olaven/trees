@@ -13,6 +13,6 @@ class DatabaseReset(
     fun reset() {
 
         plantRepository.deleteAll()
-        locationRepository.deleteAll()
+//        locationRepository.deleteAll()
     }
 }

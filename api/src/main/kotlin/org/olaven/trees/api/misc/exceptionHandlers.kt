@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.validation.ConstraintViolationException
 
 @ControllerAdvice
-open class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
+class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 
     private val INTERNAL_SERVER_ERROR_MESSAGE = "Internal server error"
 
@@ -24,7 +24,6 @@ open class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler()
                 exception, null, HttpHeaders(), HttpStatus.valueOf(400), request)
     }
 
-    //NOTE: written by Andrea, TODO: go through / rewrite
     @ExceptionHandler(value = [ConstraintViolationException::class])
     protected fun handleFrameworkExceptionsForUserInputs(exception: Exception, request: WebRequest)
             : ResponseEntity<Any> {

@@ -3,7 +3,7 @@ package org.olaven.trees.api.misc
 /**
  * Implemented by controllers.
  *
- * Used to test caching.
+ * NOTE: Used to test caching.
  */
 class CallCount (
         var getOne: Int = 0,

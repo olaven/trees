@@ -71,7 +71,7 @@ class LocationRepositoryImpl(
 
         /*entity.location.x = x
         entity.location.y = y //TODO: should I update locations?*/
-        entity.point = Point(x, y)
+        entity.point = Point(x, y) //TODO: add back
         entity.timestamp = ZonedDateTime.now().toInstant().toEpochMilli()
 
         entityManager.persist(entity)

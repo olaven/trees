@@ -1,6 +1,7 @@
 version: '3.3'
 
 services:
+
   # Service registery
   registry:
     build:

@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: "jdbc:tc:postgresql://postgres_movies:5432/postgres"
+    url: "jdbc:tc:postgresql://postgres:5432/postgres"
     username: "docker"
     password: "docker"
-    driver-class-name: "org.testcontainers.jdbc.ContainerDatabaseDriver"
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
 
   jpa:
     properties:

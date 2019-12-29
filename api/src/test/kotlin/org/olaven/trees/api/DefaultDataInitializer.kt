@@ -6,7 +6,6 @@ import org.olaven.trees.api.entity.PlantEntity
 import org.olaven.trees.api.repository.LocationRepository
 import org.olaven.trees.api.repository.PlantRepository
 import org.springframework.context.annotation.Profile
-import org.springframework.data.geo.Point
 import org.springframework.stereotype.Service
 import javax.annotation.PostConstruct
 
@@ -32,7 +31,7 @@ class DefaultDataInitializer(
     private fun getLocations(): List<LocationEntity> = (0 until 100)
             .map {
                 LocationEntity(
-                        Point(
+                        org.springframework.data.geo.Point(
                                 faker.number().randomDouble(8, 0, 90),
                                 faker.number().randomDouble(8, -180, 180))
                         )

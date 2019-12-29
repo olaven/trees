@@ -1,13 +1,13 @@
 package org.olaven.trees.api.entity
 
-import org.jetbrains.annotations.NotNull
 import org.olaven.trees.api.misc.epochMilli
 import org.springframework.data.geo.Point
 import javax.persistence.*
 import javax.validation.constraints.Min
+import javax.validation.constraints.NotNull
 
 @Entity
-open class LocationEntity (
+open class LocationEntity(
 
         /*@field:NotNull
         @field:Min(0)

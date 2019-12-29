@@ -1,6 +1,7 @@
 package org.olaven.trees.api
 
 import com.github.javafaker.Faker
+import org.junit.ClassRule
 import org.junit.jupiter.api.extension.ExtendWith
 import org.olaven.trees.api.dto.LocationDTO
 import org.olaven.trees.api.dto.PlantDto
@@ -12,8 +13,13 @@ import org.olaven.trees.api.transformer.LocationTransformer
 import org.olaven.trees.api.transformer.PlantTransformer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.util.TestPropertyValues
+import org.springframework.context.ApplicationContextInitializer
+import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Testcontainers
 
 
@@ -21,27 +27,39 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @ExtendWith(SpringExtension::class)
 @DirtiesContext // new application for every test (cache is happy)
 @Testcontainers
-// @ContextConfiguration(initializers = [TestBase.Companion.Initializer::class])
+ @ContextConfiguration(initializers = [TestBase.Initializer::class])
 class TestBase {
 
-/*
+    class Initializer: ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+        override fun initialize(configurableApplicationContext: ConfigurableApplicationContext?) {
+
+
+            val values = TestPropertyValues.of(
+                    "spring.datasource.url=${container.jdbcUrl}",
+                    "spring.datasource.username=${container.username}",
+                    "spring.datasource.password=${container.password}"
+            )
+
+            values.applyTo(configurableApplicationContext)
+        }
+    }
+
     companion object {
 
-        *//*
-            workaround to current Kotlin (and other JVM languages) limitation
-            see https://github.com/testcontainers/testcontainers-java/issues/318
-         *//*                     // TODO: test kartoza/postgis with password and username docker if this does not work
         class KPsqlContainer: PostgreSQLContainer<KPsqlContainer>("kartoza/postgis")
-        //class KPsqlContainer : PostgreSQLContainer<KPsqlContainer>("mdillon/postgis")
 
         @ClassRule
         @JvmField
-        val dockerPostgres = KPsqlContainer()
+        val container: KPsqlContainer = KPsqlContainer()
                 .withExposedPorts(5432)
                 .withUsername("docker")
                 .withPassword("docker")
+                .also {
+                    it.start()
+                }
 
-        class Initializer: ApplicationContextInitializer<ConfigurableApplicationContext> {
+       /* class Initializer: ApplicationContextInitializer<ConfigurableApplicationContext> {
 
             override fun initialize(configurableApplicationContext: ConfigurableApplicationContext?) {
                 val values = TestPropertyValues.of(
@@ -51,15 +69,8 @@ class TestBase {
                 )
                 values.applyTo(configurableApplicationContext)
             }
-        }
-
-        *//*
-        * url: "jdbc:tc:postgresql://postgres_movies:5432/postgres"
-            username: "docker"
-            password: "docker"
-            driver-class-name: "org.testcontainers.jdbc.ContainerDatabaseDriver"
-        * *//*
-    }*/
+        }*/
+    }
 
     @Autowired
     private lateinit var locationTransformer: LocationTransformer
@@ -80,6 +91,8 @@ class TestBase {
     }
 
     protected fun persistPlant(dto: PlantDto): PlantEntity {
+
+
 
         val entity = plantTransformer.toEntity(dto)
         return plantRepository.save(entity)

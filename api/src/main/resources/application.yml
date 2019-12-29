@@ -9,7 +9,7 @@ spring:
   resources:
     add-mappings: true
   datasource:
-    url: "jdbc:postgresql://postgres_movies:5432/postgres"
+    url: "jdbc:postgresql://postgres_api:5432/test"
     username: "postgres"
     password: ""
     driver-class-name: "org.postgresql.Driver"

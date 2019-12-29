@@ -12,7 +12,7 @@ class IsLocationValidator: ConstraintValidator<IsLocation, LocationDTO> {
 
     override fun isValid(location: LocationDTO?, context: ConstraintValidatorContext?): Boolean {
 
-        var validLatitude = false;
+        var validLatitude = false
         var validLongitude = false
 
         // -180 / +180
