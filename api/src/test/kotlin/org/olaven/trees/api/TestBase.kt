@@ -13,11 +13,7 @@ import org.olaven.trees.api.transformer.LocationTransformer
 import org.olaven.trees.api.transformer.PlantTransformer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.util.TestPropertyValues
-import org.springframework.context.ApplicationContextInitializer
-import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.test.annotation.DirtiesContext
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Testcontainers
@@ -27,16 +23,16 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @ExtendWith(SpringExtension::class)
 @DirtiesContext // new application for every test (cache is happy)
 @Testcontainers
- @ContextConfiguration(initializers = [TestBase.Initializer::class])
+//@ContextConfiguration(initializers = [TestBase.Initializer::class])
 class TestBase {
 
+/*
     class Initializer: ApplicationContextInitializer<ConfigurableApplicationContext> {
 
         override fun initialize(configurableApplicationContext: ConfigurableApplicationContext?) {
 
-
             val values = TestPropertyValues.of(
-                    "spring.datasource.url=${container.jdbcUrl}",
+                    "spring.datasource.url=${container.jdbcUrl.replace("jdbc:", "jdbc:tc:")}",
                     "spring.datasource.username=${container.username}",
                     "spring.datasource.password=${container.password}"
             )
@@ -44,8 +40,10 @@ class TestBase {
             values.applyTo(configurableApplicationContext)
         }
     }
+*/
 
     companion object {
+
 
         class KPsqlContainer: PostgreSQLContainer<KPsqlContainer>("kartoza/postgis")
 
@@ -55,21 +53,6 @@ class TestBase {
                 .withExposedPorts(5432)
                 .withUsername("docker")
                 .withPassword("docker")
-                .also {
-                    it.start()
-                }
-
-       /* class Initializer: ApplicationContextInitializer<ConfigurableApplicationContext> {
-
-            override fun initialize(configurableApplicationContext: ConfigurableApplicationContext?) {
-                val values = TestPropertyValues.of(
-                        "spring.datasource.url=" + dockerPostgres.jdbcUrl,
-                        "spring.datasource.password=" + dockerPostgres.password,
-                        "spring.datasource.username=" + dockerPostgres.username
-                )
-                values.applyTo(configurableApplicationContext)
-            }
-        }*/
     }
 
     @Autowired
