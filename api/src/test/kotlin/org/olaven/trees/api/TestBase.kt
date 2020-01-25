@@ -23,27 +23,10 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @ExtendWith(SpringExtension::class)
 @DirtiesContext // new application for every test (cache is happy)
 @Testcontainers
-//@ContextConfiguration(initializers = [TestBase.Initializer::class])
 class TestBase {
 
-/*
-    class Initializer: ApplicationContextInitializer<ConfigurableApplicationContext> {
-
-        override fun initialize(configurableApplicationContext: ConfigurableApplicationContext?) {
-
-            val values = TestPropertyValues.of(
-                    "spring.datasource.url=${container.jdbcUrl.replace("jdbc:", "jdbc:tc:")}",
-                    "spring.datasource.username=${container.username}",
-                    "spring.datasource.password=${container.password}"
-            )
-
-            values.applyTo(configurableApplicationContext)
-        }
-    }
-*/
 
     companion object {
-
 
         class KPsqlContainer: PostgreSQLContainer<KPsqlContainer>("kartoza/postgis")
 
@@ -53,6 +36,8 @@ class TestBase {
                 .withExposedPorts(5432)
                 .withUsername("docker")
                 .withPassword("docker")
+                .withDatabaseName("postgres")
+                .also { it.start() }
     }
 
     @Autowired
