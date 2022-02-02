@@ -25,7 +25,7 @@
         <version.failsafe>2.22.1</version.failsafe>
         <version.springboot>2.1.0.RELEASE</version.springboot>
         <version.h2>1.4.197</version.h2>
-        <version.postgres>42.1.4</version.postgres>
+        <version.postgres>42.2.25</version.postgres>
         <version.restassured>4.0.0</version.restassured>
         <version.springfox>2.9.2</version.springfox>
         <version.faker>1.0.1</version.faker>
