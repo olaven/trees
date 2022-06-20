@@ -18,7 +18,7 @@
     <properties>
         <version.springboot>2.1.0.RELEASE</version.springboot>
         <version.springcloud>Greenwich.RELEASE</version.springcloud>
-        <version.kotlin>1.3.50</version.kotlin>
+        <version.kotlin>1.6.0</version.kotlin>
         <version.java>1.8</version.java>
         <version.junit>5.3.2</version.junit>
         <version.surefire>2.22.1</version.surefire>
